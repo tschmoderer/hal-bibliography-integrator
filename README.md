@@ -3,9 +3,14 @@
 
 Ce dépôt contient une page web minimale qui permet d'intégrer facilement une bibliographie HAL dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présentent avec style imitant celui du CV HAL.
 
-[TOC]
+- [Sommaire](#liste-publications-hal)
+  * [Aperçu du résultat](#resultat)
+  * [Tutoriel](#tutoriel)
+  * [Liste des types de publications HAL](#liste-des-types-de-publications-hal)
+  * [Ajouter le support de nouveaux types](#ajouter-le-support-de-nouveaux-types)
+  * [Limitations](#limitations)
 
-## Aperçu du résultat
+## Aperçu du résultat<a name="resultat"></a>
 
 ![Résultat](./img/result.png)
 
@@ -120,9 +125,11 @@ Le tableau suivant donne les keywords a utiliser dans la variable *publiList* po
 Dans le fichier *hal-script.js* complétez la variable *hal_helpers* avec un nouveau type de publication : 
 
 ```json
-"TYPE": {
-    icon: "icon class",
-    title_en: "titre de la section pour ce type de publication"
+{
+   "TYPE": {
+       "icon": "icon class",
+       "title_en": "titre de la section pour ce type de publication"
+   }
 }
 ```
 
