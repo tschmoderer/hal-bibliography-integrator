@@ -1,22 +1,22 @@
 const hal_helpers = {
     "THESE": {
-        icon: "fa-graduation-cap",
-        title_en: "Thesis",
+        "icon": "fa-graduation-cap",
+        "title_en": "Thesis",
     },
 
     "ART": {
-        icon: "fa-newspaper",
-        title_en: "Journal articles",
+        "icon": "fa-newspaper",
+        "title_en": "Journal articles",
     },
 
     "UNDEFINED": {
-        icon: "fa-file-pen",
-        title_en: "Preprint",
+        "icon": "fa-file-pen",
+        "title_en": "Preprint",
     },
 
     "COMM": {
-        icon: "fa-microphone",
-        title_en: "Communications",
+        "icon": "fa-microphone",
+        "title_en": "Communications",
     },
 };
 
