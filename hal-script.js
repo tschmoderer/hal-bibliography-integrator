@@ -38,7 +38,7 @@ function initialHTML(type) {
         "<!--HAL " + type + " BUTTON-->" +
         "<button data-target='#" + type + "' class='hal-btn' onclick='collapse(this)'>" +
         "<i class='hal-icon fa-solid " + hal_helpers[type]["icon"] + "'></i>" +
-        "<a id='hal-" + type + "-card-title'></a>" +
+        "<a id='hal-" + type + "-card-title'>" + hal_helpers[type]["title_en"] + "</a>" +
         "<i class='hal-icon icon-drop_down fa-solid fa-caret-down'></i>" +
         "</button>" +
         "<!--END HAL " + type + " BUTTON-->" +
