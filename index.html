@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>HAL Publication List</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="hal-style.css">
+
+  <script type="text/javascript">
+    // idHal personalisé
+    const idhal = "custom-idhal";
+    // Liste des keywords de type de publications souhaitées
+    const publiList = ["THESE", "ART", "UNDEFINED", "COMM"]
+  </script>
+
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        processEscapes: true,
+        tags: "all"
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      loader: {
+        load: ['[tex]/html']
+      }
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
+    integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body style="background-color:#cfcfcf;">
+  <div id="publi-hal-all"></div>
+  <script type="text/javascript" src="hal-script.js"></script>
+</body>
+
+</html>
