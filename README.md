@@ -24,7 +24,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
    <div id="publi-hal-all"></div>
    ```
 
-2. Dans le <head> de votre page, insérez le code suivant 
+2. Dans le \<head> de votre page, insérez le code suivant 
 
    ```html
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -33,7 +33,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 
    qui charge les ressources CSS;
 
-3. (*Optionnel*) Si certain titres d'articles contiennent des maths , pour qu'il soient correctement formatés, ajoutez dans le <head> de votre page le code suivant
+3. (*Optionnel*) Si certain titres d'articles contiennent des maths , pour qu'il soient correctement formatés, ajoutez dans le \<head> de votre page le code suivant
 
    ```html
    <script>
@@ -54,7 +54,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
    ```
 
-4. A la fin du <head> de votre page HTML, ajoutez le code suivant en configurant l'idHal cible et la liste des types de publications souhaitées (voir plus bas pour les types pris en charge)
+4. A la fin du \<head> de votre page HTML, ajoutez le code suivant en configurant l'idHal cible et la liste des types de publications souhaitées (voir plus bas pour les types pris en charge)
 
    ```html
    <script type="text/javascript">
@@ -66,6 +66,13 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
    ```
 
 *NB*: Les différentes sections de publications apparaissent dans l'ordre de la liste définies dans la variable *publiList*.
+
+5. A la fin du \<body> de votre page HTML, ajoutez la code suivant pour charger le script 
+
+
+   ```html
+    <script type="text/javascript" src="hal-script.js"></script>
+    ```
 
 ## Liste des types de publications HAL
 
