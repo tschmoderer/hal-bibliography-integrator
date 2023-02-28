@@ -76,7 +76,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 
 ## Liste des types de publications HAL
 
-Le tableau suivant donne les keywords a utiliser dans la variable *publiList* pour obtenir. La dernière colonne indique si le type est pris en charge: 
+Le tableau suivant donne les keywords a utiliser dans la variable *publiList* pour obtenir la liste complète des publis de ce type. La dernière colonne indique si le type est pris en charge par le module javascript: 
 
 | Keyword     | Description | Pris en charge |
 | :---------: | ----------- | :------------: |
