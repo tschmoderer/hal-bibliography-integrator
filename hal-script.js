@@ -18,14 +18,23 @@ const hal_helpers = {
         "icon": "fa-microphone",
         "title_en": "Communications",
     },
+
+    "LECTURE": {
+        "icon": "fa-book-open",
+        "title_en": "Lectures",
+    },
+
+    "SOFTWARE": {
+        "icon": "fa-microchip",
+        "title_en": "Softwares",
+    }
 };
 
 async function callHALAPI(type) {
     try {
-        const url = "https://api.archives-ouvertes.fr/search/?q=authIdHal_s:" + idhal + "&wt=json"
+        const url      = "https://api.archives-ouvertes.fr/search/?q=authIdHal_s:" + idhal + "&wt=json"
         const response = await fetch(url + "&fl=title_s,halId_s,citationRef_s,defenseDateY_i,journalTitle_s,authFullName_s ,fileMain_s, thumbId_i&fq=docType_s:" + type);
-        const data = await response.json();
-        //const publications = data.response.docs;
+        const data     = await response.json();
         return data.response.docs;
     } catch (error) {
         console.error(error);
