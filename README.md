@@ -3,12 +3,10 @@
 
 Ce dépôt contient une page web minimale qui permet d'intégrer facilement une bibliographie HAL dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présentent avec style imitant celui du CV HAL.
 
-- [Sommaire](#liste-publications-hal)
-  * [Aperçu du résultat](#resultat)
-  * [Tutoriel](#tutoriel)
-  * [Liste des types de publications HAL](#liste-des-types-de-publications-hal)
-  * [Ajouter le support de nouveaux types](#ajouter-le-support-de-nouveaux-types)
-  * [Limitations](#limitations)
+- [Liste publications HAL](#liste-publications-hal)
+  - [Aperçu du résultat](#aperçu-du-résultat)
+  - [Tutoriel](#tutoriel)
+  - [Limitations](#limitations)
 
 ## Aperçu du résultat<a name="resultat"></a>
 
@@ -72,60 +70,60 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 
    ```html
     <script type="text/javascript" src="hal-script.js"></script>
-    ```
+   ```
 
 ## Liste des types de publications HAL
 
 Le tableau suivant donne les keywords a utiliser dans la variable *publiList* pour obtenir la liste complète des publis de ce type. La dernière colonne indique si le type est pris en charge par le module javascript: 
 
-| Keyword     | Description | Pris en charge |
-| :---------: | ----------- | :------------: |
-| ART         | Article de journal | :heavy_check_mark: |
-| COMM        | Communication dans un congrès | :heavy_check_mark: |
-| COUV        | ? | :x: |
-| THESE       | Thèse | :heavy_check_mark: |
-| OUV         | ? | :x: |
-| UNDEFINED   | Preprint, document de travail | :heavy_check_mark: |
-| REPORT      | ? | :x: |
-| OTHER       | ? | :x: |
-| MEM         | ? | :x: |
-| IMG         | Image | :x: |
-| POSTER      | ? | :x: |
-| ISSUE       | ? | :x: |
-| PROCEEDINGS | ? | :x: |
-| HDR         | Habilitation à diriger des recherche | :x: |
-| NOTICE      | ? | :x: |
-| PATENT      | Brevet | :x: |
-| BLOG        | ? | :x: |
-| REPORT_LABO | ? | :x: |
-| VIDEO       | Vidéo | :x: |
-| REPORT_MAST | ? | :x: |
-| LECTURE     | ? | :x: |
-| REPORT_LPRO | ? | :x: |
-| REPORT_LICE | ? | :x: |
-| TRAD        | ? | :x: |
-| SOFTWARE    | Logiciel | :x: |
-| CREPORT     | ? | :x: |
-| PRESCONF    | ? | :x: |
-| REPORT_DOCT | ? | :x: |
-| REPORT_ETAB | ? | :x: |
-| MAP | ? | :x: |
-| SON | ? | :x: |
-| REPORT_FORM | ? | :x: |
-| REPORT_GMAST | ? | :x: |
-| OTHERREPORT | ? | :x: |
-| NOTE | ? | :x: |
-| SYNTHESE | ? | :x: |
-| REPORT_FPROJ | ? | :x: |
-| REPORT_GLICE | ? | :x: |
-| REPACT | ? | :x: |
-| MEMLIC | ? | :x: |
-| REPORT_RFOINT | ? | :x: |
-| REPORT_COOR | ? | :x: |
-| ETABTHESE | ? | :x: |
-| REPORT_RETABINT | ? | :x: |
-| MANUAL | ? | :x: |
-| DOUV | ? | :x: |
+| Keyword     | Description | Pris en charge | Icon |
+| :---------: | ----------- | :------------: | :------------: |
+| ART         | Article de journal | :heavy_check_mark: | <img src="img/icons/newspaper-solid.svg" alt="fa-newspaper" width="20"/> |
+| COMM        | Communication dans un congrès | :heavy_check_mark: | <img src="img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/>￼￼ |
+| COUV        | ? | :x: |  |
+| THESE       | Thèse | :heavy_check_mark: | <img src="img/icons/graduation-cap-solid.svg" alt="fa-graduation-cap" width="20"/> |
+| OUV         | ? | :x: |  |
+| UNDEFINED   | Preprint, document de travail | :heavy_check_mark: | <img src="img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/>￼ |
+| REPORT      | ? | :x: |  |
+| OTHER       | ? | :x: |  |
+| MEM         | ? | :x: |  |
+| IMG         | Image | :x: |  |
+| POSTER      | ? | :x: |  |
+| ISSUE       | ? | :x: |  |
+| PROCEEDINGS | ? | :x: |  |
+| HDR         | Habilitation à diriger des recherche | :x: |  |
+| NOTICE      | ? | :x: |  |
+| PATENT      | Brevet | :x: |  |
+| BLOG        | ? | :x: |  |
+| REPORT_LABO | ? | :x: |  |
+| VIDEO       | Vidéo | :x: |  |
+| REPORT_MAST | ? | :x: |  |
+| LECTURE     | Cours | :heavy_check_mark: | <img src="img/icons/book-open-solid.svg" alt="fa-book-open" width="20"/> |
+| REPORT_LPRO | ? | :x: |  |
+| REPORT_LICE | ? | :x: |  |
+| TRAD        | ? | :x: |  |
+| SOFTWARE    | Logiciel | :heavy_check_mark: | <img src="img/icons/microchip-solid.svg" alt="fa-microchip" width="20"/>￼ |
+| CREPORT     | ? | :x: |  |
+| PRESCONF    | ? | :x: |  |
+| REPORT_DOCT | ? | :x: |  |
+| REPORT_ETAB | ? | :x: |  |
+| MAP | ? | :x: |  |
+| SON | ? | :x: |  |
+| REPORT_FORM | ? | :x: |  |
+| REPORT_GMAST | ? | :x: |  |
+| OTHERREPORT | ? | :x: |  |
+| NOTE | ? | :x: |  |
+| SYNTHESE | ? | :x: |  |
+| REPORT_FPROJ | ? | :x: |  |
+| REPORT_GLICE | ? | :x: |  |
+| REPACT | ? | :x: |  |
+| MEMLIC | ? | :x: |  |
+| REPORT_RFOINT | ? | :x: |  |
+| REPORT_COOR | ? | :x: |  |
+| ETABTHESE | ? | :x: |  |
+| REPORT_RETABINT | ? | :x: |  |
+| MANUAL | ? | :x: |  |
+| DOUV | ? | :x: |  |
 
 ## Ajouter le support de nouveaux types
 
