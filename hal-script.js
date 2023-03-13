@@ -75,7 +75,9 @@ function genListPubli(type) {
         // Complete list 
         var tab = document.getElementById("hal-" + type + "-table");
         for (const p of data) {
-            console.log(p);
+            if ((typeof halDebug !== "undefined") && (halDebug)) {
+                console.log(p);
+            }
             var str = ""
             str = str + "<tr>";
             if (p.thumbId_i) {
@@ -128,13 +130,16 @@ function genListPubli(type) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log(idhal);
-    console.log(publiList);
-
+    if ((typeof halDebug !== "undefined") && (halDebug)) {
+        console.log(idhal);
+        console.log(publiList);
+    }
     const hal_div = document.getElementById("publi-hal-all");
 
     if (hal_div.length === 0) {
-        console.log("No Hal on this page");
+        if ((typeof halDebug !== "undefined") && (halDebug)) {
+            console.log("No Hal on this page");
+        }
         return 0;
     }
 
