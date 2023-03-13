@@ -4,11 +4,12 @@ a {
 }
 
 #publi-hal-all {
-    background-color: white;
+    background-color: transparent;
     width: 100%;
     margin: auto;
     margin-top: 5%;
     margin-bottom: 5%;
+    color: inherit;
 }
 
 /* END GENERAL */
@@ -92,6 +93,7 @@ a {
 .hal-btn,
 .hal-btn:hover {
     border: 1px solid transparent;
+    background-color: transparent;
     display: inline-block;
     line-height: 1.5;
     padding: .375rem .75rem;
@@ -100,7 +102,6 @@ a {
     vertical-align: middle;
     text-align: left;
     width: 100%;
-    background-color: #f6f6f6;
     border-radius: 0;
     color: #337ab7;
     font-size: 1.15rem;
@@ -165,11 +166,12 @@ a {
 }
 
 .hal-table-white tbody tr:focus,
-tbody tr:hover,
+.hal-table-white tbody tr:hover,
 .hal-table-white tr:focus,
 .hal-table-white tr:hover {
-    background-color: #eef2f6;
-    box-shadow: 0 3px 6px #00000029;
+    /*background-color: #eef2f6;
+    box-shadow: 0 3px 6px #00000029;*/
+    box-shadow: 5px 5px 5px;
 }
 
 .hal-table-white .d-sm-table-cell {
@@ -193,7 +195,8 @@ tbody tr:hover,
 }
 
 .hal-results-table td a {
-    color: #494e52;
+    /*color: #494e52;*/
+    color: inherit;
     height: 100%;
     width: 100%;
 }
@@ -216,7 +219,8 @@ tbody tr:hover,
 
 .hal-results-table .citation-results,
 .hal-results-table .citation-results a {
-    color: #826b6b;
+    /*color: #826b6b;*/
+    color: inherit;
     font-size: .85rem;
 }
 
@@ -233,6 +237,8 @@ tbody tr:hover,
 .hal-media img {
     background: #fff;
     border: 1px solid #e8e8e8;
+    max-width: none;
+    max-height: none;
     height: 100%;
     width: 100%;
 }

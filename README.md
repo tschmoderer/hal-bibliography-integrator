@@ -52,7 +52,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
    ```
 
-4. A la fin du \<head> de votre page HTML, ajoutez le code suivant en configurant l'idHal cible et la liste des types de publications souhaitées (voir plus bas pour les types pris en charge)
+4. A la fin du \<head> de votre page HTML, ajoutez le code suivant en configurant l'idHal cible et la liste des types de publications souhaitées (voir plus bas pour les types pris en charge). La constante 'halDebug' permet d'afficher certaine information du script dans la console du navigateur. 
 
    ```html
    <script type="text/javascript">
@@ -60,6 +60,8 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
        const idhal = "custom-idhal";
        // Liste des keywords de type de publications souhaitées
        const publiList = ["THESE", "ART", "UNDEFINED", "COMM"]
+       // (Optionel: debug mode)
+        const halDebug = false;
    </script>
    ```
 
