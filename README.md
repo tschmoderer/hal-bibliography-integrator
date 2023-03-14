@@ -81,11 +81,11 @@ Le tableau suivant donne les keywords a utiliser dans la variable *publiList* po
 | Keyword     | Description | Pris en charge | Icon |
 | :---------: | ----------- | :------------: | :------------: |
 | ART         | Article de journal | :heavy_check_mark: | <img src="img/icons/newspaper-solid.svg" alt="fa-newspaper" width="20"/> |
-| COMM        | Communication dans un congrès | :heavy_check_mark: | <img src="img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/>￼￼ |
+| COMM        | Communication dans un congrès | :heavy_check_mark: | <img src="img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/> |
 | COUV        | ? | :x: |  |
 | THESE       | Thèse | :heavy_check_mark: | <img src="img/icons/graduation-cap-solid.svg" alt="fa-graduation-cap" width="20"/> |
 | OUV         | ? | :x: |  |
-| UNDEFINED   | Preprint, document de travail | :heavy_check_mark: | <img src="img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/>￼ |
+| UNDEFINED   | Preprint, document de travail | :heavy_check_mark: | <img src="img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/> |
 | REPORT      | ? | :x: |  |
 | OTHER       | ? | :x: |  |
 | MEM         | ? | :x: |  |
@@ -104,7 +104,7 @@ Le tableau suivant donne les keywords a utiliser dans la variable *publiList* po
 | REPORT_LPRO | ? | :x: |  |
 | REPORT_LICE | ? | :x: |  |
 | TRAD        | ? | :x: |  |
-| SOFTWARE    | Logiciel | :heavy_check_mark: | <img src="img/icons/microchip-solid.svg" alt="fa-microchip" width="20"/>￼ |
+| SOFTWARE    | Logiciel | :heavy_check_mark: | <img src="img/icons/microchip-solid.svg" alt="fa-microchip" width="20"/> |
 | CREPORT     | ? | :x: |  |
 | PRESCONF    | ? | :x: |  |
 | REPORT_DOCT | ? | :x: |  |
