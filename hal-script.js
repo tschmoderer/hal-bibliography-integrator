@@ -32,8 +32,14 @@ const hal_helpers = {
 
 async function callHALAPI(type) {
     try {
-        const url      = "https://api.archives-ouvertes.fr/search/?q=authIdHal_s:" + idhal + "&wt=json"
-        const response = await fetch(url + "&fl=title_s,halId_s,citationRef_s,defenseDateY_i,journalTitle_s,authFullName_s ,fileMain_s, thumbId_i&fq=docType_s:" + type);
+        var url = "https://api.archives-ouvertes.fr/search/?q=authIdHal_s:" + idhal + "&wt=json"
+        url    += "&fl=title_s,halId_s,citationRef_s,defenseDateY_i,journalTitle_s,authFullName_s,publicationDate_tdate,fileMain_s, thumbId_i&fq=docType_s:";
+        url    += type;
+        url    += "&sort=publicationDate_tdate desc";
+        if ((typeof halDebug !== "undefined") && (halDebug)) {
+            console.dir(url);
+        }
+        const response = await fetch(url);
         const data     = await response.json();
         return data.response.docs;
     } catch (error) {
@@ -88,6 +94,8 @@ function genListPubli(type) {
                     "</div>" +
                     "</a>" +
                     "</td>";
+            } else {
+                str += "<td class='d-sm-table-cell'></td>"
             }
             str += "<td style='width: 100%' class='hal-title'>" +
                 "<a href='https://hal.science/" + p.halId_s + "' target='_blank'>" +
