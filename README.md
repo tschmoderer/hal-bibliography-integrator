@@ -1,7 +1,7 @@
 # Liste publications HAL
 ![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue)
 
-Ce dépôt contient une page web minimale qui permet d'intégrer facilement une bibliographie HAL dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présentent avec style imitant celui du CV HAL.
+Ce dépôt contient un module javascript pour intégrer facilement une **bibliographie** HAL ainsi que le nuage de mots liés à un auteur dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présentent avec style imitant celui du CV HAL. Le style s'adapte à un mode nuit. 
 
 - [Liste publications HAL](#liste-publications-hal)
   - [Aperçu du résultat](#aperçu-du-résultat)
@@ -11,6 +11,8 @@ Ce dépôt contient une page web minimale qui permet d'intégrer facilement une 
 ## Aperçu du résultat<a name="resultat"></a>
 
 ![Résultat](./img/result.png)
+![Wordcloud](./img/result-wordcloud.png)
+![Wordcloud](./img/result-darkmode.png)
 
 ## Tutoriel
 
@@ -19,9 +21,14 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 1. A l'endroit où vous souhaitez intégrer la bibliographie insérez le nœud HTML suivant 
 
    ```html
+   <div id="wordcloud-hal"></div>
+   ```
+A l'endroit où vous souhaitez intégrer le nuage de mot de l'auteur insérez le noeud HTML suivant 
+  
+  ```html
    <div id="publi-hal-all"></div>
    ```
-
+   
 2. Dans le \<head> de votre page, insérez le code suivant 
 
    ```html
