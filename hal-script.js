@@ -122,7 +122,7 @@ function initialHTML(type) {
     container.appendChild(button);
 
     var spinner = document.createElement("div");
-    spinner.classList = "hal-spinne";
+    spinner.classList = "hal-spinner";
     spinner.id = "hal-" + type + "-spinner";
 
     var ellipsis = document.createElement("div");
@@ -164,7 +164,8 @@ function genListPubli(type) {
             "authFullName_s",
             "publicationDate_tdate",
             "fileMain_s", 
-            "thumbId_i"
+            "thumbId_i",
+            "label_bibtex",
         ],
         fq: "docType_s:" + type,
         sort: "publicationDate_tdate desc", 
@@ -222,7 +223,8 @@ function genListPubli(type) {
             if (p.thumbId_i) {
                 str = str + "<a href='" + p.fileMain_s  + "' target='_blank' class='hal-export-pdf'><i class='fa-regular fa-file-pdf'></i></a>";
             }   
-            str = str + "<a href='https://hal.science/" + p.halId_s  + "/bibtex' title='bibtex' target='_blank' class='hal-export-cite'><i class='fa-solid fa-quote-right'></i></a>" + 
+            str = str + "<a class='hal-export-cite' onclick='copyCitation(\"" + p.halId_s + "\")' title='Copy BibLatex Citation'><i class='fa-solid fa-quote-right'></i><a id='hal-copy-success' class='hal-citation-copy-success hidden'>BibLatex citation copied</a>" +
+            "<p class='hal-biblatex-citation' id='hal-citation-biblatex-"+ p.halId_s +"'>"+ p.label_bibtex+ "</p></a>" + 
                 "</div>";
             str = str + "</td>" +
                 " </tr>";
@@ -304,4 +306,28 @@ function collapse(elem) {
         elem2.style.display = "none";
         elem.querySelector(".icon-drop_down").classList.add("fa-rotate-by");
     }
+}
+
+// Fonction pour gérer les popups de citations
+function copyCitation(idDoc) {
+    const id = "hal-citation-biblatex-" + idDoc;
+    const elem = document.getElementById(id); 
+
+    // Copy the text inside the text field
+    navigator.clipboard.writeText(elem.innerText);
+
+    if ((typeof halDebug !== "undefined") && (halDebug)) {
+        console.log("Copy text to clipboard")
+        console.log(elem.innerText);
+    }
+
+    // Display green message for 3 second
+    const success = elem.parentElement.querySelector("[id='hal-copy-success']");
+    success.classList.remove('hidden')
+    success.classList.add('visible');
+  
+    setTimeout(function() {
+        success.classList.add('hidden')
+        success.classList.remove('visible');    
+    }, 3000); 
 }
