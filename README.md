@@ -1,7 +1,7 @@
 # Liste publications HAL
 ![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue)
 
-Ce dépôt contient un module javascript pour intégrer facilement une **bibliographie** HAL ainsi que le nuage de mots liés à un auteur dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présentent avec style imitant celui du CV HAL. Le style s'adapte à un mode nuit. 
+Ce dépôt contient un module javascript pour intégrer facilement une **bibliographie** HAL ainsi que le **nuage de mots** liés à un auteur dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présente avec un style imitant celui du CV HAL. Le style s'adapte à un mode nuit. 
 
 - [Liste publications HAL](#liste-publications-hal)
   - [Aperçu du résultat](#aperçu-du-résultat)
