@@ -1,0 +1,30 @@
+{
+  "name": "hal-publication-list",
+  "version": "0.0.0",
+  "description": "Package to get a researcher publication list from the HAL archive.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tschmoderer/hal-publication-list.git"
+  },
+  "author": "Timothée Schmoderer",
+  "license": "GPL3.0",
+  "bugs": {
+    "url": "https://github.com/tschmoderer/hal-publication-list/issues"
+  },
+  "homepage": "https://github.com/tschmoderer/hal-publication-list#readme",
+  "scripts": {
+    "buildJs": "rollup --bundleConfigAsCjs -c config/rollup.config.js",
+    "buildCss": "scss-bundle -c config/scss.config.json",
+    "watchJs": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w",
+    "watchCss": "scss-bundle -c config/scss.config.json -w",
+    "build": "concurrently --kill-others \"npm run buildJs\" \"npm run buildCss\"",
+    "watch": "concurrently --kill-others \"npm run watchJs\" \"npm run watchCss\""
+  },
+  "dependencies": {
+    "rollup": "^3.25.1",
+    "scss-bundle": "^3.1.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
