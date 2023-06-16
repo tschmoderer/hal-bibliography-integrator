@@ -1,24 +1,21 @@
-# Liste publications HAL
+# Liste des publications HAL
 ![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue)
 
-Ce dépôt contient un module javascript pour intégrer facilement une **bibliographie** HAL ainsi que le **nuage de mots** liés à un auteur dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présente avec un style imitant celui du CV HAL. Le style s'adapte à un mode nuit. 
+Ce dépôt contient un module javascript pour intégrer facilement la **bibliographie** HAL d'un auteur ou d'une auteure dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présente avec un style imitant celui du CV HAL. Le package propose également plusieurs plugins. 
 
 - [Liste publications HAL](#liste-publications-hal)
-  - [Aperçu du résultat](#aperçu-du-résultat)
   - [Tutoriel](#tutoriel)
+  - [Plugins](#plugins)
   - [Limitations](#limitations)
 
-## Aperçu du résultat<a name="resultat"></a>
 
-| ![Résultat](./img/result.png)           | ![Wordcloud](./img/result-wordcloud.png) |
-| --------------------------------------- | ---------------------------------------- |
-| ![Wordcloud](./img/result-darkmode.png) |                                          |
-
-
+![Résultat](./img/result.png)
 
 ## Tutoriel
 
-Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/) du chercheur(se) en question et téléchargez les fichiers de ce dépôt git. 
+Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/) du chercheur(se) en question.
+
+0. Téléchargez les fichiers *hal.js* et *hal.css* du dossier dist de dépôt git.
 
 1. A l'endroit où vous souhaitez intégrer la bibliographie insérez le nœud HTML suivant 
 
@@ -35,7 +32,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 
    ```html
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-   <link rel="stylesheet" href="hal-style.css">
+   <link rel="stylesheet" href="hal.css">
    ```
 
    qui charge les ressources CSS;
@@ -80,7 +77,7 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 
 
    ```html
-    <script type="text/javascript" src="hal-script.js"></script>
+    <script type="text/javascript" src="hal.js"></script>
    ```
 
 ## Liste des types de publications HAL
@@ -153,4 +150,4 @@ Les icônes doivent être dans la liste des icônes gratuites de [fontawesome](h
 
 ## Limitations
 
-- Une seule section de publication par page est permise. 
+- Une seule section de publications, par page où le script *hal.js* est chargé, est permise. 
