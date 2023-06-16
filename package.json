@@ -13,18 +13,12 @@
   },
   "homepage": "https://github.com/tschmoderer/hal-publication-list#readme",
   "scripts": {
-    "buildJs": "rollup --bundleConfigAsCjs -c config/rollup.config.js",
-    "buildCss": "scss-bundle -c config/scss.config.json",
-    "watchJs": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w",
-    "watchCss": "scss-bundle -c config/scss.config.json -w",
-    "build": "concurrently --kill-others \"npm run buildJs\" \"npm run buildCss\"",
-    "watch": "concurrently --kill-others \"npm run watchJs\" \"npm run watchCss\""
+    "build": "rollup --bundleConfigAsCjs -c config/rollup.config.js",
+    "watch": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w"
   },
   "dependencies": {
     "rollup": "^3.25.1",
-    "scss-bundle": "^3.1.2"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
+    "rollup-plugin-scss": "^4.0.0",
+    "sass": "^1.63.4"
   }
 }

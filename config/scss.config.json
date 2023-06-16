@@ -1,7 +1,0 @@
-{
-    "bundlerOptions": {
-        "entryFile": "./src/scss/main.scss",
-        "outFile": "./dist/hal.css",
-        "rootDir": "./src/scss/"
-    }
-}

@@ -1,3 +1,5 @@
+import scss from 'rollup-plugin-scss'
+
 const path = require('path');
 
 export default [
@@ -13,10 +15,20 @@ export default [
         ],
 
         watch: {
-            include: path.resolve(__dirname, "../src/js/*")
+            include: [
+                path.resolve(__dirname, "../src/js/*"),
+                path.resolve(__dirname, "../src/scss/*")
+            ]
         },
 
         treeshake: false,
+
+        plugins: [
+            scss({
+                fileName: 'hal.css', 
+                include: ["./**/*.css", "./**/*.scss", "./**/*.sass"],
+            })
+        ]
     }, 
     
     // WORDCLOUD
@@ -31,9 +43,19 @@ export default [
         ],
 
         watch: {
-            include: path.resolve(__dirname, "../plugins/wordcloud/js/*")
+            include: [
+                path.resolve(__dirname, "../plugins/wordcloud/js/*"),
+                path.resolve(__dirname, "../plugins/wordcloud/scss/*")
+            ]
         },
 
         treeshake: false,
+
+        plugins: [
+            scss({
+                fileName: 'hal-wordcloud.css', 
+                include: ["./**/*.css", "./**/*.scss", "./**/*.sass"],
+            })
+        ]
     }
 ];

@@ -1,3 +1,5 @@
+import '../scss/main.scss'
+
 import create_hal_publication_list from "./hal_publications";
 //import create_hal_wordcloud from "./hal_wordcloud"; 
 import { globalHalData } from "./hal_utils";
