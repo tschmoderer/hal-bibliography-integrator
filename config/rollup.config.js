@@ -18,11 +18,11 @@ export default [
             include: [
                 path.resolve(__dirname, "../src/js/*"),
                 path.resolve(__dirname, "../src/scss/*")
-            ]
+            ],
+            buildDelay: 1000,
         },
 
         treeshake: false,
-        buildDelay: 1000,
 
         plugins: [
             scss({
@@ -47,11 +47,11 @@ export default [
             include: [
                 path.resolve(__dirname, "../plugins/wordcloud/js/*"),
                 path.resolve(__dirname, "../plugins/wordcloud/scss/*")
-            ]
+            ], 
+            buildDelay: 1000,
         },
 
         treeshake: false,
-        buildDelay: 1000,
 
         plugins: [
             scss({
