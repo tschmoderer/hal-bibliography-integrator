@@ -1,0 +1,67 @@
+/** HAL WORDCLOUD **/
+#wordcloud-hal {
+    margin: auto;
+    margin-top: 3%;
+    text-align: center;
+    box-shadow: 5px 5px 5px;
+    border: 1px solid;
+    width: 80%;
+}
+
+@media (max-width: 500px) {
+    #wordcloud-hal {
+        width: 95%;
+    }
+}
+
+
+#wordcloud-hal h2 {
+    margin: 0;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    border-bottom: 1px solid;
+}
+
+#wordcloud-hal .hal-cloud-word {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+#wordcloud-hal .keyword {
+    color: inherit;
+    padding-left: 1%;
+    padding-right: 1%;
+    text-align: justify;
+}
+
+#wordcloud-hal .keyword-1 {
+   font-size: 8px;
+}
+#wordcloud-hal .keyword-2 {
+    font-size: 9px;
+}
+#wordcloud-hal .keyword-3 {
+    font-size: 10px;
+}
+#wordcloud-hal .keyword-4 {
+    font-size: 12px;
+}
+#wordcloud-hal .keyword-5 {
+    font-size: 14px;
+}
+#wordcloud-hal .keyword-6 {
+    font-size: 16px;
+}
+#wordcloud-hal .keyword-7 {
+    font-size: 18px;
+}
+#wordcloud-hal .keyword-8 {
+    font-size: 20px;
+}
+#wordcloud-hal .keyword-9 {
+    font-size: 22px;
+}
+#wordcloud-hal .keyword-10 {
+    font-size: 24px;
+}
+/** END HAL WORDCLOUD **/
