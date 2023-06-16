@@ -13,5 +13,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: npm run buildJs
-      - run: npm run buildCss
+      - name: Dependencies
+        run: npm install rollup scss-bundle
+      
+      - name: Build JS
+        run: npm run buildJs
+      
+      - name: Build Css
+        run: npm run buildCss
