@@ -22,11 +22,6 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
    ```html
    <div id="publi-hal-all"></div>
    ```
-   A l'endroit où vous souhaitez intégrer le nuage de mot de l'auteur insérez le noeud HTML suivant 
-
-   ```html
-    <div id="wordcloud-hal"></div>
-   ```
 
 2. Dans le \<head> de votre page, insérez le code suivant 
 
@@ -147,6 +142,29 @@ Dans le fichier *hal-script.js* complétez la variable *hal_helpers* avec un nou
 ```
 
 Les icônes doivent être dans la liste des icônes gratuites de [fontawesome](https://fontawesome.com/icons). Merci de partager votre contribution soit en créant un pull-request sur ce dépôt, soit en envoyant votre nouvelle version par mail à [T. Schmoderer](mailto:timothee.schmoderer@insa-rouen.fr).
+
+## Plugins
+
+### Wordcloud
+
+![wordcloud-ligh](./.github/img/plugins/wordcloud/wordcloud-ligh.png)
+
+A l'endroit où vous souhaitez intégrer le nuage de mot de l'auteur insérez le noeud HTML suivant 
+
+```html
+<div id="wordcloud-hal"></div>
+```
+
+Ajouter dans le *head* après les styles généraux. 
+
+```html
+  <link rel="stylesheet" href="hal-wordcloud.css">
+```
+
+Ajouter à la fin du body 
+```html
+  <script type="text/javascript" src="hal-wordcloud.js"></script>
+```
 
 ## Limitations
 
