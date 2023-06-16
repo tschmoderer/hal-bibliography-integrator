@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Dependencies
-        run: npm install rollup rollup-plugin-scss sass
+        run: npm install
       
       - name: Build JS
         run: npm run build
