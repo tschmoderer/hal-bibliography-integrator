@@ -1,0 +1,21 @@
+
+.scimago-button {
+    padding: 0 !important;
+    border-left: 1px solid #bdc1c4; 
+    border-top: 1px solid #bdc1c4;;
+    border-right: 1px solid #bdc1c4 !important; 
+    //background-color: green !important;
+}
+
+.scimago-icon {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.scimago-button-hover:hover .scimago-icon {
+    transform: translateX(-10px);
+}
+
+.scimago-button:hover {
+    cursor: pointer;
+}

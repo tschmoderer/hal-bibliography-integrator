@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>HAL Publication List - Minimal Example</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+        integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../../hal.css">
+    <link rel="stylesheet" href="hal-scimago.css">
+
+
+    <script type="text/javascript">
+        // idHal personalisé
+        const idhal = "timothee-schmoderer";
+        // Liste des keywords de type de publications souhaitées
+        const publiList = ["ART"]
+        // (Optionel: debug mode)
+        const halDebug = false;
+    </script>
+
+    <script type="text/javascript">
+        const hal_plugins = {
+            "scimago": {
+                "Systems & Control Letters": "Systems and Control Letters",
+            }
+        }
+    </script>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                tags: "all"
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            loader: {
+                load: ['[tex]/html']
+            }
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
+        integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body style="background-color:#e5e5e5; width: 80%; margin: auto;">
+    <h1 style="text-align: center;">Minimal Example - Plugin Scimago - Standalone</h1>
+    <div id="publi-hal-all">
+        <div id="publi-hal-all">
+            <div class="hal-list" id="hal-ART" style="display: block;"><button class="hal-btn" data-target="#ART"
+                    onclick="collapse(this)"><i class="hal-icon fa-solid fa-newspaper"></i><a
+                        id="hal-ART-card-title">Journal articles (2)</a><i
+                        class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
+                <div class="hal-spinner" id="hal-ART-spinner" style="display: none;">
+                    <div class="lds-ellipsis">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                <div class="hal-content" id="ART">
+                    <table class="hal-results-table hal-table-white">
+                        <tbody id="hal-ART-table">
+                            <tr id="row-hal-03677902">
+                                <td class="d-sm-table-cell"><a href="https://hal.science/hal-03677902/document">
+                                        <div class="hal-media d-sm-block"><img
+                                                src="https://thumb.ccsd.cnrs.fr/9051088/thumb" alt="Image document">
+                                        </div>
+                                    </a></td>
+                                <td class="hal-title"><a href="https://hal.science/hal-03677902" target="_blank">
+                                        <h3 class="title-results">Null-forms of conic systems in <mjx-container
+                                                class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
+                                                ctxtmenu_counter="0" style="position: relative;"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
+                                                    role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                    style="vertical-align: 0px;">
+                                                    <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                        transform="scale(1,-1)">
+                                                        <g data-mml-node="math">
+                                                            <g data-mml-node="msup">
+                                                                <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                    <g data-mml-node="mi">
+                                                                        <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                        </use>
+                                                                    </g>
+                                                                </g>
+                                                                <g data-mml-node="mn"
+                                                                    transform="translate(755,363) scale(0.707)">
+                                                                    <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                        xmlns="http://www.w3.org/1998/Math/MathML">
+                                                        <msup>
+                                                            <mrow data-mjx-texclass="ORD">
+                                                                <mi mathvariant="double-struck">R</mi>
+                                                            </mrow>
+                                                            <mn>3</mn>
+                                                        </msup>
+                                                    </math></mjx-assistive-mml></mjx-container> are determined by their
+                                            symmetries</h3><span class="authors-results"></span>
+                                    </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                        alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                        alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                    <div class="citation-results"><i>Systems &amp; Control Letters</i>, 2022, 170, <a
+                                            target="_blank"
+                                            href="https://dx.doi.org/10.1016/j.sysconle.2022.105397">⟨10.1016/j.sysconle.2022.105397⟩</a>
+                                    </div>
+                                    <div class="export-result"><a href="https://hal.science/hal-03677902/document"
+                                            target="_blank" class="hal-export-pdf"><i
+                                                class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                            onclick="copyCitation('hal-03677902')"
+                                            title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                            id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex
+                                            citation copied</a>
+                                        <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03677902">
+                                            @article{schmoderer:hal-03677902,
+                                            TITLE = {{Null-forms of conic systems in <mjx-container
+                                                class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
+                                                ctxtmenu_counter="1" style="position: relative;"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
+                                                    role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                    style="vertical-align: 0px;">
+                                                    <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                        transform="scale(1,-1)">
+                                                        <g data-mml-node="math">
+                                                            <g data-mml-node="msup">
+                                                                <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                    <g data-mml-node="mi">
+                                                                        <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                        </use>
+                                                                    </g>
+                                                                </g>
+                                                                <g data-mml-node="mn"
+                                                                    transform="translate(755,363) scale(0.707)">
+                                                                    <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                        xmlns="http://www.w3.org/1998/Math/MathML">
+                                                        <msup>
+                                                            <mrow data-mjx-texclass="ORD">
+                                                                <mi mathvariant="double-struck">R</mi>
+                                                            </mrow>
+                                                            <mn>3</mn>
+                                                        </msup>
+                                                    </math></mjx-assistive-mml></mjx-container> are determined by their
+                                            symmetries}},
+                                            AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                            URL = {https://hal.science/hal-03677902},
+                                            JOURNAL = {{Systems \&amp; Control Letters}},
+                                            VOLUME = {170},
+                                            YEAR = {2022},
+                                            MONTH = Nov,
+                                            DOI = {10.1016/j.sysconle.2022.105397},
+                                            KEYWORDS = {Control-affine system ; Conic systems ; Feedback equivalence ;
+                                            Infinitesimal symmetries ; Normal forms},
+                                            PDF =
+                                            {https://hal.science/hal-03677902/file/article_scl_tschmoderer_wrespondek.pdf},
+                                            HAL_ID = {hal-03677902},
+                                            HAL_VERSION = {v1},
+                                            }
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="row-hal-03329929">
+                                <td class="d-sm-table-cell"><a href="https://uca.hal.science/hal-03329929/document">
+                                        <div class="hal-media d-sm-block"><img
+                                                src="https://thumb.ccsd.cnrs.fr/8867070/thumb" alt="Image document">
+                                        </div>
+                                    </a></td>
+                                <td class="hal-title"><a href="https://hal.science/hal-03329929" target="_blank">
+                                        <h3 class="title-results">Learning optical flow for fast MRI reconstruction</h3>
+                                        <span class="authors-results"></span>
+                                    </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                        alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Angelica I Aviles-Rivero"
+                                        alt="Documents de l auteur" target="_blank">Angelica I Aviles-Rivero</a> ; <a
+                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Veronica Corona"
+                                        alt="Documents de l auteur" target="_blank">Veronica Corona</a> ; <a
+                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Noémie Debroux"
+                                        alt="Documents de l auteur" target="_blank">Noémie Debroux</a> ; <a
+                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Carola-Bibiane Schönlieb"
+                                        alt="Documents de l auteur" target="_blank">Carola-Bibiane Schönlieb</a><br>
+                                    <div class="citation-results"><i>Inverse Problems</i>, 2021, 37 (9), pp.095007. <a
+                                            target="_blank"
+                                            href="https://dx.doi.org/10.1088/1361-6420/ac164a">⟨10.1088/1361-6420/ac164a⟩</a>
+                                    </div>
+                                    <div class="export-result"><a href="https://uca.hal.science/hal-03329929/document"
+                                            target="_blank" class="hal-export-pdf"><i
+                                                class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                            onclick="copyCitation('hal-03329929')"
+                                            title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                            id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex
+                                            citation copied</a>
+                                        <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03329929">
+                                            @article{schmoderer:hal-03329929,
+                                            TITLE = {{Learning optical flow for fast MRI reconstruction}},
+                                            AUTHOR = {Schmoderer, Timoth{\'e}e and Aviles-Rivero, Angelica I and Corona,
+                                            Veronica and Debroux, No{\'e}mie and Sch{\"o}nlieb, Carola-Bibiane},
+                                            URL = {https://uca.hal.science/hal-03329929},
+                                            JOURNAL = {{Inverse Problems}},
+                                            PUBLISHER = {{IOP Publishing}},
+                                            VOLUME = {37},
+                                            NUMBER = {9},
+                                            PAGES = {095007},
+                                            YEAR = {2021},
+                                            MONTH = Aug,
+                                            DOI = {10.1088/1361-6420/ac164a},
+                                            KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ;
+                                            Multi-Task Model},
+                                            PDF =
+                                            {https://uca.hal.science/hal-03329929/file/MRI_reconstruction%288%29.pdf},
+                                            HAL_ID = {hal-03329929},
+                                            HAL_VERSION = {v1},
+                                            }
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const globalHalData = {
+    "ART": [
+        {
+            "citationRef_s": "<i>Systems & Control Letters</i>, 2022, 170, <a target=\"_blank\" href=\"https://dx.doi.org/10.1016/j.sysconle.2022.105397\">&#x27E8;10.1016/j.sysconle.2022.105397&#x27E9;</a>",
+            "label_bibtex": "@article{schmoderer:hal-03677902,\n  TITLE = {{Null-forms of conic systems in $\\mathbb{R}^3$ are determined by their symmetries}},\n  AUTHOR = {Schmoderer, Timoth{\\'e}e and Respondek, Witold},\n  URL = {https://hal.science/hal-03677902},\n  JOURNAL = {{Systems \\& Control Letters}},\n  VOLUME = {170},\n  YEAR = {2022},\n  MONTH = Nov,\n  DOI = {10.1016/j.sysconle.2022.105397},\n  KEYWORDS = {Control-affine system ; Conic systems ; Feedback equivalence ; Infinitesimal symmetries ; Normal forms},\n  PDF = {https://hal.science/hal-03677902/file/article_scl_tschmoderer_wrespondek.pdf},\n  HAL_ID = {hal-03677902},\n  HAL_VERSION = {v1},\n}\n",
+            "title_s": [
+                "Null-forms of conic systems in $\\mathbb{R}^3$ are determined by their symmetries"
+            ],
+            "en_keyword_s": [
+                "Control-affine system",
+                "Conic systems",
+                "Feedback equivalence",
+                "Infinitesimal symmetries",
+                "Normal forms"
+            ],
+            "journalTitle_s": "Systems & Control Letters",
+            "authFullName_s": [
+                "Timothée Schmoderer",
+                "Witold Respondek"
+            ],
+            "halId_s": "hal-03677902",
+            "thumbId_i": 9051088,
+            "publicationDate_tdate": "2022-11-02T00:00:00Z",
+            "fileMain_s": "https://hal.science/hal-03677902/document"
+        },
+        {
+            "citationRef_s": "<i>Inverse Problems</i>, 2021, 37 (9), pp.095007. <a target=\"_blank\" href=\"https://dx.doi.org/10.1088/1361-6420/ac164a\">&#x27E8;10.1088/1361-6420/ac164a&#x27E9;</a>",
+            "label_bibtex": "@article{schmoderer:hal-03329929,\n  TITLE = {{Learning optical flow for fast MRI reconstruction}},\n  AUTHOR = {Schmoderer, Timoth{\\'e}e and Aviles-Rivero, Angelica I and Corona, Veronica and Debroux, No{\\'e}mie and Sch{\\\"o}nlieb, Carola-Bibiane},\n  URL = {https://uca.hal.science/hal-03329929},\n  JOURNAL = {{Inverse Problems}},\n  PUBLISHER = {{IOP Publishing}},\n  VOLUME = {37},\n  NUMBER = {9},\n  PAGES = {095007},\n  YEAR = {2021},\n  MONTH = Aug,\n  DOI = {10.1088/1361-6420/ac164a},\n  KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ; Multi-Task Model},\n  PDF = {https://uca.hal.science/hal-03329929/file/MRI_reconstruction%288%29.pdf},\n  HAL_ID = {hal-03329929},\n  HAL_VERSION = {v1},\n}\n",
+            "title_s": [
+                "Learning optical flow for fast MRI reconstruction"
+            ],
+            "en_keyword_s": [
+                "MRI Reconstruction",
+                "Optical Flow",
+                "Dictionary Learning",
+                "Multi-Task Model"
+            ],
+            "journalTitle_s": "Inverse Problems",
+            "authFullName_s": [
+                "Timothée Schmoderer",
+                "Angelica I Aviles-Rivero",
+                "Veronica Corona",
+                "Noémie Debroux",
+                "Carola-Bibiane Schönlieb"
+            ],
+            "halId_s": "hal-03329929",
+            "thumbId_i": 8867070,
+            "publicationDate_tdate": "2021-08-10T00:00:00Z",
+            "fileMain_s": "https://uca.hal.science/hal-03329929/document"
+        }
+    ]
+}
+    </script>
+    <script type="text/javascript" src="hal-scimago.js"></script>
+    <script type="text/javascript">
+        setTimeout(document.dispatchEvent(new Event("halMainDone")), 1000);
+    </script>
+</body>
+
+</html>

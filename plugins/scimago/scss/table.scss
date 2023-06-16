@@ -1,0 +1,22 @@
+.scimago-column {
+    padding: 0 !important;
+    //background-color: red !important;
+    border-top: 1px solid #bdc1c4;
+    transition: width 2s;
+}
+
+.scimago-hide {
+    margin: 0;
+    width: 0;
+
+    div {
+        display: none;
+    }
+}
+
+.scimago-show {
+    width: 250px;
+
+    div {
+        display: grid;
+    }}

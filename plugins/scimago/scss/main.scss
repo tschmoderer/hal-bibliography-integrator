@@ -1,0 +1,28 @@
+@import "quartiles";
+@import "grid";
+@import "button";
+@import "table";
+@import "icon";
+
+.scimago {
+    background-color: red !important;
+}
+
+.scimago-category {
+    color: #464b56;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+}
+
+.scimago-legend,
+.scimago-data {
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.scimago-legend {
+    font-weight: bold;
+    font-size: small;
+}
