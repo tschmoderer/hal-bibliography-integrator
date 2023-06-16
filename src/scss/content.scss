@@ -1,0 +1,95 @@
+.hal-content {
+    margin-left: 22px;
+    margin-right: 22px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+
+.hal-table-white {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+}
+
+.hal-table-white td {
+    padding: 0.5em;
+    border-bottom: 1px solid #bdc1c4;
+}
+
+.hal-table-white tbody tr td:first-child,
+.hal-table-white tr td:first-child {
+    padding-left: 14px;
+}
+
+.hal-table-white tbody tr td,
+.hal-table-white tr td {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.hal-table-white tbody tr:focus,
+.hal-table-white tbody tr:hover,
+.hal-table-white tr:focus,
+.hal-table-white tr:hover {
+    box-shadow: 5px 5px 5px;
+}
+
+.hal-table-white .d-sm-table-cell {
+    display: table-cell !important;
+}
+
+.hal-results-table tr td:first-child {
+    width: 61px;
+}
+
+
+@media (max-width: 500px) {
+    .hal-results-table tr td:first-child {
+        display: none !important;
+    }
+}
+
+.hal-results-table tr td {
+    border-right: none;
+}
+
+.hal-results-table tr td::nth-last-child(1) {
+    border-bottom: none;
+}
+
+.hal-results-table tr td::nth-last-child(2) {
+    border-bottom: none;
+}
+
+.hal-results-table td a {
+    color: inherit;
+    height: 100%;
+    width: 100%;
+}
+
+.hal-results-table h3 {
+    font-size: 1rem;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.hal-results-table td a:hover {
+    text-decoration: none;
+}
+
+.table-white .authors-results {
+    color: #337ab7;
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.hal-results-table .citation-results,
+.hal-results-table .citation-results a {
+    color: inherit;
+    font-size: .85rem;
+}
+
+.hal-title {
+    padding-left: 15px;
+}

@@ -1,0 +1,23 @@
+/** HAL MEDIA **/
+.hal-media {
+    height: 94px;
+    width: 74px;
+}
+
+.hal-media img {
+    background: #fff !important;
+    border: 1px solid #e8e8e8;
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    width: 100%;
+}
+
+.hal-export-pdf {
+    padding-right: 10px;
+}
+
+.hal-export-cite:hover {
+    cursor: pointer;
+}
+/** END HAL MEDIA **/
