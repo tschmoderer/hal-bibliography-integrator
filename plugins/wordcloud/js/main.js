@@ -1,5 +1,10 @@
 import '../scss/main.scss'
 
+function init_wordcloud(container) {
+    var spinner = create_spinner("hal-wordcloud-spinner");
+    container.appendChild(spinner);
+}
+
 function HALwordcloud(hal_wordcloud_div) {
     console.log(globalHalData);
 
@@ -44,7 +49,8 @@ function HALwordcloud(hal_wordcloud_div) {
         wordcloud_container.appendChild(keywordElement(word, new_freq));
     };
     
-    hal_wordcloud_div.appendChild(wordcloud_container);    
+    hal_wordcloud_div.appendChild(wordcloud_container); 
+    document.getElementById("hal-wordcloud-spinner").style.display = "none";   
 }
 
 function keywordElement(keyw, freq) {
@@ -56,30 +62,25 @@ function keywordElement(keyw, freq) {
     return container;
 }
 
-function create_hal_wordcloud() {
-    // Récupède la div ou placer le nuage de mots
-    var hal_wordcloud_div = document.getElementById("wordcloud-hal");
+// Récupède la div ou placer le nuage de mots
+var hal_wordcloud_div = document.getElementById("wordcloud-hal");
 
-    // Si elle n'existe pas on ne fait rien 
-    if (hal_wordcloud_div === null) {
-        if ((typeof halDebug !== "undefined") && (halDebug)) {
-            console.log("No HAL wordcloud div on this page");
-        }
-        return 0;
-    }
-
+// Si elle n'existe pas on ne fait rien 
+if (hal_wordcloud_div === null) {
     if ((typeof halDebug !== "undefined") && (halDebug)) {
-        console.log("Create wordcloud of keywords in ");
-        console.log(hal_wordcloud_div);
+        console.log("No HAL wordcloud div on this page");
     }
+} else {
+    init_wordcloud(hal_wordcloud_div);
 
-    // Sinon on créé le nuage de mot
-    HALwordcloud(hal_wordcloud_div);
+    document.addEventListener("halMainDone", () => {
+        if ((typeof halDebug !== "undefined") && (halDebug)) {
+            console.log("Create wordcloud of keywords in ");
+            console.log(hal_wordcloud_div);
+        }
+    
+        // Sinon on créé le nuage de mot
+        HALwordcloud(hal_wordcloud_div);
+
+    });
 }
-
-// 
-
-document.addEventListener("halMainDone", () => {
-    console.log("Catch Hal finished event");
-    create_hal_wordcloud();
-});
