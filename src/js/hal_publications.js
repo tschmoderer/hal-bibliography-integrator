@@ -2,6 +2,22 @@ import callHALAPI from "./hal_api";
 import hal_helpers from "./hal_utils";
 import { globalHalData } from "./hal_utils";
 
+function create_spinner(id = null) {
+    var spinner = document.createElement("div");
+    spinner.classList = "hal-spinner";
+    spinner.id = id;
+
+    var ellipsis = document.createElement("div");
+    ellipsis.classList = "lds-ellipsis"; 
+    for (let i = 1; i <= 4; i++) {
+        ellipsis.appendChild(document.createElement("div"));
+    }
+
+    spinner.appendChild(ellipsis); 
+
+    return spinner;
+}
+
 function initialHTML(type) {
     var container = document.createElement("div");
     container.classList = 'hal-list';
@@ -18,17 +34,8 @@ function initialHTML(type) {
 
     container.appendChild(button);
 
-    var spinner = document.createElement("div");
-    spinner.classList = "hal-spinner";
-    spinner.id = "hal-" + type + "-spinner";
+    var spinner = create_spinner( "hal-" + type + "-spinner")
 
-    var ellipsis = document.createElement("div");
-    ellipsis.classList = "lds-ellipsis"; 
-    for (let i = 1; i <= 4; i++) {
-        ellipsis.appendChild(document.createElement("div"));
-    }
-
-    spinner.appendChild(ellipsis); 
     container.appendChild(spinner);
 
     var content = document.createElement("div"); 
