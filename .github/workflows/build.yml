@@ -4,7 +4,12 @@ on:
   push:
     branches: 
       - main
-  
+      
+    paths: 
+      - '**.js'
+      - '**.scss'
+      - '**.css'
+
   workflow_dispatch:
 
 jobs:
