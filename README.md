@@ -143,11 +143,15 @@ Dans le fichier *hal-script.js* complétez la variable *hal_helpers* avec un nou
 
 Les icônes doivent être dans la liste des icônes gratuites de [fontawesome](https://fontawesome.com/icons). Merci de partager votre contribution soit en créant un pull-request sur ce dépôt, soit en envoyant votre nouvelle version par mail à [T. Schmoderer](mailto:timothee.schmoderer@insa-rouen.fr).
 
+## Limitations
+
+- Une seule section de publications, par page où le script *hal.js* est chargé, est permise. 
+
 ## Plugins
 
 ### Wordcloud
 
-![wordcloud-ligh](./.github/img/plugins/wordcloud/wordcloud-ligh.png)
+![wordcloud-light](./.github/img/plugins/wordcloud/wordcloud-light.png)
 
 A l'endroit où vous souhaitez intégrer le nuage de mot de l'auteur insérez le noeud HTML suivant 
 
@@ -166,6 +170,34 @@ Ajouter à la fin du body
   <script type="text/javascript" src="hal-wordcloud.js"></script>
 ```
 
-## Limitations
+### Métriques du journal / Citations
 
-- Une seule section de publications, par page où le script *hal.js* est chargé, est permise. 
+![scimago-ligh](./.github/img/plugins/scimago/scimago-light.png)
+
+un plugin qui utilise les données de [scimago](https://www.scimagojr.com) pour donner le classement du journal ou est publié un article. 
+
+Ajouter dans le *head* après les styles généraux. 
+
+```html
+    <link rel="stylesheet" href="hal-scimago.css">
+```
+
+Ajouter à la fin du body 
+```html
+    <script type="text/javascript" src="hal-scimago.js"></script>
+```
+
+**Warnings**: 
+- Plugin encore en developpement 
+- Seulement les éléments de type "ART" (article de journaux) sont traités. 
+- Si le script ne trouve pas le nom du journal dans la base scimago. Vous pouvez essayer de trouver le nom du journal dans la ase de simago [ici](https://www.scimagojr.com/journalsearch.php), et vous pouvez le modifier mùanuellement en ajoutant le script scuivant à la fin du *head*
+```html
+    <script type="text/javascript">
+        const hal_plugins = {
+            "scimago": {
+                "name in HAL base": "name in SCIMAGO base",
+                "Systems & Control Letters": "Systems and Control Letters",
+            }
+        }
+    </script>
+```
