@@ -1,5 +1,5 @@
 # Liste des publications HAL
-![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue)
+![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue) [![Build](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml)
 
 Ce dépôt contient un module javascript pour intégrer facilement la **bibliographie** HAL d'un auteur ou d'une auteure dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présente avec un style imitant celui du CV HAL. Le package propose également plusieurs plugins. 
 
@@ -9,7 +9,7 @@ Ce dépôt contient un module javascript pour intégrer facilement la **bibliogr
   - [Limitations](#limitations)
 
 
-![Résultat](./img/result.png)
+![Résultat](./.github/img//result.png)
 
 ## Tutoriel
 
@@ -86,12 +86,12 @@ Le tableau suivant donne les keywords a utiliser dans la variable *publiList* po
 
 | Keyword     | Description | Pris en charge | Icon |
 | :---------: | ----------- | :------------: | :------------: |
-| ART         | Article de journal | :heavy_check_mark: | <img src="img/icons/newspaper-solid.svg" alt="fa-newspaper" width="20"/> |
-| COMM        | Communication dans un congrès | :heavy_check_mark: | <img src="img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/> |
+| ART         | Article de journal | :heavy_check_mark: | <img src=".github/img/icons/newspaper-solid.svg" alt="fa-newspaper" width="20"/> |
+| COMM        | Communication dans un congrès | :heavy_check_mark: | <img src=".github/img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/> |
 | COUV        | ? | :x: |  |
-| THESE       | Thèse | :heavy_check_mark: | <img src="img/icons/graduation-cap-solid.svg" alt="fa-graduation-cap" width="20"/> |
+| THESE       | Thèse | :heavy_check_mark: | <img src=".github/img/icons/graduation-cap-solid.svg" alt="fa-graduation-cap" width="20"/> |
 | OUV         | ? | :x: |  |
-| UNDEFINED   | Preprint, document de travail | :heavy_check_mark: | <img src="img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/> |
+| UNDEFINED   | Preprint, document de travail | :heavy_check_mark: | <img src=".github/img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/> |
 | REPORT      | ? | :x: |  |
 | OTHER       | ? | :x: |  |
 | MEM         | ? | :x: |  |
@@ -106,11 +106,11 @@ Le tableau suivant donne les keywords a utiliser dans la variable *publiList* po
 | REPORT_LABO | ? | :x: |  |
 | VIDEO       | Vidéo | :x: |  |
 | REPORT_MAST | ? | :x: |  |
-| LECTURE     | Cours | :heavy_check_mark: | <img src="img/icons/book-open-solid.svg" alt="fa-book-open" width="20"/> |
+| LECTURE     | Cours | :heavy_check_mark: | <img src=".github/img/icons/book-open-solid.svg" alt="fa-book-open" width="20"/> |
 | REPORT_LPRO | ? | :x: |  |
 | REPORT_LICE | ? | :x: |  |
 | TRAD        | ? | :x: |  |
-| SOFTWARE    | Logiciel | :heavy_check_mark: | <img src="img/icons/microchip-solid.svg" alt="fa-microchip" width="20"/> |
+| SOFTWARE    | Logiciel | :heavy_check_mark: | <img src=".github/img/icons/microchip-solid.svg" alt="fa-microchip" width="20"/> |
 | CREPORT     | ? | :x: |  |
 | PRESCONF    | ? | :x: |  |
 | REPORT_DOCT | ? | :x: |  |
