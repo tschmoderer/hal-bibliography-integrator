@@ -31,6 +31,6 @@ const hal_helpers = {
 };
 
 export var globalHalData = {};
-
+export const totalNbAPIcall = publiList.length;
 
 export default hal_helpers;
