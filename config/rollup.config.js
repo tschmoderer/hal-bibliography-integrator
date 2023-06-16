@@ -22,6 +22,7 @@ export default [
         },
 
         treeshake: false,
+        buildDelay: 1000,
 
         plugins: [
             scss({
@@ -50,6 +51,7 @@ export default [
         },
 
         treeshake: false,
+        buildDelay: 1000,
 
         plugins: [
             scss({
