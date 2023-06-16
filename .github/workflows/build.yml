@@ -13,4 +13,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: npm run build
+      - run: npm run buildJs
+      - run: npm run buildCss
