@@ -44,7 +44,7 @@ export default [
 
         output: [
             {
-                file: path.resolve(__dirname, "../dist/plugings/wordcloud/hal-wordcloud.js"),
+                file: path.resolve(__dirname, "../dist/plugins/wordcloud/hal-wordcloud.js"),
                 format: 'cjs',
             },
         ],
@@ -78,7 +78,7 @@ export default [
 
         output: [
             {
-                file: path.resolve(__dirname, "../dist/plugings/scimago/hal-scimago.js"),
+                file: path.resolve(__dirname, "../dist/plugins/scimago/hal-scimago.js"),
                 format: 'cjs',
             },
         ],
