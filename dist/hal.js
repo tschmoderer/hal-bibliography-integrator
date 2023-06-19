@@ -142,7 +142,7 @@ function genListPubli(type) {
                 console.log(p);
             }
             var str = "";
-            str = str + "<tr>";
+            str = str + "<tr id='row-" + p.halId_s + "'>";
             if (p.thumbId_i) {
                 str += "<td class='d-sm-table-cell'>" +
                     "<a href=" + p.fileMain_s + ">" +
@@ -155,7 +155,7 @@ function genListPubli(type) {
                 str += "<td class='d-sm-table-cell'></td>";
             }
             // removed style='width: 100%'  from the style below
-            str += "<td class='hal-title' id='row-" + p.halId_s + "'>" +
+            str += "<td class='hal-title'>" +
                 "<a href='https://hal.science/" + p.halId_s + "' target='_blank'>" +
                 "<h3 class='title-results'>" +
                 p.title_s[0] +
@@ -166,7 +166,7 @@ function genListPubli(type) {
             for (const a of p.authFullName_s) {
                 str = str +
                     "<a href='https://hal.science/search/?q=*&authFullName_s=" +
-                    a + "' alt='Documents de l\'auteur' target='_blank'>" +
+                    a + "' alt='Documents de l auteur' target='_blank'>" +
                     a + "</a>";
                 if (--nbit) {
                     str = str + " ; ";
