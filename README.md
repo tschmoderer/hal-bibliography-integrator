@@ -172,30 +172,30 @@ Ajouter à la fin du body
 
 ### Métriques du journal / Citations
 
-![scimago-ligh](./.github/img/plugins/scimago/scimago-light.png)
+![artscore-light](./.github/img/plugins/artscore/artscore-light.png)
 
-un plugin qui utilise les données de [scimago](https://www.scimagojr.com) pour donner le classement du journal ou est publié un article. 
+un plugin qui utilise les données de [artscore](https://www.artscorejr.com) pour donner le classement du journal ou est publié un article. 
 
 Ajouter dans le *head* après les styles généraux. 
 
 ```html
-    <link rel="stylesheet" href="hal-scimago.css">
+    <link rel="stylesheet" href="hal-artscore.css">
 ```
 
 Ajouter à la fin du body 
 ```html
-    <script type="text/javascript" src="hal-scimago.js"></script>
+    <script type="text/javascript" src="hal-artscore.js"></script>
 ```
 
 **Warnings**: 
 - Plugin encore en developpement 
 - Seulement les éléments de type "ART" (article de journaux) sont traités. 
-- Si le script ne trouve pas le nom du journal dans la base scimago. Vous pouvez essayer de trouver le nom du journal dans la ase de simago [ici](https://www.scimagojr.com/journalsearch.php), et vous pouvez le modifier mùanuellement en ajoutant le script scuivant à la fin du *head*
+- Si le script ne trouve pas le nom du journal dans la base artscore. Vous pouvez essayer de trouver le nom du journal dans la ase de simago [ici](https://www.artscorejr.com/journalsearch.php), et vous pouvez le modifier mùanuellement en ajoutant le script scuivant à la fin du *head*
 ```html
     <script type="text/javascript">
         const hal_plugins = {
-            "scimago": {
-                "name in HAL base": "name in SCIMAGO base",
+            "artscore": {
+                "name in HAL base": "name in ARTSCORE base",
                 "Systems & Control Letters": "Systems and Control Letters",
             }
         }

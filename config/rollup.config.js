@@ -72,21 +72,21 @@ export default [
         ]
     },
 
-    // SCIMAGO
+    // ARTSCORE
     {
-        input: path.resolve(__dirname, '../plugins/scimago/js/main.js'),
+        input: path.resolve(__dirname, '../plugins/artscore/js/main.js'),
 
         output: [
             {
-                file: path.resolve(__dirname, "../dist/plugins/scimago/hal-scimago.js"),
+                file: path.resolve(__dirname, "../dist/plugins/artscore/hal-artscore.js"),
                 format: 'cjs',
             },
         ],
 
         watch: {
             include: [
-                path.resolve(__dirname, "../plugins/scimago/js/*"),
-                path.resolve(__dirname, "../plugins/scimago/scss/*")
+                path.resolve(__dirname, "../plugins/artscore/js/*"),
+                path.resolve(__dirname, "../plugins/artscore/scss/*")
             ], 
             buildDelay: 2000,
         },
@@ -100,7 +100,7 @@ export default [
                 "./**/*.sass"
             ]),
             scss({
-                fileName: 'hal-scimago.css', 
+                fileName: 'hal-artscore.css', 
                 include: ["./**/*.css", "./**/*.scss", "./**/*.sass"],
             })
         ]
