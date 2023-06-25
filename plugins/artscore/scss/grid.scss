@@ -1,0 +1,86 @@
+// grid.layoutit.com?id=n08v5kB
+
+.artscore-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr auto auto;
+    gap: 10px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "artscore-quartiles artscore-quartiles artscore-quartiles"
+        "artscore-srj-legend artscore-hindex-legend artscore-cities-legend"
+        "artscore-srj-data artscore-hindex-data artscore-cities-data";
+}
+
+.artscore-srj-legend {
+    grid-area: artscore-srj-legend;
+}
+
+.artscore-srj-data {
+    grid-area: artscore-srj-data;
+}
+
+.artscore-hindex-legend {
+    grid-area: artscore-hindex-legend;
+}
+
+.artscore-hindex-data {
+    grid-area: artscore-hindex-data;
+}
+
+.artscore-cities-legend {
+    grid-area: artscore-cities-legend;
+}
+
+.artscore-cities-data {
+    grid-area: artscore-cities-data;
+}
+
+.artscore-quartiles {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 5px;
+    grid-template-areas:
+        "artscore-quartile-item-1 artscore-quartile-category-1"
+        "artscore-quartile-item-2 artscore-quartile-category-2"
+        "artscore-quartile-item-3 artscore-quartile-category-3"
+        "artscore-quartile-item-4 artscore-quartile-category-4";
+    grid-area: artscore-quartiles;
+}
+
+.artscore-quartile-item-1 {
+    grid-area: artscore-quartile-item-1;
+}
+
+.artscore-quartile-item-2 {
+    grid-area: artscore-quartile-item-2;
+}
+
+.artscore-quartile-item-3 {
+    grid-area: artscore-quartile-item-3;
+}
+
+.artscore-quartile-item-4 {
+    grid-area: artscore-quartile-item-4;
+}
+
+.artscore-quartile-category-1 {
+    grid-area: artscore-quartile-category-1;
+}
+
+.artscore-quartile-category-2 {
+    grid-area: artscore-quartile-category-2;
+}
+
+.artscore-quartile-category-3 {
+    grid-area: artscore-quartile-category-3;
+}
+
+.artscore-quartile-category-4 {
+    grid-area: artscore-quartile-category-4;
+}
+
+.artscore-grid div {
+    display: grid;
+}
