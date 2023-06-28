@@ -7,6 +7,12 @@ a {
   background: inherit;
   color: inherit;
 }
+#publi-hal-all * table {
+  border: none;
+}
+#publi-hal-all * table td {
+  border: none;
+}
 
 /* END GENERAL */
 /* HAL BUTTON */

@@ -6,7 +6,9 @@ function init_wordcloud(container) {
 }
 
 function HALwordcloud(hal_wordcloud_div) {
-    console.log(globalHalData);
+    if ((typeof halDebug !== "undefined") && (halDebug)) {
+        console.log(globalHalData);
+    }
 
     var data = [];
     for (const k in globalHalData) {
