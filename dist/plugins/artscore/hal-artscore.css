@@ -29,7 +29,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto 1fr;
-  gap: 0px 0px;
+  gap: 0px 0.5rem;
   grid-auto-flow: row;
   grid-template-areas: "artscore-hindex-legend artscore-sjr-legend artscore-citescore-legend" "artscore-hindex-item artscore-sjr-item artscore-citescore-item";
   grid-area: artscore-row-2;
@@ -113,7 +113,7 @@
 }
 .artscore-container {
   font-size: 0.75em;
-  padding-left: 1rem;
+  padding-left: 10rem;
 }
 
 .artscore-legend, .artscore-item {
@@ -138,8 +138,15 @@
   padding-left: 1rem;
 }
 
+@media (max-width: 700px) {
+  .artscore-container {
+    font-size: 0.75em;
+    padding-left: 1rem;
+  }
+}
 @media (max-width: 500px) {
   .artscore-citations i {
+    padding: 0 !important;
     font-size: 1em;
   }
   .artscore-citations {
