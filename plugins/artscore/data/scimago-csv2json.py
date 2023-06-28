@@ -53,4 +53,7 @@ if __name__ == "__main__":
 
         
     with open(json_filename, 'w', encoding = 'utf-8') as json_file_handler:
-        json_file_handler.write(json.dumps(data, indent = 4))
+        json_file_handler.write(json.dumps(data, indent = 4)); 
+
+    # TODO: add scimago_year
+    # TODO: create JSON directly 

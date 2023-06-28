@@ -6,7 +6,6 @@ function artscore_quartiles(container, data) {
         }
 
         var nb = parseInt(d) + 1; 
-        console.log(nb);
 
         var item = document.createElement("div"); 
         item.classList.add("artscore-quartile-item-" + nb.toString());

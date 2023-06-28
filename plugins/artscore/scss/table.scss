@@ -1,22 +1,42 @@
-.artscore-column {
-    padding: 0 !important;
-    //background-color: red !important;
-    border-top: 1px solid #bdc1c4;
-    transition: width 2s;
+
+.artscore-container {
+    //padding: 0 !important;
+    font-size: 0.75em;
 }
 
-.artscore-hide {
-    margin: 0;
-    width: 0;
+.artscore-legend, .artscore-item {
+    text-align: center;
+}
 
-    div {
-        display: none;
+.artscore-legend {
+    font-weight: 600;
+}
+
+.artscore-citations {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5cqh;
+    a {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    i {
+        opacity: 0.2;
+        padding-left: 1rem;
     }
 }
 
-.artscore-show {
-    width: 250px;
+@media (max-width: $small-screen-width) {
+    .artscore-citations i {
+       // padding: 0 !important;
+        font-size: 1em;
+    }
 
-    div {
-        display: grid;
-    }}
+    .artscore-citations {
+        font-size: 5cqh;
+    }
+
+}

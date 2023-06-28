@@ -1,28 +1,7 @@
-@import "quartiles";
+
+@import "../../../src/scss/variables";
+
 @import "grid";
-@import "button";
+@import "quartiles";
 @import "table";
 @import "icon";
-
-.artscore {
-    background-color: red !important;
-}
-
-.artscore-category {
-    color: #464b56;
-    align-items: center;
-    text-align: left;
-    width: 100%;
-}
-
-.artscore-legend,
-.artscore-data {
-    text-align: center;
-    margin-top: 5%;
-    margin-bottom: 5%;
-}
-
-.artscore-legend {
-    font-weight: bold;
-    font-size: small;
-}

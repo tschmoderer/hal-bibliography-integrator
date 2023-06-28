@@ -1,10 +1,11 @@
 .artscore-q {
+    display: flex;
     text-align: center;
+    justify-content: center;
     align-items: center;
-    //aspect-ratio: 1;
     color: white !important;
-    font-size: 2em;
-    padding: 0.2em;
+    font-size: 5cqh;
+    width: 100%;
 }
 
 .artscore-q-1 {
@@ -23,7 +24,9 @@
     background-color: #dd5a4e !important;
 }
 
-.artscore {
-    max-width: 200px;
-    //background-color: #e5e5e5;
+@media (max-width: $small-screen-width) {
+    .artscore-q {
+        aspect-ratio: 1;
+        font-size: 5cqh;
+    }
 }
