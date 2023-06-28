@@ -6,5 +6,13 @@ a {
 #publi-hal-all * {
     background: inherit; 
     color: inherit;
+
+    table {
+        border: none;
+        
+        td {
+            border: none;
+        }
+    }
 }
 /* END GENERAL */

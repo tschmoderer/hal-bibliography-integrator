@@ -19,8 +19,11 @@ export async function fetchArticleData(artDOI) {
         });
         const data = await response.json();
 
-        console.log(data);
-        console.log(`Number of citations for the article "${artDOI}": ${data["citationCount"]}`);
+        if ((typeof halDebug !== "undefined") && (halDebug)) {
+            console.log(data);
+            console.log(`Number of citations for the article "${artDOI}": ${data["citationCount"]}`);
+        }
+
 
         return {
             "nb": data["citationCount"], 

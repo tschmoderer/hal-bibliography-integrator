@@ -1,25 +1,3 @@
-/*const apiKey = hal_plugins["artscore"]["scopus"]["apiKey"]; // Replace with your Scopus API key
-
-export async function fetchJournalData(journalISSN) {
-  try {
-    const response = await fetch(`https://api.elsevier.com/content/serial/title/issn/${encodeURIComponent(journalISSN)}?apiKey=${apiKey}`);
-    const data = await response.json();
-
-    // Process the fetched data
-    console.log(data);
-
-    const journal = data['serial-metadata-response'].entry[0];
-    const citeScore = journal['citeScoreYearInfoList']['citeScoreCurrentMetric'];
-    
-    console.log(`CiteScore for ${journalISSN}: ${citeScore}`);
-
-    return citeScore;
-
-  } catch (error) {
-    console.error('(ArtScore Plugin) - SCOPUS API CALL - Error fetching journal data:', error);
-  }
-}; */
-
 const apiKey = hal_plugins["artscore"]["scopus"]["apiKey"]; // Replace with your Scopus API key
 
 export function fetchJournalData(journalISSN) {
@@ -33,7 +11,9 @@ export function fetchJournalData(journalISSN) {
       })
       .then(data => {
         // Process the fetched data
-        console.log(data);
+        if ((typeof halDebug !== "undefined") && (halDebug)) {
+          console.log(data);
+        }
 
         const journal = data['serial-metadata-response'].entry[0];
         const citeScore = journal['citeScoreYearInfoList']['citeScoreCurrentMetric'];
