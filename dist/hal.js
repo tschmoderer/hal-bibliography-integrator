@@ -22,7 +22,7 @@ async function callHALAPI(parameters, debug = false) {
         // Return 
         return data.response.docs;
     } catch (error) {
-        console.log("Error in call oh HAL API on url : " + url.toString());
+        console.log("Error in call on HAL API on url : " + url.toString());
         console.error(error);
     }
 }
@@ -101,7 +101,7 @@ function initialHTML(type) {
     var content = document.createElement("div"); 
     content.classList = "hal-content"; 
     content.id = type; 
-    content.innerHTML = "<table class='hal-results-table hal-table-white'><tbody id='hal-" + type + "-table'>" + "</tbody></table>";
+    content.innerHTML = "<table class='hal-results-table'><tbody id='hal-" + type + "-table'>" + "</tbody></table>";
 
     container.append(content);
 
@@ -123,6 +123,8 @@ function genListPubli(type) {
             "thumbId_i",
             "label_bibtex",
             "en_keyword_s",
+            "journalIssn_s",
+            "doiId_s",
         ],
         fq: "docType_s:" + type,
         sort: "publicationDate_tdate desc", 
@@ -159,8 +161,7 @@ function genListPubli(type) {
                 "<a href='https://hal.science/" + p.halId_s + "' target='_blank'>" +
                 "<h3 class='title-results'>" +
                 p.title_s[0] +
-                "</h3>" +
-                "<span class='authors-results'>";
+                "</h3>";
 
             let nbit = p.authFullName_s.length;
             for (const a of p.authFullName_s) {
@@ -173,8 +174,7 @@ function genListPubli(type) {
                 };
             };
 
-            str = str + "</span>" +
-                "</a>";
+            str = str + "</a>";
             str = str + "<br>";
             str = str +
                 "<div class='citation-results'>" +
