@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class=" ngpjrbp idc0_343">
 
 <head>
+    <script type="text/javascript" src="/___vscode_livepreview_injected_script"></script>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
     <title>HAL Publication List - Minimal Example</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
         integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="../../hal.css">
     <link rel="stylesheet" href="hal-artscore.css">
 
@@ -19,13 +21,21 @@
         // Liste des keywords de type de publications souhaitées
         const publiList = ["ART"]
         // (Optionel: debug mode)
-        const halDebug = false;
+        const halDebug = true;
     </script>
 
     <script type="text/javascript">
         const hal_plugins = {
             "artscore": {
-                "Systems & Control Letters": "Systems and Control Letters",
+                "scimago": {
+                    "Systems & Control Letters": "Systems and Control Letters",
+                },
+
+                "semantic": {},
+
+                "scopus": {
+                    "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
+                }
             }
         }
     </script>
@@ -48,256 +58,714 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
         integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/input/tex/extensions/html.js"
+        charset="UTF-8"></script>
+    <style type="text/css">
+        .CtxtMenu_InfoClose {
+            top: .2em;
+            right: .2em;
+        }
+
+        .CtxtMenu_InfoContent {
+            overflow: auto;
+            text-align: left;
+            font-size: 80%;
+            padding: .4em .6em;
+            border: 1px inset;
+            margin: 1em 0px;
+            max-height: 20em;
+            max-width: 30em;
+            background-color: #EEEEEE;
+            white-space: normal;
+        }
+
+        .CtxtMenu_Info.CtxtMenu_MousePost {
+            outline: none;
+        }
+
+        .CtxtMenu_Info {
+            position: fixed;
+            left: 50%;
+            width: auto;
+            text-align: center;
+            border: 3px outset;
+            padding: 1em 2em;
+            background-color: #DDDDDD;
+            color: black;
+            cursor: default;
+            font-family: message-box;
+            font-size: 120%;
+            font-style: normal;
+            text-indent: 0;
+            text-transform: none;
+            line-height: normal;
+            letter-spacing: normal;
+            word-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            float: none;
+            z-index: 201;
+            border-radius: 15px;
+            /* Opera 10.5 and IE9 */
+            -webkit-border-radius: 15px;
+            /* Safari and Chrome */
+            -moz-border-radius: 15px;
+            /* Firefox */
+            -khtml-border-radius: 15px;
+            /* Konqueror */
+            box-shadow: 0px 10px 20px #808080;
+            /* Opera 10.5 and IE9 */
+            -webkit-box-shadow: 0px 10px 20px #808080;
+            /* Safari 3 & Chrome */
+            -moz-box-shadow: 0px 10px 20px #808080;
+            /* Forefox 3.5 */
+            -khtml-box-shadow: 0px 10px 20px #808080;
+            /* Konqueror */
+            filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true");
+            /* IE */
+        }
+    </style>
+    <style type="text/css">
+        .CtxtMenu_MenuClose {
+            position: absolute;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid #AAA;
+            border-radius: 18px;
+            -webkit-border-radius: 18px;
+            /* Safari and Chrome */
+            -moz-border-radius: 18px;
+            /* Firefox */
+            -khtml-border-radius: 18px;
+            /* Konqueror */
+            font-family: "Courier New", Courier;
+            font-size: 24px;
+            color: #F0F0F0
+        }
+
+        .CtxtMenu_MenuClose span {
+            display: block;
+            background-color: #AAA;
+            border: 1.5px solid;
+            border-radius: 18px;
+            -webkit-border-radius: 18px;
+            /* Safari and Chrome */
+            -moz-border-radius: 18px;
+            /* Firefox */
+            -khtml-border-radius: 18px;
+            /* Konqueror */
+            line-height: 0;
+            padding: 8px 0 6px
+                /* may need to be browser-specific */
+        }
+
+        .CtxtMenu_MenuClose:hover {
+            color: white !important;
+            border: 2px solid #CCC !important
+        }
+
+        .CtxtMenu_MenuClose:hover span {
+            background-color: #CCC !important
+        }
+
+        .CtxtMenu_MenuClose:hover:focus {
+            outline: none
+        }
+    </style>
+    <style type="text/css">
+        .CtxtMenu_Menu {
+            position: absolute;
+            background-color: white;
+            color: black;
+            width: auto;
+            padding: 5px 0px;
+            border: 1px solid #CCCCCC;
+            margin: 0;
+            cursor: default;
+            font: menu;
+            text-align: left;
+            text-indent: 0;
+            text-transform: none;
+            line-height: normal;
+            letter-spacing: normal;
+            word-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            float: none;
+            z-index: 201;
+            border-radius: 5px;
+            /* Opera 10.5 and IE9 */
+            -webkit-border-radius: 5px;
+            /* Safari and Chrome */
+            -moz-border-radius: 5px;
+            /* Firefox */
+            -khtml-border-radius: 5px;
+            /* Konqueror */
+            box-shadow: 0px 10px 20px #808080;
+            /* Opera 10.5 and IE9 */
+            -webkit-box-shadow: 0px 10px 20px #808080;
+            /* Safari 3 & Chrome */
+            -moz-box-shadow: 0px 10px 20px #808080;
+            /* Forefox 3.5 */
+            -khtml-box-shadow: 0px 10px 20px #808080;
+            /* Konqueror */
+        }
+
+        .CtxtMenu_MenuItem {
+            padding: 1px 2em;
+            background: transparent;
+        }
+
+        .CtxtMenu_MenuArrow {
+            position: absolute;
+            right: .5em;
+            padding-top: .25em;
+            color: #666666;
+            font-family: null;
+            font-size: .75em
+        }
+
+        .CtxtMenu_MenuActive .CtxtMenu_MenuArrow {
+            color: white
+        }
+
+        .CtxtMenu_MenuArrow.CtxtMenu_RTL {
+            left: .5em;
+            right: auto
+        }
+
+        .CtxtMenu_MenuCheck {
+            position: absolute;
+            left: .7em;
+            font-family: null
+        }
+
+        .CtxtMenu_MenuCheck.CtxtMenu_RTL {
+            right: .7em;
+            left: auto
+        }
+
+        .CtxtMenu_MenuRadioCheck {
+            position: absolute;
+            left: .7em;
+        }
+
+        .CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {
+            right: .7em;
+            left: auto
+        }
+
+        .CtxtMenu_MenuInputBox {
+            padding-left: 1em;
+            right: .5em;
+            color: #666666;
+            font-family: null;
+        }
+
+        .CtxtMenu_MenuInputBox.CtxtMenu_RTL {
+            left: .1em;
+        }
+
+        .CtxtMenu_MenuComboBox {
+            left: .1em;
+            padding-bottom: .5em;
+        }
+
+        .CtxtMenu_MenuSlider {
+            left: .1em;
+        }
+
+        .CtxtMenu_SliderValue {
+            position: absolute;
+            right: .1em;
+            padding-top: .25em;
+            color: #333333;
+            font-size: .75em
+        }
+
+        .CtxtMenu_SliderBar {
+            outline: none;
+            background: #d3d3d3
+        }
+
+        .CtxtMenu_MenuLabel {
+            padding: 1px 2em 3px 1.33em;
+            font-style: italic
+        }
+
+        .CtxtMenu_MenuRule {
+            border-top: 1px solid #DDDDDD;
+            margin: 4px 3px;
+        }
+
+        .CtxtMenu_MenuDisabled {
+            color: GrayText
+        }
+
+        .CtxtMenu_MenuActive {
+            background-color: #606872;
+            color: white;
+        }
+
+        .CtxtMenu_MenuDisabled:focus {
+            background-color: #E8E8E8
+        }
+
+        .CtxtMenu_MenuLabel:focus {
+            background-color: #E8E8E8
+        }
+
+        .CtxtMenu_ContextMenu:focus {
+            outline: none
+        }
+
+        .CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {
+            outline: none
+        }
+
+        .CtxtMenu_SelectionMenu {
+            position: relative;
+            float: left;
+            border-bottom: none;
+            box-shadow: none;
+            border-radius: 0px;
+            -webkit-box-shadow: none;
+            -webkit-border-radius: 0px;
+        }
+
+        .CtxtMenu_SelectionItem {
+            padding-right: 1em;
+        }
+
+        .CtxtMenu_Selection {
+            right: 40%;
+            width: 50%;
+        }
+
+        .CtxtMenu_SelectionBox {
+            padding: 0em;
+            max-height: 20em;
+            max-width: none;
+            background-color: #FFFFFF;
+        }
+
+        .CtxtMenu_SelectionDivider {
+            clear: both;
+            border-top: 2px solid #000000;
+        }
+
+        .CtxtMenu_Menu .CtxtMenu_MenuClose {
+            top: -10px;
+            left: -10px
+        }
+    </style>
+    <style id="MJX-SVG-styles">
+        mjx-container[jax="SVG"] {
+            direction: ltr;
+        }
+
+        mjx-container[jax="SVG"]>svg {
+            overflow: visible;
+            min-height: 1px;
+            min-width: 1px;
+        }
+
+        mjx-container[jax="SVG"]>svg a {
+            fill: blue;
+            stroke: blue;
+        }
+
+        mjx-assistive-mml {
+            position: absolute !important;
+            top: 0px;
+            left: 0px;
+            clip: rect(1px, 1px, 1px, 1px);
+            padding: 1px 0px 0px 0px !important;
+            border: 0px !important;
+            display: block !important;
+            width: auto !important;
+            overflow: hidden !important;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        mjx-assistive-mml[display="block"] {
+            width: 100% !important;
+        }
+
+        mjx-container[jax="SVG"][display="true"] {
+            display: block;
+            text-align: center;
+            margin: 1em 0;
+        }
+
+        mjx-container[jax="SVG"][display="true"][width="full"] {
+            display: flex;
+        }
+
+        mjx-container[jax="SVG"][justify="left"] {
+            text-align: left;
+        }
+
+        mjx-container[jax="SVG"][justify="right"] {
+            text-align: right;
+        }
+
+        g[data-mml-node="merror"]>g {
+            fill: red;
+            stroke: red;
+        }
+
+        g[data-mml-node="merror"]>rect[data-background] {
+            fill: yellow;
+            stroke: none;
+        }
+
+        g[data-mml-node="mtable"]>line[data-line],
+        svg[data-table]>g>line[data-line] {
+            stroke-width: 70px;
+            fill: none;
+        }
+
+        g[data-mml-node="mtable"]>rect[data-frame],
+        svg[data-table]>g>rect[data-frame] {
+            stroke-width: 70px;
+            fill: none;
+        }
+
+        g[data-mml-node="mtable"]>.mjx-dashed,
+        svg[data-table]>g>.mjx-dashed {
+            stroke-dasharray: 140;
+        }
+
+        g[data-mml-node="mtable"]>.mjx-dotted,
+        svg[data-table]>g>.mjx-dotted {
+            stroke-linecap: round;
+            stroke-dasharray: 0, 140;
+        }
+
+        g[data-mml-node="mtable"]>g>svg {
+            overflow: visible;
+        }
+
+        [jax="SVG"] mjx-tool {
+            display: inline-block;
+            position: relative;
+            width: 0;
+            height: 0;
+        }
+
+        [jax="SVG"] mjx-tool>mjx-tip {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        mjx-tool>mjx-tip {
+            display: inline-block;
+            padding: .2em;
+            border: 1px solid #888;
+            font-size: 70%;
+            background-color: #F8F8F8;
+            color: black;
+            box-shadow: 2px 2px 5px #AAAAAA;
+        }
+
+        g[data-mml-node="maction"][data-toggle] {
+            cursor: pointer;
+        }
+
+        mjx-status {
+            display: block;
+            position: fixed;
+            left: 1em;
+            bottom: 1em;
+            min-width: 25%;
+            padding: .2em .4em;
+            border: 1px solid #888;
+            font-size: 90%;
+            background-color: #F8F8F8;
+            color: black;
+        }
+
+        foreignObject[data-mjx-xml] {
+            font-family: initial;
+            line-height: normal;
+            overflow: visible;
+        }
+
+        mjx-container[jax="SVG"] path[data-c],
+        mjx-container[jax="SVG"] use[data-c] {
+            stroke-width: 3;
+        }
+    </style>
+    <style></style>
 </head>
 
 <body style="background-color:#e5e5e5; width: 80%; margin: auto;">
-    <h1 style="text-align: center;">Minimal Example - Plugin ArtScore - Standalone</h1>
+    <h1 style="text-align: center;">Minimal Example - Plugin ArtScore</h1>
     <div id="publi-hal-all">
-        <div id="publi-hal-all">
-            <div class="hal-list" id="hal-ART" style="display: block;"><button class="hal-btn" data-target="#ART"
-                    onclick="collapse(this)"><i class="hal-icon fa-solid fa-newspaper"></i><a
-                        id="hal-ART-card-title">Journal articles (2)</a><i
-                        class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
-                <div class="hal-spinner" id="hal-ART-spinner" style="display: none;">
-                    <div class="lds-ellipsis">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
+        <div class="hal-list" id="hal-ART" style="display: block;"><button class="hal-btn" data-target="#ART"
+                onclick="collapse(this)"><i class="hal-icon fa-solid fa-newspaper"></i><a
+                    id="hal-ART-card-title">Journal articles (2)</a><i
+                    class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
+            <div class="hal-spinner" id="hal-ART-spinner" style="display: none;">
+                <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
                 </div>
-                <div class="hal-content" id="ART">
-                    <table class="hal-results-table hal-table-white">
-                        <tbody id="hal-ART-table">
-                            <tr id="row-hal-03677902">
-                                <td class="d-sm-table-cell"><a href="https://hal.science/hal-03677902/document">
-                                        <div class="hal-media d-sm-block"><img
-                                                src="https://thumb.ccsd.cnrs.fr/9051088/thumb" alt="Image document">
-                                        </div>
-                                    </a></td>
-                                <td class="hal-title"><a href="https://hal.science/hal-03677902" target="_blank">
-                                        <h3 class="title-results">Null-forms of conic systems in <mjx-container
-                                                class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
-                                                ctxtmenu_counter="0" style="position: relative;"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
-                                                    role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
-                                                    style="vertical-align: 0px;">
-                                                    <g stroke="currentColor" fill="currentColor" stroke-width="0"
-                                                        transform="scale(1,-1)">
-                                                        <g data-mml-node="math">
-                                                            <g data-mml-node="msup">
-                                                                <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
-                                                                    <g data-mml-node="mi">
-                                                                        <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
-                                                                        </use>
-                                                                    </g>
+            </div>
+            <div class="hal-content" id="ART">
+                <table class="hal-results-table">
+                    <tbody id="hal-ART-table">
+                        <tr id="row-hal-03677902">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/hal-03677902/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9051088/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03677902" target="_blank">
+                                    <h3 class="title-results">Null-forms of conic systems in <mjx-container
+                                            class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
+                                            ctxtmenu_counter="0" style="position: relative;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
+                                                role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                style="vertical-align: 0px;">
+                                                <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                    transform="scale(1,-1)">
+                                                    <g data-mml-node="math">
+                                                        <g data-mml-node="msup">
+                                                            <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                <g data-mml-node="mi">
+                                                                    <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                    </use>
                                                                 </g>
-                                                                <g data-mml-node="mn"
-                                                                    transform="translate(755,363) scale(0.707)">
-                                                                    <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
-                                                                </g>
+                                                            </g>
+                                                            <g data-mml-node="mn"
+                                                                transform="translate(755,363) scale(0.707)">
+                                                                <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
                                                             </g>
                                                         </g>
                                                     </g>
-                                                </svg><mjx-assistive-mml unselectable="on" display="inline"><math
-                                                        xmlns="http://www.w3.org/1998/Math/MathML">
-                                                        <msup>
-                                                            <mrow data-mjx-texclass="ORD">
-                                                                <mi mathvariant="double-struck">R</mi>
-                                                            </mrow>
-                                                            <mn>3</mn>
-                                                        </msup>
-                                                    </math></mjx-assistive-mml></mjx-container> are determined by their
-                                            symmetries</h3><span class="authors-results"></span>
-                                    </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
-                                        alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
-                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
-                                        alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
-                                    <div class="citation-results"><i>Systems &amp; Control Letters</i>, 2022, 170, <a
-                                            target="_blank"
-                                            href="https://dx.doi.org/10.1016/j.sysconle.2022.105397">⟨10.1016/j.sysconle.2022.105397⟩</a>
-                                    </div>
-                                    <div class="export-result"><a href="https://hal.science/hal-03677902/document"
-                                            target="_blank" class="hal-export-pdf"><i
-                                                class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
-                                            onclick="copyCitation('hal-03677902')"
-                                            title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
-                                            id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex
-                                            citation copied</a>
-                                        <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03677902">
-                                            @article{schmoderer:hal-03677902,
-                                            TITLE = {{Null-forms of conic systems in <mjx-container
-                                                class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
-                                                ctxtmenu_counter="1" style="position: relative;"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
-                                                    role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
-                                                    style="vertical-align: 0px;">
-                                                    <g stroke="currentColor" fill="currentColor" stroke-width="0"
-                                                        transform="scale(1,-1)">
-                                                        <g data-mml-node="math">
-                                                            <g data-mml-node="msup">
-                                                                <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
-                                                                    <g data-mml-node="mi">
-                                                                        <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
-                                                                        </use>
-                                                                    </g>
+                                                </g>
+                                            </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                    xmlns="http://www.w3.org/1998/Math/MathML">
+                                                    <msup>
+                                                        <mrow data-mjx-texclass="ORD">
+                                                            <mi mathvariant="double-struck">R</mi>
+                                                        </mrow>
+                                                        <mn>3</mn>
+                                                    </msup>
+                                                </math></mjx-assistive-mml></mjx-container> are determined by their
+                                        symmetries</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                    alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                <div class="citation-results"><i>Systems &amp; Control Letters</i>, 2022, 170, <a
+                                        target="_blank"
+                                        href="https://dx.doi.org/10.1016/j.sysconle.2022.105397">⟨10.1016/j.sysconle.2022.105397⟩</a>
+                                </div>
+                                <div class="export-result"><a href="https://hal.science/hal-03677902/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03677902')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03677902">
+                                        @article{schmoderer:hal-03677902,
+                                        TITLE = {{Null-forms of conic systems in <mjx-container
+                                            class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
+                                            ctxtmenu_counter="1" style="position: relative;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
+                                                role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                style="vertical-align: 0px;">
+                                                <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                    transform="scale(1,-1)">
+                                                    <g data-mml-node="math">
+                                                        <g data-mml-node="msup">
+                                                            <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                <g data-mml-node="mi">
+                                                                    <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                    </use>
                                                                 </g>
-                                                                <g data-mml-node="mn"
-                                                                    transform="translate(755,363) scale(0.707)">
-                                                                    <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
-                                                                </g>
+                                                            </g>
+                                                            <g data-mml-node="mn"
+                                                                transform="translate(755,363) scale(0.707)">
+                                                                <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
                                                             </g>
                                                         </g>
                                                     </g>
-                                                </svg><mjx-assistive-mml unselectable="on" display="inline"><math
-                                                        xmlns="http://www.w3.org/1998/Math/MathML">
-                                                        <msup>
-                                                            <mrow data-mjx-texclass="ORD">
-                                                                <mi mathvariant="double-struck">R</mi>
-                                                            </mrow>
-                                                            <mn>3</mn>
-                                                        </msup>
-                                                    </math></mjx-assistive-mml></mjx-container> are determined by their
-                                            symmetries}},
-                                            AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
-                                            URL = {https://hal.science/hal-03677902},
-                                            JOURNAL = {{Systems \&amp; Control Letters}},
-                                            VOLUME = {170},
-                                            YEAR = {2022},
-                                            MONTH = Nov,
-                                            DOI = {10.1016/j.sysconle.2022.105397},
-                                            KEYWORDS = {Control-affine system ; Conic systems ; Feedback equivalence ;
-                                            Infinitesimal symmetries ; Normal forms},
-                                            PDF =
-                                            {https://hal.science/hal-03677902/file/article_scl_tschmoderer_wrespondek.pdf},
-                                            HAL_ID = {hal-03677902},
-                                            HAL_VERSION = {v1},
-                                            }
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr id="row-hal-03329929">
-                                <td class="d-sm-table-cell"><a href="https://uca.hal.science/hal-03329929/document">
-                                        <div class="hal-media d-sm-block"><img
-                                                src="https://thumb.ccsd.cnrs.fr/8867070/thumb" alt="Image document">
-                                        </div>
-                                    </a></td>
-                                <td class="hal-title"><a href="https://hal.science/hal-03329929" target="_blank">
-                                        <h3 class="title-results">Learning optical flow for fast MRI reconstruction</h3>
-                                        <span class="authors-results"></span>
-                                    </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
-                                        alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
-                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Angelica I Aviles-Rivero"
-                                        alt="Documents de l auteur" target="_blank">Angelica I Aviles-Rivero</a> ; <a
-                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Veronica Corona"
-                                        alt="Documents de l auteur" target="_blank">Veronica Corona</a> ; <a
-                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Noémie Debroux"
-                                        alt="Documents de l auteur" target="_blank">Noémie Debroux</a> ; <a
-                                        href="https://hal.science/search/?q=*&amp;authFullName_s=Carola-Bibiane Schönlieb"
-                                        alt="Documents de l auteur" target="_blank">Carola-Bibiane Schönlieb</a><br>
-                                    <div class="citation-results"><i>Inverse Problems</i>, 2021, 37 (9), pp.095007. <a
-                                            target="_blank"
-                                            href="https://dx.doi.org/10.1088/1361-6420/ac164a">⟨10.1088/1361-6420/ac164a⟩</a>
-                                    </div>
-                                    <div class="export-result"><a href="https://uca.hal.science/hal-03329929/document"
-                                            target="_blank" class="hal-export-pdf"><i
-                                                class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
-                                            onclick="copyCitation('hal-03329929')"
-                                            title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
-                                            id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex
-                                            citation copied</a>
-                                        <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03329929">
-                                            @article{schmoderer:hal-03329929,
-                                            TITLE = {{Learning optical flow for fast MRI reconstruction}},
-                                            AUTHOR = {Schmoderer, Timoth{\'e}e and Aviles-Rivero, Angelica I and Corona,
-                                            Veronica and Debroux, No{\'e}mie and Sch{\"o}nlieb, Carola-Bibiane},
-                                            URL = {https://uca.hal.science/hal-03329929},
-                                            JOURNAL = {{Inverse Problems}},
-                                            PUBLISHER = {{IOP Publishing}},
-                                            VOLUME = {37},
-                                            NUMBER = {9},
-                                            PAGES = {095007},
-                                            YEAR = {2021},
-                                            MONTH = Aug,
-                                            DOI = {10.1088/1361-6420/ac164a},
-                                            KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ;
-                                            Multi-Task Model},
-                                            PDF =
-                                            {https://uca.hal.science/hal-03329929/file/MRI_reconstruction%288%29.pdf},
-                                            HAL_ID = {hal-03329929},
-                                            HAL_VERSION = {v1},
-                                            }
-                                        </p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                                </g>
+                                            </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                    xmlns="http://www.w3.org/1998/Math/MathML">
+                                                    <msup>
+                                                        <mrow data-mjx-texclass="ORD">
+                                                            <mi mathvariant="double-struck">R</mi>
+                                                        </mrow>
+                                                        <mn>3</mn>
+                                                    </msup>
+                                                </math></mjx-assistive-mml></mjx-container> are determined by their
+                                        symmetries}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                        URL = {https://hal.science/hal-03677902},
+                                        JOURNAL = {{Systems \&amp; Control Letters}},
+                                        VOLUME = {170},
+                                        YEAR = {2022},
+                                        MONTH = Nov,
+                                        DOI = {10.1016/j.sysconle.2022.105397},
+                                        KEYWORDS = {Control-affine system ; Conic systems ; Feedback equivalence ;
+                                        Infinitesimal symmetries ; Normal forms},
+                                        PDF =
+                                        {https://hal.science/hal-03677902/file/article_scl_tschmoderer_wrespondek.pdf},
+                                        HAL_ID = {hal-03677902},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                            <td id="artscoreContainer" class="artscore-container artscore-column">
+                                <div id="artscoreRow1" class="artscore-row-1">
+                                    <div id="artscoreQuartile" class="artscore-quartile artscore-q"
+                                        title="Computer Science (miscellaneous)"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=25563"
+                                            class="artscore-q artscore-q-1">Q1</a></div>
+                                    <div id="artscoreCitations" class="artscore-citations" title="1 citation"><a
+                                            href="https://www.semanticscholar.org/paper/0868caeb7e5a86e5e97e87d7f36546f24970a8ac"
+                                            target="_blank">1<i class="fa-solid fa-quote-right"></i></a></div>
+                                </div>
+                                <div id="artscoreRow2" class="artscore-row-2">
+                                    <div id="artscoreHIndexLegend" class="artscore-hindex-legend artscore-legend"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=25563"
+                                            target="_blank">h-index</a></div>
+                                    <div id="artscoreHIndexItem" class="artscore-hindex-item artscore-item"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=25563"
+                                            target="_blank">144</a></div>
+                                    <div id="artscoreCiteScoreLegend" class="artscore-citescore-legend artscore-legend">
+                                        <a href="https://www.scopus.com/source/sourceInfo.url?sourceId=25563"
+                                            target="_blank">CiteScore</a></div>
+                                    <div id="artscoreCiteScoreItem" class="artscore-citescore-item artscore-item"><a
+                                            href="https://www.scopus.com/source/sourceInfo.url?sourceId=25563"
+                                            target="_blank">4.8</a></div>
+                                    <div id="artscoreSJRLegend" class="artscore-sjr-legend artscore-legend"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=25563"
+                                            target="_blank">SJR 2022</a></div>
+                                    <div id="artscoreSJRItem" class="artscore-sjr-item artscore-item"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=25563"
+                                            target="_blank">1,519</a></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-03329929">
+                            <td class="d-sm-table-cell"><a href="https://uca.hal.science/hal-03329929/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/8867070/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03329929" target="_blank">
+                                    <h3 class="title-results">Learning optical flow for fast MRI reconstruction</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Angelica I Aviles-Rivero"
+                                    alt="Documents de l auteur" target="_blank">Angelica I Aviles-Rivero</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Veronica Corona"
+                                    alt="Documents de l auteur" target="_blank">Veronica Corona</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Noémie Debroux"
+                                    alt="Documents de l auteur" target="_blank">Noémie Debroux</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Carola-Bibiane Schönlieb"
+                                    alt="Documents de l auteur" target="_blank">Carola-Bibiane Schönlieb</a><br>
+                                <div class="citation-results"><i>Inverse Problems</i>, 2021, 37 (9), pp.095007. <a
+                                        target="_blank"
+                                        href="https://dx.doi.org/10.1088/1361-6420/ac164a">⟨10.1088/1361-6420/ac164a⟩</a>
+                                </div>
+                                <div class="export-result"><a href="https://uca.hal.science/hal-03329929/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03329929')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03329929">
+                                        @article{schmoderer:hal-03329929,
+                                        TITLE = {{Learning optical flow for fast MRI reconstruction}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Aviles-Rivero, Angelica I and Corona,
+                                        Veronica and Debroux, No{\'e}mie and Sch{\"o}nlieb, Carola-Bibiane},
+                                        URL = {https://uca.hal.science/hal-03329929},
+                                        JOURNAL = {{Inverse Problems}},
+                                        PUBLISHER = {{IOP Publishing}},
+                                        VOLUME = {37},
+                                        NUMBER = {9},
+                                        PAGES = {095007},
+                                        YEAR = {2021},
+                                        MONTH = Aug,
+                                        DOI = {10.1088/1361-6420/ac164a},
+                                        KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ; Multi-Task
+                                        Model},
+                                        PDF = {https://uca.hal.science/hal-03329929/file/MRI_reconstruction%288%29.pdf},
+                                        HAL_ID = {hal-03329929},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                            <td id="artscoreContainer" class="artscore-container artscore-column">
+                                <div id="artscoreRow1" class="artscore-row-1">
+                                    <div id="artscoreQuartile" class="artscore-quartile artscore-q"
+                                        title="Applied Mathematics"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=28497"
+                                            class="artscore-q artscore-q-1">Q1</a></div>
+                                    <div id="artscoreCitations" class="artscore-citations" title="3 citations"><a
+                                            href="https://www.semanticscholar.org/paper/a0cc0a7225809aa552a159e5edfe522d7a5dafb3"
+                                            target="_blank">3<i class="fa-solid fa-quote-right"></i></a></div>
+                                </div>
+                                <div id="artscoreRow2" class="artscore-row-2">
+                                    <div id="artscoreHIndexLegend" class="artscore-hindex-legend artscore-legend"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=28497"
+                                            target="_blank">h-index</a></div>
+                                    <div id="artscoreHIndexItem" class="artscore-hindex-item artscore-item"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=28497"
+                                            target="_blank">122</a></div>
+                                    <div id="artscoreCiteScoreLegend" class="artscore-citescore-legend artscore-legend">
+                                        <a href="https://www.scopus.com/source/sourceInfo.url?sourceId=28497"
+                                            target="_blank">CiteScore</a></div>
+                                    <div id="artscoreCiteScoreItem" class="artscore-citescore-item artscore-item"><a
+                                            href="https://www.scopus.com/source/sourceInfo.url?sourceId=28497"
+                                            target="_blank">4.2</a></div>
+                                    <div id="artscoreSJRLegend" class="artscore-sjr-legend artscore-legend"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=28497"
+                                            target="_blank">SJR 2022</a></div>
+                                    <div id="artscoreSJRItem" class="artscore-sjr-item artscore-item"><a
+                                            href="https://www.scimagojr.com/journalsearch.php?q=28497"
+                                            target="_blank">1,115</a></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        const globalHalData = {
-    "ART": [
-        {
-            "citationRef_s": "<i>Systems & Control Letters</i>, 2022, 170, <a target=\"_blank\" href=\"https://dx.doi.org/10.1016/j.sysconle.2022.105397\">&#x27E8;10.1016/j.sysconle.2022.105397&#x27E9;</a>",
-            "label_bibtex": "@article{schmoderer:hal-03677902,\n  TITLE = {{Null-forms of conic systems in $\\mathbb{R}^3$ are determined by their symmetries}},\n  AUTHOR = {Schmoderer, Timoth{\\'e}e and Respondek, Witold},\n  URL = {https://hal.science/hal-03677902},\n  JOURNAL = {{Systems \\& Control Letters}},\n  VOLUME = {170},\n  YEAR = {2022},\n  MONTH = Nov,\n  DOI = {10.1016/j.sysconle.2022.105397},\n  KEYWORDS = {Control-affine system ; Conic systems ; Feedback equivalence ; Infinitesimal symmetries ; Normal forms},\n  PDF = {https://hal.science/hal-03677902/file/article_scl_tschmoderer_wrespondek.pdf},\n  HAL_ID = {hal-03677902},\n  HAL_VERSION = {v1},\n}\n",
-            "title_s": [
-                "Null-forms of conic systems in $\\mathbb{R}^3$ are determined by their symmetries"
-            ],
-            "en_keyword_s": [
-                "Control-affine system",
-                "Conic systems",
-                "Feedback equivalence",
-                "Infinitesimal symmetries",
-                "Normal forms"
-            ],
-            "journalTitle_s": "Systems & Control Letters",
-            "authFullName_s": [
-                "Timothée Schmoderer",
-                "Witold Respondek"
-            ],
-            "halId_s": "hal-03677902",
-            "thumbId_i": 9051088,
-            "publicationDate_tdate": "2022-11-02T00:00:00Z",
-            "fileMain_s": "https://hal.science/hal-03677902/document"
-        },
-        {
-            "citationRef_s": "<i>Inverse Problems</i>, 2021, 37 (9), pp.095007. <a target=\"_blank\" href=\"https://dx.doi.org/10.1088/1361-6420/ac164a\">&#x27E8;10.1088/1361-6420/ac164a&#x27E9;</a>",
-            "label_bibtex": "@article{schmoderer:hal-03329929,\n  TITLE = {{Learning optical flow for fast MRI reconstruction}},\n  AUTHOR = {Schmoderer, Timoth{\\'e}e and Aviles-Rivero, Angelica I and Corona, Veronica and Debroux, No{\\'e}mie and Sch{\\\"o}nlieb, Carola-Bibiane},\n  URL = {https://uca.hal.science/hal-03329929},\n  JOURNAL = {{Inverse Problems}},\n  PUBLISHER = {{IOP Publishing}},\n  VOLUME = {37},\n  NUMBER = {9},\n  PAGES = {095007},\n  YEAR = {2021},\n  MONTH = Aug,\n  DOI = {10.1088/1361-6420/ac164a},\n  KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ; Multi-Task Model},\n  PDF = {https://uca.hal.science/hal-03329929/file/MRI_reconstruction%288%29.pdf},\n  HAL_ID = {hal-03329929},\n  HAL_VERSION = {v1},\n}\n",
-            "title_s": [
-                "Learning optical flow for fast MRI reconstruction"
-            ],
-            "en_keyword_s": [
-                "MRI Reconstruction",
-                "Optical Flow",
-                "Dictionary Learning",
-                "Multi-Task Model"
-            ],
-            "journalTitle_s": "Inverse Problems",
-            "authFullName_s": [
-                "Timothée Schmoderer",
-                "Angelica I Aviles-Rivero",
-                "Veronica Corona",
-                "Noémie Debroux",
-                "Carola-Bibiane Schönlieb"
-            ],
-            "halId_s": "hal-03329929",
-            "thumbId_i": 8867070,
-            "publicationDate_tdate": "2021-08-10T00:00:00Z",
-            "fileMain_s": "https://uca.hal.science/hal-03329929/document"
-        }
-    ]
-}
-    </script>
-    <script type="text/javascript" src="hal-artscore.js"></script>
-    <script type="text/javascript">
-        setTimeout(document.dispatchEvent(new Event("halMainDone")), 1000);
-    </script>
+
+    <svg id="MJX-SVG-global-cache" style="display: none;">
+        <defs>
+            <path id="MJX-TEX-D-211D"
+                d="M17 665Q17 672 28 683H221Q415 681 439 677Q461 673 481 667T516 654T544 639T566 623T584 607T597 592T607 578T614 565T618 554L621 548Q626 530 626 497Q626 447 613 419Q578 348 473 326L455 321Q462 310 473 292T517 226T578 141T637 72T686 35Q705 30 705 16Q705 7 693 -1H510Q503 6 404 159L306 310H268V183Q270 67 271 59Q274 42 291 38Q295 37 319 35Q344 35 353 28Q362 17 353 3L346 -1H28Q16 5 16 16Q16 35 55 35Q96 38 101 52Q106 60 106 341T101 632Q95 645 55 648Q17 648 17 665ZM241 35Q238 42 237 45T235 78T233 163T233 337V621L237 635L244 648H133Q136 641 137 638T139 603T141 517T141 341Q141 131 140 89T134 37Q133 36 133 35H241ZM457 496Q457 540 449 570T425 615T400 634T377 643Q374 643 339 648Q300 648 281 635Q271 628 270 610T268 481V346H284Q327 346 375 352Q421 364 439 392T457 496ZM492 537T492 496T488 427T478 389T469 371T464 361Q464 360 465 360Q469 360 497 370Q593 400 593 495Q593 592 477 630L457 637L461 626Q474 611 488 561Q492 537 492 496ZM464 243Q411 317 410 317Q404 317 401 315Q384 315 370 312H346L526 35H619L606 50Q553 109 464 243Z">
+            </path>
+            <path id="MJX-TEX-N-33"
+                d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z">
+            </path>
+        </defs>
+    </svg>
+    <div id="shadowLL">
+        <div></div>
+    </div>
 </body>
 
 </html>

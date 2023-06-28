@@ -3,6 +3,8 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
   <title>HAL Publication List - Minimal Example</title>
 
@@ -19,14 +21,24 @@
     // Liste des keywords de type de publications souhaitées
     const publiList = ["ART"]
     // (Optionel: debug mode)
-    const halDebug = false;
+    const halDebug = true;
   </script>
 
-  <script type="text/javascript">
-    const plugins = {
-      "artscore": {}
-    }
-  </script>
+<script type="text/javascript">
+  const hal_plugins = {
+      "artscore": {
+          "scimago": {
+              "Systems & Control Letters": "Systems and Control Letters",
+          },
+
+          "semantic": {},
+
+          "scopus": {
+              "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
+          }
+      }
+  }
+</script>
 
   <script>
     MathJax = {
