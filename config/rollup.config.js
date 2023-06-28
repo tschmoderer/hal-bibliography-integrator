@@ -20,7 +20,7 @@ export default [
                 path.resolve(__dirname, "../src/js/*"),
                 path.resolve(__dirname, "../src/scss/*")
             ],
-            buildDelay: 2000,
+            buildDelay: 500,
         },
 
         treeshake: false,
@@ -54,7 +54,7 @@ export default [
                 path.resolve(__dirname, "../plugins/wordcloud/js/*"),
                 path.resolve(__dirname, "../plugins/wordcloud/scss/*")
             ], 
-            buildDelay: 2000,
+            buildDelay: 500,
         },
 
         treeshake: false,
@@ -88,7 +88,7 @@ export default [
                 path.resolve(__dirname, "../plugins/artscore/js/*"),
                 path.resolve(__dirname, "../plugins/artscore/scss/*")
             ], 
-            buildDelay: 2000,
+            buildDelay: 500,
         },
 
         treeshake: false,
