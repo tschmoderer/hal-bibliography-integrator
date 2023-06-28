@@ -34,7 +34,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto 1fr;
-    gap: 0px 0px;
+    gap: 0px 0.5rem;
     grid-auto-flow: row;
     grid-template-areas:
         "artscore-hindex-legend artscore-sjr-legend artscore-citescore-legend"

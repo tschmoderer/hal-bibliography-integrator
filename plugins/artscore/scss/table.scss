@@ -2,7 +2,7 @@
 .artscore-container {
     //padding: 0 !important;
     font-size: 0.75em;
-    padding-left: 1rem;
+    padding-left: 10rem;
 }
 
 .artscore-legend, .artscore-item {
@@ -30,9 +30,18 @@
     }
 }
 
+
+@media (max-width: $medium-screen-width) {
+    .artscore-container {
+        //padding: 0 !important;
+        font-size: 0.75em;
+        padding-left: 1rem;
+    }
+}
+
 @media (max-width: $small-screen-width) {
     .artscore-citations i {
-       // padding: 0 !important;
+        padding: 0 !important;
         font-size: 1em;
     }
 

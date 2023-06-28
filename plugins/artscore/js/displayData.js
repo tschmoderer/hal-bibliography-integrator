@@ -111,11 +111,12 @@ export function display_artscore(row, artData) {
 
     if (artData["scimago"]["success"]) {
         // Scimago URL
-        var url = "https://www.scimagojr.com/journalsearch.php?q=" + artData["scimago"]["url"]
+        var url = "https://www.scimagojr.com/journalsearch.php?q=" + artData["scimago"]["url"] + "&tip=sid&clean=0";
 
         // Quartile
         var tmp = document.createElement("a");
         tmp.href = url;
+        tmp.target = "_blank";
         tmp.innerText = artData["scimago"]["categories"][0][1];
 
         // style
