@@ -139,13 +139,13 @@ export function display_artscore(row, artData) {
         itm1.title = artData["scimago"]["categories"][0][0];
 
         // H-index
-        col.querySelector("#artscoreHIndexLegend").innerHTML = "<a href='" + url + "' target='_blank'>h-index</a>";
-        col.querySelector("#artscoreHIndexItem").innerHTML = "<a href='" + url + "' target='_blank'>" + artData["scimago"]["hindex"]+ "</a>";
+        col.querySelector("#artscoreHIndexLegend").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>h-index</a>";
+        col.querySelector("#artscoreHIndexItem").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>" + artData["scimago"]["hindex"]+ "</a>";
 
 
         // SJR 
-        col.querySelector("#artscoreSJRLegend").innerHTML = "<a href='" + url + "' target='_blank'>SJR " + artData["scimago"]["year"] + "</a>";
-        col.querySelector("#artscoreSJRItem").innerHTML = "<a href='" + url + "' target='_blank'>" + artData["scimago"]["sjr"] + "</a>";
+        col.querySelector("#artscoreSJRLegend").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>SJR " + artData["scimago"]["year"] + "</a>";
+        col.querySelector("#artscoreSJRItem").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>" + artData["scimago"]["sjr"] + "</a>";
     } 
 
     // Citation
