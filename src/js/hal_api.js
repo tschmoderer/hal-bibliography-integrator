@@ -20,7 +20,7 @@ async function callHALAPI(parameters, debug = false) {
         // Return 
         return data.response.docs;
     } catch (error) {
-        console.log("Error in call oh HAL API on url : " + url.toString())
+        console.log("Error in call on HAL API on url : " + url.toString())
         console.error(error);
     }
 }

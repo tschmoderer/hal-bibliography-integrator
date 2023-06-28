@@ -1,20 +1,11 @@
 /** HAL MEDIA **/
-.hal-media {
-    height: 94px;
-    width: 74px;
-}
-
 .hal-media img {
     background: #fff !important;
     border: 1px solid #e8e8e8;
-    max-width: none;
-    max-height: none;
-    height: 100%;
-    width: 100%;
 }
 
 .hal-export-pdf {
-    padding-right: 10px;
+    padding-right: 0.5rem;
 }
 
 .hal-export-cite:hover {

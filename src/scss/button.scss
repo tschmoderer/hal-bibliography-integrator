@@ -2,35 +2,29 @@
 /* HAL BUTTON */
 .hal-btn {
     border: none;
-    background-color: transparent;
-    line-height: 1.5;
-    padding: .375rem .75rem;
     text-align: left;
     width: 100%;
-    color: #337ab7;
     font-size: 1.15rem;
     font-weight: 700;
 }
 
 .hal-icon {
-    padding-right: 7px;
+    padding-right: 1rem;
 }
 
 .icon-drop_down {
     float: right;
-    font-size: 1rem;
-    margin-right: 10px;
-    margin-top: 0;
-    padding-top: 8px;
     --fa-rotate-angle: -90deg;
 }
 
 .hal-btn a {
-    transition: padding-left 0.8s;
+    transition: padding-left 0.8s ease-in-out;
 }
 
-.hal-btn:hover a {
-    padding-left: 10px;
+.hal-btn:hover {
     cursor: pointer;
+    a {
+        padding-left: 1rem;
+    }
 }
 /* END HAL BUTTON */
