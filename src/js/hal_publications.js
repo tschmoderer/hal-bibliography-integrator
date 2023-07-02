@@ -1,6 +1,29 @@
-import callHALAPI from "./hal_api";
-import hal_helpers from "./hal_utils";
-import { globalHalData } from "./hal_utils";
+import { callHALAPI } from "./hal_api";
+import { hal_helpers, eventNameHalDone, eventNameArtDone, globalHalData } from "./hal_utils";
+
+function trigger_hal(eventName) {
+    const event = new Event(eventName);
+    document.dispatchEvent(event);
+}
+
+function trigger_hal_article_end() {
+    trigger_hal(eventNameArtDone);
+}
+
+function trigger_hal_end() {
+    trigger_hal(eventNameHalDone);
+    /*if (Object.keys(globalHalData).length === totalNbAPIcall) {
+        if (debug) {
+            console.log(globalHalData);
+        }
+        const event = new Event("halMainDone");
+        document.dispatchEvent(event);
+    } else {
+        setTimeout(trigger_hal_end, 100, debug)
+    }*/
+//    const event = new Event("halMainDone");
+//    document.dispatchEvent(event);
+}
 
 function create_spinner(id = null) {
     var spinner = document.createElement("div");
@@ -48,9 +71,9 @@ function initialHTML(type) {
     return container;
 }
 
-function genListPubli(type) {
+function genListPubli(id, type) {
     const param = {
-        q: "authIdHal_s:" + idhal, 
+        q: "authIdHal_s:" + id, 
         fl: [
             "title_s",
             "halId_s",
@@ -71,7 +94,7 @@ function genListPubli(type) {
         wt: "json",
     }
 
-    callHALAPI(param).then(data => {
+    return callHALAPI(param).then(data => {
         // Sauvegarde des data dans une variable global pour les plugins 
         globalHalData[type] = data;
         // Set title 
@@ -139,6 +162,11 @@ function genListPubli(type) {
 
         // Update mathjax
         MathJax.typeset([document.getElementById(type)]);
+
+        // If article trigger event 
+        if (type === "ART") {
+            trigger_hal_article_end();
+        }
     }).catch(error => console.error(error));
 }
 
@@ -151,7 +179,7 @@ export default function create_hal_publication_list(idhal, pubTypeList, debug = 
         if (debug) {
             console.log("No HAL publication div on this page");
         }
-        return 0;
+        return false;
     } 
 
     if (debug) {
@@ -160,8 +188,15 @@ export default function create_hal_publication_list(idhal, pubTypeList, debug = 
     }
     
     // Sinon pour chaque type de publication on créé la liste
+    var apiCalls = []; 
     for (const p of pubTypeList) {
         hal_publi_div.appendChild(initialHTML(p));
-        genListPubli(p);
+        apiCalls.push(genListPubli(idhal, p));
     }
+
+    Promise.all(apiCalls).then(() => {
+        trigger_hal_end();
+    });
+
+    return true;
 }; 

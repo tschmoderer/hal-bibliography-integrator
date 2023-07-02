@@ -1,6 +1,6 @@
 const hal_api_url = "https://api.archives-ouvertes.fr/search";
 
-async function callHALAPI(parameters, debug = false) {
+export async function callHALAPI(parameters, debug = false) {
     try {
         // Definition des paramètres de la recherche
         const param = new URLSearchParams(parameters);
@@ -24,5 +24,3 @@ async function callHALAPI(parameters, debug = false) {
         console.error(error);
     }
 }
-
-export default callHALAPI;

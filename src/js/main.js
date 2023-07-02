@@ -1,32 +1,19 @@
 import '../scss/main.scss'
 
 import create_hal_publication_list from "./hal_publications";
-//import create_hal_wordcloud from "./hal_wordcloud"; 
-import { globalHalData, totalNbAPIcall } from "./hal_utils";
-import collapse from "./hal_collapse"; 
-import copyCitation from "./hal_citations"; 
+import collapse from "./hal_collapse";
+import copyCitation from "./hal_citations";
 
-function trigger_hal_end(debug) {
-    if (Object.keys(globalHalData).length === totalNbAPIcall) {
-        if (debug) {
-            console.log(globalHalData); 
-        }
-        const event = new Event("halMainDone");
-        document.dispatchEvent(event);
-    } else {
-        setTimeout(trigger_hal_end, 100, debug)
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
+function make_hal(id, pubType, debug) {
     var debug = true;
     if ((typeof halDebug !== "undefined") && (halDebug)) {
-        console.log(idhal);
-        console.log(publiList);
+        console.log(id);
+        console.log(pubType);
     } else {
         debug = false;
     }
 
-    create_hal_publication_list(idhal, publiList, debug);
-    trigger_hal_end(debug);
-});
+    create_hal_publication_list(id, pubType, debug);
+}
+
+document.addEventListener("DOMContentLoaded", make_hal(idhal, publiList, halDebug), false);

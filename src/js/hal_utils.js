@@ -1,4 +1,4 @@
-const hal_helpers = {
+export const hal_helpers = {
     "THESE": {
         "icon": "fa-graduation-cap",
         "title_en": "Thesis",
@@ -31,6 +31,6 @@ const hal_helpers = {
 };
 
 export var globalHalData = {};
-export const totalNbAPIcall = publiList.length;
 
-export default hal_helpers;
+export const eventNameHalDone = "halMainDone"; 
+export const eventNameArtDone = "halArticleDone"; 
