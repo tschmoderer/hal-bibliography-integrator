@@ -60,7 +60,33 @@ const hal_helpers = {
 };
 
 var globalHalData = {};
-const totalNbAPIcall = publiList.length;
+
+const eventNameHalDone = "halMainDone"; 
+const eventNameArtDone = "halArticleDone";
+
+function trigger_hal(eventName) {
+    const event = new Event(eventName);
+    document.dispatchEvent(event);
+}
+
+function trigger_hal_article_end() {
+    trigger_hal(eventNameArtDone);
+}
+
+function trigger_hal_end() {
+    trigger_hal(eventNameHalDone);
+    /*if (Object.keys(globalHalData).length === totalNbAPIcall) {
+        if (debug) {
+            console.log(globalHalData);
+        }
+        const event = new Event("halMainDone");
+        document.dispatchEvent(event);
+    } else {
+        setTimeout(trigger_hal_end, 100, debug)
+    }*/
+//    const event = new Event("halMainDone");
+//    document.dispatchEvent(event);
+}
 
 function create_spinner(id = null) {
     var spinner = document.createElement("div");
@@ -108,9 +134,9 @@ function initialHTML(type) {
     return container;
 }
 
-function genListPubli(type) {
+function genListPubli(id, type) {
     const param = {
-        q: "authIdHal_s:" + idhal, 
+        q: "authIdHal_s:" + id, 
         fl: [
             "title_s",
             "halId_s",
@@ -131,7 +157,7 @@ function genListPubli(type) {
         wt: "json",
     };
 
-    callHALAPI(param).then(data => {
+    return callHALAPI(param).then(data => {
         // Sauvegarde des data dans une variable global pour les plugins 
         globalHalData[type] = data;
         // Set title 
@@ -199,6 +225,11 @@ function genListPubli(type) {
 
         // Update mathjax
         MathJax.typeset([document.getElementById(type)]);
+
+        // If article trigger event 
+        if (type === "ART") {
+            trigger_hal_article_end();
+        }
     }).catch(error => console.error(error));
 }
 
@@ -211,7 +242,7 @@ function create_hal_publication_list(idhal, pubTypeList, debug = false) {
         if (debug) {
             console.log("No HAL publication div on this page");
         }
-        return 0;
+        return false;
     } 
 
     if (debug) {
@@ -220,10 +251,17 @@ function create_hal_publication_list(idhal, pubTypeList, debug = false) {
     }
     
     // Sinon pour chaque type de publication on créé la liste
+    var apiCalls = []; 
     for (const p of pubTypeList) {
         hal_publi_div.appendChild(initialHTML(p));
-        genListPubli(p);
+        apiCalls.push(genListPubli(idhal, p));
     }
+
+    Promise.all(apiCalls).then(() => {
+        trigger_hal_end();
+    });
+
+    return true;
 };
 
 function collapse(elem) {
@@ -261,27 +299,16 @@ function copyCitation(idDoc) {
     }, 3000); 
 }
 
-function trigger_hal_end(debug) {
-    if (Object.keys(globalHalData).length === totalNbAPIcall) {
-        if (debug) {
-            console.log(globalHalData); 
-        }
-        const event = new Event("halMainDone");
-        document.dispatchEvent(event);
-    } else {
-        setTimeout(trigger_hal_end, 100, debug);
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
+function make_hal(id, pubType, debug) {
     var debug = true;
     if ((typeof halDebug !== "undefined") && (halDebug)) {
-        console.log(idhal);
-        console.log(publiList);
+        console.log(id);
+        console.log(pubType);
     } else {
         debug = false;
     }
 
-    create_hal_publication_list(idhal, publiList, debug);
-    trigger_hal_end(debug);
-});
+    create_hal_publication_list(id, pubType, debug);
+}
+
+document.addEventListener("DOMContentLoaded", make_hal(idhal, publiList, halDebug), false);
