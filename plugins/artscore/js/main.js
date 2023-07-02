@@ -41,5 +41,10 @@ document.addEventListener("halArticleDone", () => {
     console.log("Create ArtScore data");
   }
 
-  HALartscore();
+  // on déclenche le plugin si : 
+  // la clé "doit" n'est pas définie dans la variable de config 
+  // la clé "doit" est définie sur true
+  if (!("artscore" in hal_plugins) || !("doit" in hal_plugins["artscore"]) || (hal_plugins["artscore"]["doit"])) {
+    HALartscore();
+  }
 });

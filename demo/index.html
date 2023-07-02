@@ -1,0 +1,251 @@
+<!--
+    TODO:
+    - Ajouter un champ pour ajouter des paramètres aux plugins
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HAL Publication List - Demo</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+        integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../dist/hal.css">
+    <link rel="stylesheet" href="../dist/plugins/wordcloud/hal-wordcloud.css">
+    <link rel="stylesheet" href="../dist/plugins/artscore/hal-artscore.css">
+
+    <script type="text/javascript">
+        const hal_plugins = {
+            "artscore": {
+                "scimago": {},
+
+                "semantic": {},
+
+                "scopus": {
+                    "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
+                }
+            }, 
+
+            "wordcloud": {
+                "doit": true
+            }
+        }
+    </script>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                tags: "all"
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            loader: {
+                load: ['[tex]/html']
+            }
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
+        integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        body {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 2% 3%; 
+            grid-auto-flow: row;
+            grid-template-areas:
+                "header header"
+                "aside main"
+                "footer footer";
+            min-height: 100vh;
+            background-color:#e5e5e5;
+            width: 90%; 
+            margin: auto;
+        }
+
+        header {
+            grid-area: header;
+        }
+
+        aside {
+            grid-area: aside;
+        }
+
+        main {
+            grid-area: main;
+        }
+
+        footer {
+            grid-area: footer;
+            font-size: small;
+            text-align: right;
+        }
+
+        form button {
+            float: right;
+            margin-top: 10px;
+            background-color: #0275ff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5em;
+            font-size: medium;
+            color: white;
+        }
+
+        fieldset {
+            margin-top: 15px;
+        }
+
+        footer a {
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 style="text-align: center;">Hal publications list - Demo</h1>
+    </header>
+    <aside>
+        <form>
+            <label for="idhal">HAL ID</label>
+            <input type="text" id="idhal" name="idhal" size="20" required>
+
+            <fieldset>
+                <legend>Plugins</legend>
+
+                <div>
+                    <input type="checkbox" id="toggle-wc" name="toggle-wc">
+                    <label for="toggle-wc">Wordcloud</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="toggle-artdat" name="toggle-artdat">
+                    <label for="toggle-artdat">Articles data</label>
+                </div>
+            </fieldset>
+
+            <fieldset id="formDocTypes">
+                <legend>Documents Types</legend>
+            </fieldset>
+
+            <button type="submit">Submit</button>
+        </form>
+    </aside>
+    <main>
+        <div id="wordcloud-hal"></div>
+        <div id="publi-hal-all"></div>
+    </main>
+    <footer>
+        &copy; <span id="current-year"></span> Timothée Schmoderer. All rights reserved. 
+        <a href="https://github.com/tschmoderer/hal-publication-list/blob/main/LICENSE">License</a> 
+        <a href="https://github.com/tschmoderer">
+            <i class="fa-brands fa-github"></i>
+        </a>
+    </footer>
+
+    <script type="text/javascript" src="../dist/hal.js"></script>
+    <script type="text/javascript" src="../dist/plugins/wordcloud/hal-wordcloud.js"></script>
+    <script type="text/javascript" src="../dist/plugins/artscore/hal-artscore.js"></script>
+
+    <script>
+        var currentYear = new Date().getFullYear();
+        document.getElementById('current-year').textContent = currentYear;
+    </script>
+
+    <script type="text/javascript">
+        // Get the form element
+        const form = document.querySelector('form');
+        const docTypeToggles = document.getElementById("formDocTypes"); 
+
+        for (const t in hal_helpers) {
+            var toggle = document.createElement('div'); 
+            var input  = document.createElement('input'); 
+            input.type = "checkbox"; 
+            input.id = "toggle-" + t; 
+            input.name = input.id; 
+            var label = document.createElement('label'); 
+            label.htmlFor = input.id; 
+            label.innerText = hal_helpers[t]["title_en"]; 
+            
+            toggle.appendChild(input); 
+            toggle.appendChild(label); 
+
+            docTypeToggles.appendChild(toggle); 
+        }
+
+        // Add a submit event listener to the form
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Reset variables 
+            var idhal = "";
+            var publiList = []
+            var halDebug = false;
+
+            // reset hal containers 
+            document.getElementById("wordcloud-hal").innerHTML = "";
+            document.getElementById("publi-hal-all").innerHTML = "";
+
+            // Get the value of the name field
+            const nameInput = document.querySelector('#idhal');
+            const name = nameInput.value;
+            idhal = nameInput.value;
+
+            // Get the values of the toggle buttons
+            docTypeToggles.querySelectorAll("input").forEach((tog) => {
+                var id = tog.id; 
+                var halElem = id.replace('toggle-',''); 
+
+                const togInput = document.querySelector('#' + id);
+                const togValue = togInput.checked;
+
+                if (togValue) {
+                    publiList.push(halElem); 
+                }
+
+            });
+
+            if (form.querySelector("#toggle-wc").checked) {
+                hal_plugins["wordcloud"]["doit"] = true; 
+            } else {
+                hal_plugins["wordcloud"]["doit"] = false; 
+            }
+
+            if (form.querySelector("#toggle-artdat").checked) {
+                hal_plugins["artscore"]["doit"] = true; 
+            } else {
+                hal_plugins["artscore"]["doit"] = false; 
+            }
+
+            if (publiList.length > 0) {
+                console.log(idhal, publiList);
+                make_hal(idhal, publiList, true);
+            }
+        });
+
+        // Plugins management 
+        // ART SCORE
+        const artPluginCheckbox = form.querySelector("#toggle-artdat"); 
+        artPluginCheckbox.addEventListener("click", function (event) {
+            var toggleART = form.querySelector("#toggle-ART");
+            if (event.target.checked) {
+                toggleART.checked = true; 
+                toggleART.onclick = "return false;";
+            } else {
+                toggleART.onclick = "";
+            }
+        });
+    </script>
+</body>
+
+</html>
