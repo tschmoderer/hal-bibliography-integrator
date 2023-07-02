@@ -73,9 +73,9 @@ if (hal_wordcloud_div === null) {
         console.log("No HAL wordcloud div on this page");
     }
 } else {
-    init_wordcloud(hal_wordcloud_div);
-
     document.addEventListener("halMainDone", () => {
+        init_wordcloud(hal_wordcloud_div);
+
         if ((typeof halDebug !== "undefined") && (halDebug)) {
             console.log("Create wordcloud of keywords in ");
             console.log(hal_wordcloud_div);
@@ -83,6 +83,5 @@ if (hal_wordcloud_div === null) {
     
         // Sinon on créé le nuage de mot
         HALwordcloud(hal_wordcloud_div);
-
     });
 }

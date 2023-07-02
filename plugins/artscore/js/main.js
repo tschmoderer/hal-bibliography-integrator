@@ -1,7 +1,5 @@
 import '../scss/main.scss';
 
-import { make_artscore_container } from './builder';
-import { fetchJournalData } from './scopus';
 import { get_artdata } from './getData';
 import { display_artscore } from './displayData';
 
@@ -36,9 +34,9 @@ function HALartscore() {
 }
 
 /* 
-  Quand l'évenement HalMainDone est envoyé, on éclenche la création des infos du plugin 
+  Quand l'évenement halArticleDone est envoyé, on éclenche la création des infos du plugin 
 */
-document.addEventListener("halMainDone", () => {
+document.addEventListener("halArticleDone", () => {
   if ((typeof halDebug !== "undefined") && (halDebug)) {
     console.log("Create ArtScore data");
   }

@@ -1,0 +1,1296 @@
+<html lang="en" class=" pbxzqctn idc0_343">
+
+<head>
+    <script type="text/javascript" src="/___vscode_livepreview_injected_script"></script>
+    <meta charset="utf-8">
+
+    <title>HAL Publication List - Minimal Example</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+        integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="../../hal.css">
+    <link rel="stylesheet" href="hal-wordcloud.css">
+
+    <script type="text/javascript">
+        // idHal personalisé
+        const idhal = "timothee-schmoderer";
+        // Liste des keywords de type de publications souhaitées
+        const publiList = ["THESE", "ART", "UNDEFINED", "COMM"]
+        // (Optionel: debug mode)
+        const halDebug = false;
+    </script>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                tags: "all"
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            loader: {
+                load: ['[tex]/html']
+            }
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
+        integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/input/tex/extensions/html.js"
+        charset="UTF-8"></script>
+    <style type="text/css">
+        .CtxtMenu_InfoClose {
+            top: .2em;
+            right: .2em;
+        }
+
+        .CtxtMenu_InfoContent {
+            overflow: auto;
+            text-align: left;
+            font-size: 80%;
+            padding: .4em .6em;
+            border: 1px inset;
+            margin: 1em 0px;
+            max-height: 20em;
+            max-width: 30em;
+            background-color: #EEEEEE;
+            white-space: normal;
+        }
+
+        .CtxtMenu_Info.CtxtMenu_MousePost {
+            outline: none;
+        }
+
+        .CtxtMenu_Info {
+            position: fixed;
+            left: 50%;
+            width: auto;
+            text-align: center;
+            border: 3px outset;
+            padding: 1em 2em;
+            background-color: #DDDDDD;
+            color: black;
+            cursor: default;
+            font-family: message-box;
+            font-size: 120%;
+            font-style: normal;
+            text-indent: 0;
+            text-transform: none;
+            line-height: normal;
+            letter-spacing: normal;
+            word-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            float: none;
+            z-index: 201;
+            border-radius: 15px;
+            /* Opera 10.5 and IE9 */
+            -webkit-border-radius: 15px;
+            /* Safari and Chrome */
+            -moz-border-radius: 15px;
+            /* Firefox */
+            -khtml-border-radius: 15px;
+            /* Konqueror */
+            box-shadow: 0px 10px 20px #808080;
+            /* Opera 10.5 and IE9 */
+            -webkit-box-shadow: 0px 10px 20px #808080;
+            /* Safari 3 & Chrome */
+            -moz-box-shadow: 0px 10px 20px #808080;
+            /* Forefox 3.5 */
+            -khtml-box-shadow: 0px 10px 20px #808080;
+            /* Konqueror */
+            filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true");
+            /* IE */
+        }
+    </style>
+    <style type="text/css">
+        .CtxtMenu_MenuClose {
+            position: absolute;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid #AAA;
+            border-radius: 18px;
+            -webkit-border-radius: 18px;
+            /* Safari and Chrome */
+            -moz-border-radius: 18px;
+            /* Firefox */
+            -khtml-border-radius: 18px;
+            /* Konqueror */
+            font-family: "Courier New", Courier;
+            font-size: 24px;
+            color: #F0F0F0
+        }
+
+        .CtxtMenu_MenuClose span {
+            display: block;
+            background-color: #AAA;
+            border: 1.5px solid;
+            border-radius: 18px;
+            -webkit-border-radius: 18px;
+            /* Safari and Chrome */
+            -moz-border-radius: 18px;
+            /* Firefox */
+            -khtml-border-radius: 18px;
+            /* Konqueror */
+            line-height: 0;
+            padding: 8px 0 6px
+                /* may need to be browser-specific */
+        }
+
+        .CtxtMenu_MenuClose:hover {
+            color: white !important;
+            border: 2px solid #CCC !important
+        }
+
+        .CtxtMenu_MenuClose:hover span {
+            background-color: #CCC !important
+        }
+
+        .CtxtMenu_MenuClose:hover:focus {
+            outline: none
+        }
+    </style>
+    <style type="text/css">
+        .CtxtMenu_Menu {
+            position: absolute;
+            background-color: white;
+            color: black;
+            width: auto;
+            padding: 5px 0px;
+            border: 1px solid #CCCCCC;
+            margin: 0;
+            cursor: default;
+            font: menu;
+            text-align: left;
+            text-indent: 0;
+            text-transform: none;
+            line-height: normal;
+            letter-spacing: normal;
+            word-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            float: none;
+            z-index: 201;
+            border-radius: 5px;
+            /* Opera 10.5 and IE9 */
+            -webkit-border-radius: 5px;
+            /* Safari and Chrome */
+            -moz-border-radius: 5px;
+            /* Firefox */
+            -khtml-border-radius: 5px;
+            /* Konqueror */
+            box-shadow: 0px 10px 20px #808080;
+            /* Opera 10.5 and IE9 */
+            -webkit-box-shadow: 0px 10px 20px #808080;
+            /* Safari 3 & Chrome */
+            -moz-box-shadow: 0px 10px 20px #808080;
+            /* Forefox 3.5 */
+            -khtml-box-shadow: 0px 10px 20px #808080;
+            /* Konqueror */
+        }
+
+        .CtxtMenu_MenuItem {
+            padding: 1px 2em;
+            background: transparent;
+        }
+
+        .CtxtMenu_MenuArrow {
+            position: absolute;
+            right: .5em;
+            padding-top: .25em;
+            color: #666666;
+            font-family: null;
+            font-size: .75em
+        }
+
+        .CtxtMenu_MenuActive .CtxtMenu_MenuArrow {
+            color: white
+        }
+
+        .CtxtMenu_MenuArrow.CtxtMenu_RTL {
+            left: .5em;
+            right: auto
+        }
+
+        .CtxtMenu_MenuCheck {
+            position: absolute;
+            left: .7em;
+            font-family: null
+        }
+
+        .CtxtMenu_MenuCheck.CtxtMenu_RTL {
+            right: .7em;
+            left: auto
+        }
+
+        .CtxtMenu_MenuRadioCheck {
+            position: absolute;
+            left: .7em;
+        }
+
+        .CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {
+            right: .7em;
+            left: auto
+        }
+
+        .CtxtMenu_MenuInputBox {
+            padding-left: 1em;
+            right: .5em;
+            color: #666666;
+            font-family: null;
+        }
+
+        .CtxtMenu_MenuInputBox.CtxtMenu_RTL {
+            left: .1em;
+        }
+
+        .CtxtMenu_MenuComboBox {
+            left: .1em;
+            padding-bottom: .5em;
+        }
+
+        .CtxtMenu_MenuSlider {
+            left: .1em;
+        }
+
+        .CtxtMenu_SliderValue {
+            position: absolute;
+            right: .1em;
+            padding-top: .25em;
+            color: #333333;
+            font-size: .75em
+        }
+
+        .CtxtMenu_SliderBar {
+            outline: none;
+            background: #d3d3d3
+        }
+
+        .CtxtMenu_MenuLabel {
+            padding: 1px 2em 3px 1.33em;
+            font-style: italic
+        }
+
+        .CtxtMenu_MenuRule {
+            border-top: 1px solid #DDDDDD;
+            margin: 4px 3px;
+        }
+
+        .CtxtMenu_MenuDisabled {
+            color: GrayText
+        }
+
+        .CtxtMenu_MenuActive {
+            background-color: #606872;
+            color: white;
+        }
+
+        .CtxtMenu_MenuDisabled:focus {
+            background-color: #E8E8E8
+        }
+
+        .CtxtMenu_MenuLabel:focus {
+            background-color: #E8E8E8
+        }
+
+        .CtxtMenu_ContextMenu:focus {
+            outline: none
+        }
+
+        .CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {
+            outline: none
+        }
+
+        .CtxtMenu_SelectionMenu {
+            position: relative;
+            float: left;
+            border-bottom: none;
+            box-shadow: none;
+            border-radius: 0px;
+            -webkit-box-shadow: none;
+            -webkit-border-radius: 0px;
+        }
+
+        .CtxtMenu_SelectionItem {
+            padding-right: 1em;
+        }
+
+        .CtxtMenu_Selection {
+            right: 40%;
+            width: 50%;
+        }
+
+        .CtxtMenu_SelectionBox {
+            padding: 0em;
+            max-height: 20em;
+            max-width: none;
+            background-color: #FFFFFF;
+        }
+
+        .CtxtMenu_SelectionDivider {
+            clear: both;
+            border-top: 2px solid #000000;
+        }
+
+        .CtxtMenu_Menu .CtxtMenu_MenuClose {
+            top: -10px;
+            left: -10px
+        }
+    </style>
+    <style id="MJX-SVG-styles">
+        mjx-container[jax="SVG"] {
+            direction: ltr;
+        }
+
+        mjx-container[jax="SVG"]>svg {
+            overflow: visible;
+            min-height: 1px;
+            min-width: 1px;
+        }
+
+        mjx-container[jax="SVG"]>svg a {
+            fill: blue;
+            stroke: blue;
+        }
+
+        mjx-assistive-mml {
+            position: absolute !important;
+            top: 0px;
+            left: 0px;
+            clip: rect(1px, 1px, 1px, 1px);
+            padding: 1px 0px 0px 0px !important;
+            border: 0px !important;
+            display: block !important;
+            width: auto !important;
+            overflow: hidden !important;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        mjx-assistive-mml[display="block"] {
+            width: 100% !important;
+        }
+
+        mjx-container[jax="SVG"][display="true"] {
+            display: block;
+            text-align: center;
+            margin: 1em 0;
+        }
+
+        mjx-container[jax="SVG"][display="true"][width="full"] {
+            display: flex;
+        }
+
+        mjx-container[jax="SVG"][justify="left"] {
+            text-align: left;
+        }
+
+        mjx-container[jax="SVG"][justify="right"] {
+            text-align: right;
+        }
+
+        g[data-mml-node="merror"]>g {
+            fill: red;
+            stroke: red;
+        }
+
+        g[data-mml-node="merror"]>rect[data-background] {
+            fill: yellow;
+            stroke: none;
+        }
+
+        g[data-mml-node="mtable"]>line[data-line],
+        svg[data-table]>g>line[data-line] {
+            stroke-width: 70px;
+            fill: none;
+        }
+
+        g[data-mml-node="mtable"]>rect[data-frame],
+        svg[data-table]>g>rect[data-frame] {
+            stroke-width: 70px;
+            fill: none;
+        }
+
+        g[data-mml-node="mtable"]>.mjx-dashed,
+        svg[data-table]>g>.mjx-dashed {
+            stroke-dasharray: 140;
+        }
+
+        g[data-mml-node="mtable"]>.mjx-dotted,
+        svg[data-table]>g>.mjx-dotted {
+            stroke-linecap: round;
+            stroke-dasharray: 0, 140;
+        }
+
+        g[data-mml-node="mtable"]>g>svg {
+            overflow: visible;
+        }
+
+        [jax="SVG"] mjx-tool {
+            display: inline-block;
+            position: relative;
+            width: 0;
+            height: 0;
+        }
+
+        [jax="SVG"] mjx-tool>mjx-tip {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        mjx-tool>mjx-tip {
+            display: inline-block;
+            padding: .2em;
+            border: 1px solid #888;
+            font-size: 70%;
+            background-color: #F8F8F8;
+            color: black;
+            box-shadow: 2px 2px 5px #AAAAAA;
+        }
+
+        g[data-mml-node="maction"][data-toggle] {
+            cursor: pointer;
+        }
+
+        mjx-status {
+            display: block;
+            position: fixed;
+            left: 1em;
+            bottom: 1em;
+            min-width: 25%;
+            padding: .2em .4em;
+            border: 1px solid #888;
+            font-size: 90%;
+            background-color: #F8F8F8;
+            color: black;
+        }
+
+        foreignObject[data-mjx-xml] {
+            font-family: initial;
+            line-height: normal;
+            overflow: visible;
+        }
+
+        mjx-container[jax="SVG"] path[data-c],
+        mjx-container[jax="SVG"] use[data-c] {
+            stroke-width: 3;
+        }
+    </style>
+</head>
+
+<body style="background-color:#e5e5e5; width: 80%; margin: auto;">
+    <h1 style="text-align: center;">Minimal Example - Plugin Wordcloud</h1>
+    <div id="wordcloud-hal">
+        <div class="hal-spinner" id="hal-wordcloud-spinner" style="display: none;">
+            <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <div class="hal-cloud-word"><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Multi-Task Model"
+                target="_blank">Multi-Task Model</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Coexisting-Real-Root-Induced-Dominancy"
+                target="_blank">Coexisting-Real-Root-Induced-Dominancy</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Quadratic nonholonomic constraint"
+                target="_blank">Quadratic nonholonomic constraint</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Stability analysis"
+                target="_blank">Stability analysis</a><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Dictionary Learning"
+                target="_blank">Dictionary Learning</a><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Infinitesimal symmetries"
+                target="_blank">Infinitesimal symmetries</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Motion planing"
+                target="_blank">Motion planing</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Time-delay differential equation"
+                target="_blank">Time-delay differential equation</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Stability and stabilization"
+                target="_blank">Stability and stabilization</a><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Optical Flow"
+                target="_blank">Optical Flow</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Control-affine system"
+                target="_blank">Control-affine system</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Coexisting-real-root-induced-dominancy"
+                target="_blank">Coexisting-real-root-induced-dominancy</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Control curvature"
+                target="_blank">Control curvature</a><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Spectral method"
+                target="_blank">Spectral method</a><a class="keyword keyword-10"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Normal forms"
+                target="_blank">Normal forms</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Control-affine systems"
+                target="_blank">Control-affine systems</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Exponential decay"
+                target="_blank">Exponential decay</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Trivial control systems"
+                target="_blank">Trivial control systems</a><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=MRI Reconstruction"
+                target="_blank">MRI Reconstruction</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Continuation method"
+                target="_blank">Continuation method</a><a class="keyword keyword-4"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Nonlinear control system"
+                target="_blank">Nonlinear control system</a><a class="keyword keyword-10"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Feedback equivalence"
+                target="_blank">Feedback equivalence</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Time-delay equations"
+                target="_blank">Time-delay equations</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Tikhonov regularisation"
+                target="_blank">Tikhonov regularisation</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Lie algebra of infinitesimal symmetries"
+                target="_blank">Lie algebra of infinitesimal symmetries</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Root assignment"
+                target="_blank">Root assignment</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Partial pole placement"
+                target="_blank">Partial pole placement</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Quadratic nonholonomic constraints"
+                target="_blank">Quadratic nonholonomic constraints</a><a class="keyword keyword-1"
+                href="https://hal.science/search/?q=*&amp;authIdHal_s=timothee-schmoderer&amp;keyword_s=Conic systems"
+                target="_blank">Conic systems</a></div>
+    </div>
+    <div id="publi-hal-all">
+        <div class="hal-list" id="hal-THESE" style="display: block;"><button class="hal-btn" data-target="#THESE"
+                onclick="collapse(this)"><i class="hal-icon fa-solid fa-graduation-cap"></i><a
+                    id="hal-THESE-card-title">Thesis (1)</a><i
+                    class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
+            <div class="hal-spinner" id="hal-THESE-spinner" style="display: none;">
+                <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="hal-content" id="THESE">
+                <table class="hal-results-table">
+                    <tbody id="hal-THESE-table">
+                        <tr id="row-tel-03767853">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/tel-03767853/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9078002/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/tel-03767853" target="_blank">
+                                    <h3 class="title-results">Study of control systems under quadratic nonholonomic
+                                        constraints. Motion planning, introduction to the regularised continuation
+                                        method.</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a><br>
+                                <div class="citation-results">Optimization and Control [math.OC]. Normandie Université,
+                                    2022. English. <a target="_blank" href="https://www.theses.fr/2022NORMIR10">⟨NNT :
+                                        2022NORMIR10⟩</a></div>
+                                <div class="export-result"><a href="https://hal.science/tel-03767853/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('tel-03767853')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-tel-03767853">
+                                        @phdthesis{schmoderer:tel-03767853,
+                                        TITLE = {{Study of control systems under quadratic nonholonomic constraints.
+                                        Motion planning, introduction to the regularised continuation method.}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e},
+                                        URL = {https://hal.science/tel-03767853},
+                                        NUMBER = {2022NORMIR10},
+                                        SCHOOL = {{Normandie Universit{\'e}}},
+                                        YEAR = {2022},
+                                        MONTH = Jun,
+                                        KEYWORDS = {Nonlinear control system ; Quadratic nonholonomic constraints ;
+                                        Feedback equivalence ; Normal forms ; Lie algebra of infinitesimal symmetries ;
+                                        Motion planing ; Continuation method ; Tikhonov regularisation ; Syst{\`e}me
+                                        non-lineaire de contr{\^o}le ; Contraintes non holonomes quadratiques ;
+                                        Equivalence par bouclage ; Formes normales ; Alg{\`e}bre de Lie des
+                                        symm{\'e}tries ininit{\'e}simales ; Planification de trajectoires ; M{\'e}thode
+                                        de continuation ; R{\'e}gularisation de Tikhonov},
+                                        TYPE = {Theses},
+                                        PDF = {https://hal.science/tel-03767853/file/manuscrit_these_tschmoderer.pdf},
+                                        HAL_ID = {tel-03767853},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="hal-list" id="hal-ART" style="display: block;"><button class="hal-btn" data-target="#ART"
+                onclick="collapse(this)"><i class="hal-icon fa-solid fa-newspaper"></i><a
+                    id="hal-ART-card-title">Journal articles (2)</a><i
+                    class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
+            <div class="hal-spinner" id="hal-ART-spinner" style="display: none;">
+                <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="hal-content" id="ART">
+                <table class="hal-results-table">
+                    <tbody id="hal-ART-table">
+                        <tr id="row-hal-03677902">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/hal-03677902/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9051088/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03677902" target="_blank">
+                                    <h3 class="title-results">Null-forms of conic systems in <mjx-container
+                                            class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
+                                            ctxtmenu_counter="2" style="position: relative;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
+                                                role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                style="vertical-align: 0px;">
+                                                <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                    transform="scale(1,-1)">
+                                                    <g data-mml-node="math">
+                                                        <g data-mml-node="msup">
+                                                            <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                <g data-mml-node="mi">
+                                                                    <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                    </use>
+                                                                </g>
+                                                            </g>
+                                                            <g data-mml-node="mn"
+                                                                transform="translate(755,363) scale(0.707)">
+                                                                <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                    xmlns="http://www.w3.org/1998/Math/MathML">
+                                                    <msup>
+                                                        <mrow data-mjx-texclass="ORD">
+                                                            <mi mathvariant="double-struck">R</mi>
+                                                        </mrow>
+                                                        <mn>3</mn>
+                                                    </msup>
+                                                </math></mjx-assistive-mml></mjx-container> are determined by their
+                                        symmetries</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                    alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                <div class="citation-results"><i>Systems &amp; Control Letters</i>, 2022, 170, <a
+                                        target="_blank"
+                                        href="https://dx.doi.org/10.1016/j.sysconle.2022.105397">⟨10.1016/j.sysconle.2022.105397⟩</a>
+                                </div>
+                                <div class="export-result"><a href="https://hal.science/hal-03677902/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03677902')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03677902">
+                                        @article{schmoderer:hal-03677902,
+                                        TITLE = {{Null-forms of conic systems in <mjx-container
+                                            class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0"
+                                            ctxtmenu_counter="3" style="position: relative;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="2.621ex" height="1.885ex"
+                                                role="img" focusable="false" viewBox="0 -833.2 1158.6 833.2"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                style="vertical-align: 0px;">
+                                                <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                    transform="scale(1,-1)">
+                                                    <g data-mml-node="math">
+                                                        <g data-mml-node="msup">
+                                                            <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                <g data-mml-node="mi">
+                                                                    <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                    </use>
+                                                                </g>
+                                                            </g>
+                                                            <g data-mml-node="mn"
+                                                                transform="translate(755,363) scale(0.707)">
+                                                                <use data-c="33" xlink:href="#MJX-TEX-N-33"></use>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                    xmlns="http://www.w3.org/1998/Math/MathML">
+                                                    <msup>
+                                                        <mrow data-mjx-texclass="ORD">
+                                                            <mi mathvariant="double-struck">R</mi>
+                                                        </mrow>
+                                                        <mn>3</mn>
+                                                    </msup>
+                                                </math></mjx-assistive-mml></mjx-container> are determined by their
+                                        symmetries}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                        URL = {https://hal.science/hal-03677902},
+                                        JOURNAL = {{Systems \&amp; Control Letters}},
+                                        VOLUME = {170},
+                                        YEAR = {2022},
+                                        MONTH = Nov,
+                                        DOI = {10.1016/j.sysconle.2022.105397},
+                                        KEYWORDS = {Control-affine system ; Conic systems ; Feedback equivalence ;
+                                        Infinitesimal symmetries ; Normal forms},
+                                        PDF =
+                                        {https://hal.science/hal-03677902/file/article_scl_tschmoderer_wrespondek.pdf},
+                                        HAL_ID = {hal-03677902},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-03329929">
+                            <td class="d-sm-table-cell"><a href="https://uca.hal.science/hal-03329929/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/8867070/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03329929" target="_blank">
+                                    <h3 class="title-results">Learning optical flow for fast MRI reconstruction</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Angelica I Aviles-Rivero"
+                                    alt="Documents de l auteur" target="_blank">Angelica I Aviles-Rivero</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Veronica Corona"
+                                    alt="Documents de l auteur" target="_blank">Veronica Corona</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Noémie Debroux"
+                                    alt="Documents de l auteur" target="_blank">Noémie Debroux</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Carola-Bibiane Schönlieb"
+                                    alt="Documents de l auteur" target="_blank">Carola-Bibiane Schönlieb</a><br>
+                                <div class="citation-results"><i>Inverse Problems</i>, 2021, 37 (9), pp.095007. <a
+                                        target="_blank"
+                                        href="https://dx.doi.org/10.1088/1361-6420/ac164a">⟨10.1088/1361-6420/ac164a⟩</a>
+                                </div>
+                                <div class="export-result"><a href="https://uca.hal.science/hal-03329929/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03329929')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03329929">
+                                        @article{schmoderer:hal-03329929,
+                                        TITLE = {{Learning optical flow for fast MRI reconstruction}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Aviles-Rivero, Angelica I and Corona,
+                                        Veronica and Debroux, No{\'e}mie and Sch{\"o}nlieb, Carola-Bibiane},
+                                        URL = {https://uca.hal.science/hal-03329929},
+                                        JOURNAL = {{Inverse Problems}},
+                                        PUBLISHER = {{IOP Publishing}},
+                                        VOLUME = {37},
+                                        NUMBER = {9},
+                                        PAGES = {095007},
+                                        YEAR = {2021},
+                                        MONTH = Aug,
+                                        DOI = {10.1088/1361-6420/ac164a},
+                                        KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ; Multi-Task
+                                        Model},
+                                        PDF = {https://uca.hal.science/hal-03329929/file/MRI_reconstruction%288%29.pdf},
+                                        HAL_ID = {hal-03329929},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="hal-list" id="hal-UNDEFINED" style="display: block;"><button class="hal-btn"
+                data-target="#UNDEFINED" onclick="collapse(this)"><i class="hal-icon fa-solid fa-file-pen"></i><a
+                    id="hal-UNDEFINED-card-title">Preprint (3)</a><i
+                    class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
+            <div class="hal-spinner" id="hal-UNDEFINED-spinner" style="display: none;">
+                <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="hal-content" id="UNDEFINED">
+                <table class="hal-results-table">
+                    <tbody id="hal-UNDEFINED-table">
+                        <tr id="row-hal-04145041">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/hal-04145041/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9248220/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-04145041" target="_blank">
+                                    <h3 class="title-results">Insights on equidistributed real spectral values in
+                                        second-order delay systems: perspectives in partial pole placement</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Islam Boussaada"
+                                    alt="Documents de l auteur" target="_blank">Islam Boussaada</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Silviu-Iulian Niculescu"
+                                    alt="Documents de l auteur" target="_blank">Silviu-Iulian Niculescu</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Fazia Bedouhene"
+                                    alt="Documents de l auteur" target="_blank">Fazia Bedouhene</a><br>
+                                <div class="citation-results">2023</div>
+                                <div class="export-result"><a href="https://hal.science/hal-04145041/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-04145041')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-04145041">
+                                        @unpublished{schmoderer:hal-04145041,
+                                        TITLE = {{Insights on equidistributed real spectral values in second-order delay
+                                        systems: perspectives in partial pole placement}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Boussaada, Islam and Niculescu,
+                                        Silviu-Iulian and Bedouhene, Fazia},
+                                        URL = {https://hal.science/hal-04145041},
+                                        NOTE = {working paper or preprint},
+                                        YEAR = {2023},
+                                        MONTH = Jun,
+                                        KEYWORDS = {Time-delay differential equation ; Stability and stabilization ;
+                                        Spectral method ; Exponential decay ; Partial pole placement ;
+                                        Coexisting-real-root-induced-dominancy},
+                                        PDF = {https://hal.science/hal-04145041/file/scl-n2m1-article.pdf},
+                                        HAL_ID = {hal-04145041},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-03971788">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/hal-03971788/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9160116/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03971788" target="_blank">
+                                    <h3 class="title-results">Trivialisable control-affine systems revisited</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                    alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                <div class="citation-results">2023</div>
+                                <div class="export-result"><a href="https://hal.science/hal-03971788/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03971788')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03971788">
+                                        @unpublished{schmoderer:hal-03971788,
+                                        TITLE = {{Trivialisable control-affine systems revisited}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                        URL = {https://hal.science/hal-03971788},
+                                        NOTE = {working paper or preprint},
+                                        YEAR = {2023},
+                                        MONTH = Feb,
+                                        KEYWORDS = {Control-affine systems ; Feedback equivalence ; Trivial control
+                                        systems ; Control curvature ; Normal forms ; Infinitesimal symmetries},
+                                        PDF =
+                                        {https://hal.science/hal-03971788/file/trivial_systems_tschmoderer_wrespondek.pdf},
+                                        HAL_ID = {hal-03971788},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-03634034">
+                            <td class="d-sm-table-cell"><a
+                                    href="https://hal-normandie-univ.archives-ouvertes.fr/hal-03634034/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9065733/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03634034" target="_blank">
+                                    <h3 class="title-results">Conic nonholonomic constraints on surfaces and control
+                                        systems</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                    alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                <div class="citation-results">2022</div>
+                                <div class="export-result"><a
+                                        href="https://hal-normandie-univ.archives-ouvertes.fr/hal-03634034/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03634034')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03634034">
+                                        @unpublished{schmoderer:hal-03634034,
+                                        TITLE = {{Conic nonholonomic constraints on surfaces and control systems}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                        URL = {https://hal-normandie-univ.archives-ouvertes.fr/hal-03634034},
+                                        NOTE = {33 pages, 5 appendices, preprint},
+                                        YEAR = {2022},
+                                        MONTH = Aug,
+                                        PDF =
+                                        {https://hal-normandie-univ.archives-ouvertes.fr/hal-03634034/file/article_jdcs_tschmoderer_wrespondek.pdf},
+                                        HAL_ID = {hal-03634034},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="hal-list" id="hal-COMM" style="display: block;"><button class="hal-btn" data-target="#COMM"
+                onclick="collapse(this)"><i class="hal-icon fa-solid fa-microphone"></i><a
+                    id="hal-COMM-card-title">Communications (6)</a><i
+                    class="hal-icon icon-drop_down fa-solid fa-caret-down"></i></button>
+            <div class="hal-spinner" id="hal-COMM-spinner" style="display: none;">
+                <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="hal-content" id="COMM">
+                <table class="hal-results-table">
+                    <tbody id="hal-COMM-table">
+                        <tr id="row-hal-04028886">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/hal-04028886/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9187563/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-04028886" target="_blank">
+                                    <h3 class="title-results">On Quasipolynomials Real Roots Coexistence: Effect on
+                                        Stability of Time-Delay Systems with Perspectives in Partial Pole Placement</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Islam Boussaada"
+                                    alt="Documents de l auteur" target="_blank">Islam Boussaada</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Silviu-Iulian Niculescu"
+                                    alt="Documents de l auteur" target="_blank">Silviu-Iulian Niculescu</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Fazia Bedouhene"
+                                    alt="Documents de l auteur" target="_blank">Fazia Bedouhene</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Amira Remadna"
+                                    alt="Documents de l auteur" target="_blank">Amira Remadna</a><br>
+                                <div class="citation-results"><i>ECC 2023 - European Control Conference</i>, Jun 2023,
+                                    Bucharest, Romania</div>
+                                <div class="export-result"><a href="https://hal.science/hal-04028886/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-04028886')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-04028886">
+                                        @inproceedings{schmoderer:hal-04028886,
+                                        TITLE = {{On Quasipolynomials Real Roots Coexistence: Effect on Stability of
+                                        Time-Delay Systems with Perspectives in Partial Pole Placement}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Boussaada, Islam and Niculescu,
+                                        Silviu-Iulian and Bedouhene, Fazia and Remadna, Amira},
+                                        URL = {https://hal.science/hal-04028886},
+                                        BOOKTITLE = {{ECC 2023 - European Control Conference}},
+                                        ADDRESS = {Bucharest, Romania},
+                                        YEAR = {2023},
+                                        MONTH = Jun,
+                                        KEYWORDS = {Time-delay equations ; Coexisting-Real-Root-Induced-Dominancy ;
+                                        Stability analysis ; Spectral method ; Root assignment},
+                                        PDF = {https://hal.science/hal-04028886/file/crrid_tschmoderer_ecc23.pdf},
+                                        HAL_ID = {hal-04028886},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-03704279">
+                            <td class="d-sm-table-cell"><a
+                                    href="https://hal-normandie-univ.archives-ouvertes.fr/hal-03704279/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9189165/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03704279" target="_blank">
+                                    <h3 class="title-results">Control systems with paraboloid nonholonomic constraints
+                                    </h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a><br>
+                                <div class="citation-results"><i>Workshop on "Optimal Control Theory"</i>, Jun 2022,
+                                    Rouen, France</div>
+                                <div class="export-result"><a
+                                        href="https://hal-normandie-univ.archives-ouvertes.fr/hal-03704279/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03704279')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03704279">
+                                        @inproceedings{schmoderer:hal-03704279,
+                                        TITLE = {{Control systems with paraboloid nonholonomic constraints}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e},
+                                        URL = {https://hal-normandie-univ.archives-ouvertes.fr/hal-03704279},
+                                        BOOKTITLE = {{Workshop on ''Optimal Control Theory''}},
+                                        ADDRESS = {Rouen, France},
+                                        YEAR = {2022},
+                                        MONTH = Jun,
+                                        KEYWORDS = {Nonlinear control system ; Quadratic nonholonomic constraint ;
+                                        Feedback equivalence ; Normal forms},
+                                        PDF =
+                                        {https://hal-normandie-univ.archives-ouvertes.fr/hal-03704279/file/abstract_tschmoderer.pdf},
+                                        HAL_ID = {hal-03704279},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-03677916">
+                            <td class="d-sm-table-cell"><a href="https://hal.science/hal-03677916/document">
+                                    <div class="hal-media d-sm-block"><img
+                                            src="https://thumb.ccsd.cnrs.fr/9187635/thumb" alt="Image document"></div>
+                                </a></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-03677916" target="_blank">
+                                    <h3 class="title-results">Planification de trajectoires des systèmes dynamiques
+                                        contrôlés par la méthode de continuation régularisée</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=T Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">T Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=E Trélat"
+                                    alt="Documents de l auteur" target="_blank">E Trélat</a><br>
+                                <div class="citation-results"><i>Congrès des Jeunes Chercheurs en Mathématiques
+                                        Appliquées</i>, Oct 2021, Palaiseau, France</div>
+                                <div class="export-result"><a href="https://hal.science/hal-03677916/document"
+                                        target="_blank" class="hal-export-pdf"><i
+                                            class="fa-regular fa-file-pdf"></i></a><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-03677916')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-03677916">
+                                        @inproceedings{schmoderer:hal-03677916,
+                                        TITLE = {{Planification de trajectoires des syst{\`e}mes dynamiques
+                                        contr{\^o}l{\'e}s par la m{\'e}thode de continuation r{\'e}gularis{\'e}e}},
+                                        AUTHOR = {Schmoderer, T and Tr{\'e}lat, E},
+                                        URL = {https://hal.science/hal-03677916},
+                                        BOOKTITLE = {{Congr{\`e}s des Jeunes Chercheurs en Math{\'e}matiques
+                                        Appliqu{\'e}es}},
+                                        ADDRESS = {Palaiseau, France},
+                                        YEAR = {2021},
+                                        MONTH = Oct,
+                                        KEYWORDS = {Syst{\`e}mes dynamiques ; Th{\'e}orie du contr{\^o}le ;
+                                        Planification de trajectoires ; M{\'e}thode de continuation par homotopie ;
+                                        R{\'e}gularisation de Tikhonov},
+                                        PDF = {https://hal.science/hal-03677916/file/abstract_tschmoderer.pdf},
+                                        HAL_ID = {hal-03677916},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-04032788">
+                            <td class="d-sm-table-cell"></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-04032788" target="_blank">
+                                    <h3 class="title-results">Conic nonholonomic constraints on surfaces and control
+                                        systems</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                    alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                <div class="citation-results"><i>13ème journée de la fédération Normandie Mathématiques
+                                        2021</i>, Jun 2021, Rouen, France</div>
+                                <div class="export-result"><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-04032788')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-04032788">
+                                        @inproceedings{schmoderer:hal-04032788,
+                                        TITLE = {{Conic nonholonomic constraints on surfaces and control systems}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                        URL = {https://hal-normandie-univ.archives-ouvertes.fr/hal-04032788},
+                                        BOOKTITLE = {{13{\`e}me journ{\'e}e de la f{\'e}d{\'e}ration Normandie
+                                        Math{\'e}matiques 2021}},
+                                        ADDRESS = {Rouen, France},
+                                        YEAR = {2021},
+                                        MONTH = Jun,
+                                        HAL_ID = {hal-04032788},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-04032777">
+                            <td class="d-sm-table-cell"></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-04032777" target="_blank">
+                                    <h3 class="title-results">Introduction to the equivalence and classication of
+                                        quadratic submanifolds in <mjx-container class="MathJax CtxtMenu_Attached_0"
+                                            jax="SVG" tabindex="0" ctxtmenu_counter="0" style="position: relative;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="4.214ex" height="1.887ex"
+                                                role="img" focusable="false" viewBox="0 -833.9 1862.6 833.9"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                style="vertical-align: 0px;">
+                                                <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                    transform="scale(1,-1)">
+                                                    <g data-mml-node="math">
+                                                        <g data-mml-node="mi">
+                                                            <use data-c="1D447" xlink:href="#MJX-TEX-I-1D447"></use>
+                                                        </g>
+                                                        <g data-mml-node="msup" transform="translate(704,0)">
+                                                            <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                <g data-mml-node="mi">
+                                                                    <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                    </use>
+                                                                </g>
+                                                            </g>
+                                                            <g data-mml-node="mn"
+                                                                transform="translate(755,363) scale(0.707)">
+                                                                <use data-c="32" xlink:href="#MJX-TEX-N-32"></use>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                    xmlns="http://www.w3.org/1998/Math/MathML">
+                                                    <mi>T</mi>
+                                                    <msup>
+                                                        <mrow data-mjx-texclass="ORD">
+                                                            <mi mathvariant="double-struck">R</mi>
+                                                        </mrow>
+                                                        <mn>2</mn>
+                                                    </msup>
+                                                </math></mjx-assistive-mml></mjx-container></h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Witold Respondek"
+                                    alt="Documents de l auteur" target="_blank">Witold Respondek</a><br>
+                                <div class="citation-results"><i>12ème journée de la fédération Normandie
+                                        Mathématiques</i>, Nov 2020, Rouen, France</div>
+                                <div class="export-result"><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-04032777')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-04032777">
+                                        @inproceedings{schmoderer:hal-04032777,
+                                        TITLE = {{Introduction to the equivalence and classication of quadratic
+                                        submanifolds in <mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG"
+                                            tabindex="0" ctxtmenu_counter="1" style="position: relative;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="4.214ex" height="1.887ex"
+                                                role="img" focusable="false" viewBox="0 -833.9 1862.6 833.9"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                                                style="vertical-align: 0px;">
+                                                <g stroke="currentColor" fill="currentColor" stroke-width="0"
+                                                    transform="scale(1,-1)">
+                                                    <g data-mml-node="math">
+                                                        <g data-mml-node="mi">
+                                                            <use data-c="1D447" xlink:href="#MJX-TEX-I-1D447"></use>
+                                                        </g>
+                                                        <g data-mml-node="msup" transform="translate(704,0)">
+                                                            <g data-mml-node="TeXAtom" data-mjx-texclass="ORD">
+                                                                <g data-mml-node="mi">
+                                                                    <use data-c="211D" xlink:href="#MJX-TEX-D-211D">
+                                                                    </use>
+                                                                </g>
+                                                            </g>
+                                                            <g data-mml-node="mn"
+                                                                transform="translate(755,363) scale(0.707)">
+                                                                <use data-c="32" xlink:href="#MJX-TEX-N-32"></use>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg><mjx-assistive-mml unselectable="on" display="inline"><math
+                                                    xmlns="http://www.w3.org/1998/Math/MathML">
+                                                    <mi>T</mi>
+                                                    <msup>
+                                                        <mrow data-mjx-texclass="ORD">
+                                                            <mi mathvariant="double-struck">R</mi>
+                                                        </mrow>
+                                                        <mn>2</mn>
+                                                    </msup>
+                                                </math></mjx-assistive-mml></mjx-container>}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Respondek, Witold},
+                                        URL = {https://hal-normandie-univ.archives-ouvertes.fr/hal-04032777},
+                                        BOOKTITLE = {{12{\`e}me journ{\'e}e de la f{\'e}d{\'e}ration Normandie
+                                        Math{\'e}matiques}},
+                                        ADDRESS = {Rouen, France},
+                                        YEAR = {2020},
+                                        MONTH = Nov,
+                                        HAL_ID = {hal-04032777},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-hal-04032745">
+                            <td class="d-sm-table-cell"></td>
+                            <td class="hal-title"><a href="https://hal.science/hal-04032745" target="_blank">
+                                    <h3 class="title-results">Learning Optical Flow for Fast MRI Reconstruction</h3>
+                                </a><a href="https://hal.science/search/?q=*&amp;authFullName_s=Timothée Schmoderer"
+                                    alt="Documents de l auteur" target="_blank">Timothée Schmoderer</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Angelica I. Aviles-Rivero"
+                                    alt="Documents de l auteur" target="_blank">Angelica I. Aviles-Rivero</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Veronica Corona"
+                                    alt="Documents de l auteur" target="_blank">Veronica Corona</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Noémie Debroux"
+                                    alt="Documents de l auteur" target="_blank">Noémie Debroux</a> ; <a
+                                    href="https://hal.science/search/?q=*&amp;authFullName_s=Carola-Bibiane Schönlieb"
+                                    alt="Documents de l auteur" target="_blank">Carola-Bibiane Schönlieb</a><br>
+                                <div class="citation-results"><i>SIAM Conference on Imaging Science 2020</i>, Jul 2020,
+                                    Toronto (Online), Canada</div>
+                                <div class="export-result"><a class="hal-export-cite"
+                                        onclick="copyCitation('hal-04032745')"
+                                        title="Copy BibLatex Citation"><i class="fa-solid fa-quote-right"></i></a><a
+                                        id="hal-copy-success" class="hal-citation-copy-success hidden">BibLatex citation
+                                        copied</a>
+                                    <p class="hal-biblatex-citation" id="hal-citation-biblatex-hal-04032745">
+                                        @inproceedings{schmoderer:hal-04032745,
+                                        TITLE = {{Learning Optical Flow for Fast MRI Reconstruction}},
+                                        AUTHOR = {Schmoderer, Timoth{\'e}e and Aviles-Rivero, Angelica I. and Corona,
+                                        Veronica and Debroux, No{\'e}mie and Sch{\"o}nlieb, Carola-Bibiane},
+                                        URL = {https://hal.science/hal-04032745},
+                                        BOOKTITLE = {{SIAM Conference on Imaging Science 2020}},
+                                        ADDRESS = {Toronto (Online), Canada},
+                                        YEAR = {2020},
+                                        MONTH = Jul,
+                                        KEYWORDS = {MRI Reconstruction ; Optical Flow ; Dictionary Learning ; Multi-Task
+                                        Model},
+                                        HAL_ID = {hal-04032745},
+                                        HAL_VERSION = {v1},
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <svg id="MJX-SVG-global-cache" style="display: none;">
+        <defs>
+            <path id="MJX-TEX-I-1D447"
+                d="M40 437Q21 437 21 445Q21 450 37 501T71 602L88 651Q93 669 101 677H569H659Q691 677 697 676T704 667Q704 661 687 553T668 444Q668 437 649 437Q640 437 637 437T631 442L629 445Q629 451 635 490T641 551Q641 586 628 604T573 629Q568 630 515 631Q469 631 457 630T439 622Q438 621 368 343T298 60Q298 48 386 46Q418 46 427 45T436 36Q436 31 433 22Q429 4 424 1L422 0Q419 0 415 0Q410 0 363 1T228 2Q99 2 64 0H49Q43 6 43 9T45 27Q49 40 55 46H83H94Q174 46 189 55Q190 56 191 56Q196 59 201 76T241 233Q258 301 269 344Q339 619 339 625Q339 630 310 630H279Q212 630 191 624Q146 614 121 583T67 467Q60 445 57 441T43 437H40Z">
+            </path>
+            <path id="MJX-TEX-D-211D"
+                d="M17 665Q17 672 28 683H221Q415 681 439 677Q461 673 481 667T516 654T544 639T566 623T584 607T597 592T607 578T614 565T618 554L621 548Q626 530 626 497Q626 447 613 419Q578 348 473 326L455 321Q462 310 473 292T517 226T578 141T637 72T686 35Q705 30 705 16Q705 7 693 -1H510Q503 6 404 159L306 310H268V183Q270 67 271 59Q274 42 291 38Q295 37 319 35Q344 35 353 28Q362 17 353 3L346 -1H28Q16 5 16 16Q16 35 55 35Q96 38 101 52Q106 60 106 341T101 632Q95 645 55 648Q17 648 17 665ZM241 35Q238 42 237 45T235 78T233 163T233 337V621L237 635L244 648H133Q136 641 137 638T139 603T141 517T141 341Q141 131 140 89T134 37Q133 36 133 35H241ZM457 496Q457 540 449 570T425 615T400 634T377 643Q374 643 339 648Q300 648 281 635Q271 628 270 610T268 481V346H284Q327 346 375 352Q421 364 439 392T457 496ZM492 537T492 496T488 427T478 389T469 371T464 361Q464 360 465 360Q469 360 497 370Q593 400 593 495Q593 592 477 630L457 637L461 626Q474 611 488 561Q492 537 492 496ZM464 243Q411 317 410 317Q404 317 401 315Q384 315 370 312H346L526 35H619L606 50Q553 109 464 243Z">
+            </path>
+            <path id="MJX-TEX-N-32"
+                d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z">
+            </path>
+            <path id="MJX-TEX-N-33"
+                d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z">
+            </path>
+        </defs>
+    </svg>
+</body>
+
+</html>
