@@ -4,10 +4,15 @@
 }
 
 .lds-ellipsis {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
     width: 80px;
     aspect-ratio: 2;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    vertical-align: center;
 }
 
 .lds-ellipsis div {
