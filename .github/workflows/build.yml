@@ -9,8 +9,6 @@ on:
       - '**.js'
       - '**.scss'
       - '**.css'
-    paths-ignore:
-      - '**.html'
 
   workflow_dispatch:
 
