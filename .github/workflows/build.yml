@@ -33,9 +33,7 @@ jobs:
       
       - name: test 
         run: |
-          ls -la .
-          cat dist.zip.sha256
-          cat dist.zip.md5
+          echo ${{ steps.checksums.outputs.checksums }}
 
 
 #        - name: Create release
