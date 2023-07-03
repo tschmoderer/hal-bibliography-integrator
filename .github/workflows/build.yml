@@ -35,39 +35,11 @@ jobs:
         run: |
             echo "TAG_NAME=$(git describe --abbrev=0)" >> $GITHUB_OUTPUT
         id: version
-        
       
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "dist.zip, dist.zip.sha256, dist.zip.md5"
           generateReleaseNotes: true
-          name: "Release ${{ steps.version.outputs.TAG_NAME }}"
           commit: "main"
           tag: ${{ steps.version.outputs.TAG_NAME }}
           skipIfReleaseExists: true
-
-
-
-#        - name: Create release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: Release ${{ github.ref }}
-#          body: |
-#            Checksums:#
-#
-#            ```
-#            ${{ steps.checksums.outputs.checksums }}
-#            ```
-
-#      - name: GIT Commit Build
-        # Only run on main branch push (e.g. after pull request merge).
-#        run: |
-#          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-#          git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
-#          git add -f dist/*
-#          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
-#          git push
