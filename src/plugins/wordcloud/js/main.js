@@ -75,7 +75,7 @@ if (hal_wordcloud_div === null) {
     // Sinon on créé le nuage de mot
 } else {
     document.addEventListener("halMainDone", () => {
-        if (!("wordcloud" in hal_plugins) || !("doit" in hal_plugins["wordcloud"]) || (hal_plugins["wordcloud"]["doit"])) {
+        if ((typeof hal_plugins === "undefined") || !("wordcloud" in hal_plugins) || !("doit" in hal_plugins["wordcloud"]) || (hal_plugins["wordcloud"]["doit"])) {
 
             init_wordcloud(hal_wordcloud_div);
 
