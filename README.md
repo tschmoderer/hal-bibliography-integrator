@@ -1,5 +1,5 @@
 # Liste des publications HAL
-![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue) [![Build](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml)
+![GitHub](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue) [![GitHub tag](https://img.shields.io/github/tag/tschmoderer/hal-publication-list?include_prereleases=&sort=semver&color=blue)](https://github.com/tschmoderer/hal-publication-list/releases/) [![Build](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml) [![Documentation](https://img.shields.io/badge/view-Documentation-blue)](/docs/ "Go to project documentation")
 
 Ce dépôt contient un module javascript pour intégrer facilement la **bibliographie** HAL d'un auteur ou d'une auteure dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présente avec un style imitant celui du CV HAL. Le package propose également plusieurs plugins. 
 

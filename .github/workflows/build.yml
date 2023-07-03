@@ -1,4 +1,4 @@
-name: Build
+name: build
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
       - main
 
     paths: 
-      - '**.js'
-      - '**.scss'
-      - '**.css'
+      - 'src/**.js'
+      - 'src/**.scss'
+      - 'src/**.css'
 
   workflow_dispatch:
 
@@ -26,9 +26,6 @@ jobs:
         run: npm install
       
       - name: Build JS
-        run: npm run build
-      
-      - name: Build Css
         run: npm run build
 
       - name: GIT Commit Build
