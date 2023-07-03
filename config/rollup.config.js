@@ -1,108 +1,84 @@
-import scss from 'rollup-plugin-scss'
-import watchGlobs from 'rollup-plugin-watch-globs';
+import scss from 'rollup-plugin-scss';
+import terser from '@rollup/plugin-terser';
+import copy from 'rollup-plugin-copy';
+import watch from "rollup-plugin-watch";
 
 const path = require('path');
+const fs   = require('fs');
+const sass = require('sass');
+
+const InFile = {
+    // Main script
+    "hal": path.resolve(__dirname, '../src/js/main.js'),
+    // Wordcloud plugin
+    "hal-wordcloud": path.resolve(__dirname, '../plugins/wordcloud/js/main.js'),
+    // Article score plugin 
+    "hal-artscore": path.resolve(__dirname, '../plugins/artscore/js/main.js'),
+};
 
 export default [
     // MAIN 
     {
-        input: path.resolve(__dirname, '../src/js/main.js'),
+        input: InFile,
 
         output: [
             {
-                file: path.resolve(__dirname, "../dist/hal.js"),
+                dir: path.resolve(__dirname, "../dist/"),
+                entryFileNames: '[name].js',
                 format: 'cjs',
+            }, 
+            {
+                dir: path.resolve(__dirname, "../dist/"),
+                entryFileNames: 'assets/js/[name].min.js',
+                format: 'cjs',
+                plugins: [
+                    terser({
+                        maxWorkers: 8,
+                    }),
+                ],
             },
         ],
-
-        watch: {
-            include: [
-                path.resolve(__dirname, "../src/js/*"),
-                path.resolve(__dirname, "../src/scss/*")
-            ],
-            buildDelay: 500,
-        },
 
         treeshake: false,
 
         plugins: [
-            watchGlobs([
-                "./**/*.css", 
-                "./**/*.scss", 
-                "./**/*.sass"
-            ]),
+            watch({
+                dir: path.resolve(__dirname, "../src/"),
+            }),
+
+            watch({
+                dir: path.resolve(__dirname, "../plugins/")
+            }),
+
             scss({
-                fileName: 'hal.css', 
+                output: function (styles, styleNodes) {
+                    var n = 0; 
+                    for (const key in styleNodes) {
+                        const result = sass.compile(key); 
+                        const minResult = sass.compile(key, {style: "compressed"}); 
+
+                        const style = Object.keys(InFile)[n];
+
+                        const outputFileName = style + ".css";
+                        const outputFilePath = path.resolve(__dirname, `../dist/${outputFileName}`);
+                        fs.writeFileSync(outputFilePath, result.css);
+                        
+                        const outputMinFileName = style + ".min.css";
+                        const outpuMinFilePath = path.resolve(__dirname, `../dist/assets/css/${outputMinFileName}`);
+                        fs.writeFileSync(outpuMinFilePath, minResult.css);
+
+                        n = n + 1; 
+                    }
+                },
                 include: ["./**/*.css", "./**/*.scss", "./**/*.sass"],
-            })
-        ]
-    }, 
-    
-    // WORDCLOUD
-    {
-        input: path.resolve(__dirname, '../plugins/wordcloud/js/main.js'),
+              }), 
 
-        output: [
-            {
-                file: path.resolve(__dirname, "../dist/plugins/wordcloud/hal-wordcloud.js"),
-                format: 'cjs',
-            },
-        ],
-
-        watch: {
-            include: [
-                path.resolve(__dirname, "../plugins/wordcloud/js/*"),
-                path.resolve(__dirname, "../plugins/wordcloud/scss/*")
-            ], 
-            buildDelay: 500,
-        },
-
-        treeshake: false,
-
-        plugins: [
-            watchGlobs([
-                "./**/*.css", 
-                "./**/*.scss", 
-                "./**/*.sass"
-            ]),
-            scss({
-                fileName: 'hal-wordcloud.css', 
-                include: ["./**/*.css", "./**/*.scss", "./**/*.sass"],
-            })
+              copy({
+                targets: [
+                  { src: 'dist/assets/js/*.min.js', dest: 'docs/js/' },
+                  { src: 'dist/assets/css/*.min.css', dest: 'docs/css/' },
+                ]
+            }),
         ]
     },
-
-    // ARTSCORE
-    {
-        input: path.resolve(__dirname, '../plugins/artscore/js/main.js'),
-
-        output: [
-            {
-                file: path.resolve(__dirname, "../dist/plugins/artscore/hal-artscore.js"),
-                format: 'cjs',
-            },
-        ],
-
-        watch: {
-            include: [
-                path.resolve(__dirname, "../plugins/artscore/js/*"),
-                path.resolve(__dirname, "../plugins/artscore/scss/*")
-            ], 
-            buildDelay: 500,
-        },
-
-        treeshake: false,
-
-        plugins: [
-            watchGlobs([
-                "./**/*.css", 
-                "./**/*.scss", 
-                "./**/*.sass"
-            ]),
-            scss({
-                fileName: 'hal-artscore.css', 
-                include: ["./**/*.css", "./**/*.scss", "./**/*.sass"],
-            })
-        ]
-    }
 ];
