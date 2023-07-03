@@ -1,10 +1,14 @@
 # Liste des publications HAL
-[![release](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-publication-list/actions/workflows/build.yml) 
-[![docs](https://github.com/tschmoderer/hal-publication-list/actions/workflows/docs.yml/badge.svg?branch=main)](https://tschmoderer.github.io/hal-publication-list/) 
-[![tag](https://img.shields.io/github/v/tag/tschmoderer/hal-publication-list?label=download)](https://github.com/tschmoderer/hal-publication-list/releases)
-[![license](https://img.shields.io/github/license/tschmoderer/hal-publication-list?color=blue)](https://github.com/tschmoderer/hal-publication-list/blob/main/LICENSE)
+[![release](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml) 
+[![docs](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml)
+[![tag](https://img.shields.io/github/v/tag/tschmoderer/hal-bibliography-integrator?label=download)](https://github.com/tschmoderer/hal-bibliography-integrator/releases)
+[![license](https://img.shields.io/github/license/tschmoderer/hal-bibliography-integrator?color=blue)](https://github.com/tschmoderer/hal-bibliography-integrator/blob/main/LICENSE)
 
 Ce dépôt contient un module javascript pour intégrer facilement la **bibliographie** HAL d'un auteur ou d'une auteure dans un site web. Le code utilise l'API HAL pour récupérer les données puis les présente avec un style imitant celui du CV HAL. Le package propose également plusieurs plugins. 
+
+[![docs](https://img.shields.io/badge/documentation-blue)](https://tschmoderer.github.io/hal-bibliography-integrator/)
+[![Static Badge](https://img.shields.io/badge/d%C3%A9mo-blue)](https://tschmoderer.github.io/hal-bibliography-integrator/pages/demo.html)
+
 
 - [Liste publications HAL](#liste-publications-hal)
   - [Tutoriel](#tutoriel)
