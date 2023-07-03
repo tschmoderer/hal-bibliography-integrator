@@ -15,9 +15,9 @@
   "scripts": {
     "build": "rollup --bundleConfigAsCjs -c config/rollup.config.js",
     "watch": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w",
-    "push": "npm version patch && git push",
-    "push-minor": "npm version minor && git push",
-    "push-major": "npm version major && git push"
+    "push": "npm version patch && git push --follow-tags",
+    "push-minor": "npm version minor && git push --follow-tags",
+    "push-major": "npm version major && git push --follow-tags"
   },
   "dependencies": {
     "@rollup/plugin-terser": "^0.4.3",
