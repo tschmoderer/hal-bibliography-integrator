@@ -42,6 +42,7 @@ jobs:
           artifacts: "dist.zip, dist.zip.sha256, dist.zip.md5"
           generateReleaseNotes: true
           name: "Release ${{ steps.version.outputs.TAG_NAME }}"
+          commit: "main"
           tag: ${{ steps.version.outputs.TAG_NAME }}
           skipIfReleaseExists: true
 
