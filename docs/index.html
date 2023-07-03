@@ -1,51 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Bar Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
+    #menubar {
+      background-color: #333;
+      color: #fff;
+      display: flex;
+    }
 
-  <title>HAL Publication List - Minimal Example</title>
+    #menubar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
-    integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="hal.css">
+    #menubar li {
+      flex: 1;
+    }
 
-  <script type="text/javascript">
-    // idHal personalisé
-    const idhal = "timothee-schmoderer";
-    // Liste des keywords de type de publications souhaitées
-    const publiList = ["THESE", "ART", "UNDEFINED", "COMM"]
-    // (Optionel: debug mode)
-    const halDebug = false;
-  </script>
+    #menubar li a {
+      display: block;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: inherit;
+      text-align: center;
+    }
 
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        processEscapes: true,
-        tags: "all"
-      },
-      svg: {
-        fontCache: 'global'
-      },
-      loader: {
-        load: ['[tex]/html']
-      }
-    };
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
-    integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    #menubar li a:hover {
+      background-color: #555;
+    }
+  </style>
 </head>
-
-<body style="background-color:#e5e5e5; width: 80%; margin: auto;">
-  <h1 style="text-align: center;">Minimal Example</h1>
-  <div id="publi-hal-all"></div>
-  <script type="text/javascript" src="hal.js"></script>
+<body>
+  <div id="menubar">
+    <ul>
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./pages/demo.html">Demo</a></li>
+      <li>
+        <a href="#">ArtScore</a>
+        <ul>
+          <li><a href="pages/artscore/index.html">Index</a></li>
+          <li><a href="pages/artscore/standalone.html">Standalone</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">WordCloud</a>
+        <ul>
+          <li><a href="pages/wordcloud/index.html">Index</a></li>
+          <li><a href="pages/wordcloud/standalone.html">Standalone</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 </body>
-
 </html>
