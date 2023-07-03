@@ -33,7 +33,9 @@ jobs:
       
       - name: test 
         run: |
-          ls -laR .
+          ls -la .
+          cat dist.zip.sha256
+          cat dist.zip.md5
 
 
 #        - name: Create release
