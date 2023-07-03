@@ -17,9 +17,11 @@
     "watch": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w"
   },
   "dependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
     "rollup": "^3.25.1",
+    "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-scss": "^4.0.0",
-    "rollup-plugin-watch-globs": "^2.0.1",
+    "rollup-plugin-watch": "^1.0.2",
     "sass": "^1.63.4"
   }
 }
