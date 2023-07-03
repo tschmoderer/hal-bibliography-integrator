@@ -1,14 +1,9 @@
-name: build
+name: release
 
 on:
   push:
-    branches: 
-      - main
-
-    paths: 
-      - 'src/**.js'
-      - 'src/**.scss'
-      - 'src/**.css'
+    tags:
+      - 'v[1-9]+.*'
 
   workflow_dispatch:
 
@@ -16,7 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env: 
-      CI_COMMIT_MESSAGE: Auto commit
       CI_COMMIT_AUTHOR: github-actions[bot]
       CI_COMMIT_EMAIL: github-actions[bot]@users.noreply.github.com
 
@@ -27,6 +21,35 @@ jobs:
       
       - name: Build JS
         run: npm run build
+      
+      - name: Zip dist folder
+        run: zip -r dist.zip dist
+
+      - name: Calculate checksums
+        id: checksums
+        run: |
+          shasum dist.zip > dist.zip.sha256
+          md5sum dist.zip > dist.zip.md5
+      
+      - name: test 
+        run: |
+          ls -laR dist/
+
+
+#        - name: Create release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: Release ${{ github.ref }}
+#          body: |
+#            Checksums:#
+#
+#            ```
+#            ${{ steps.checksums.outputs.checksums }}
+#            ```
 
 #      - name: GIT Commit Build
         # Only run on main branch push (e.g. after pull request merge).
