@@ -28,11 +28,11 @@ jobs:
       - name: Build JS
         run: npm run build
 
-      - name: GIT Commit Build
+#      - name: GIT Commit Build
         # Only run on main branch push (e.g. after pull request merge).
-        run: |
-          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-          git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
-          git add -f dist/*
-          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
-          git push
+#        run: |
+#          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+#          git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
+#          git add -f dist/*
+#          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+#          git push
