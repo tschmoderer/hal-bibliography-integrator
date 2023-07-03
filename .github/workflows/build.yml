@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - 'v[1-9]+.*'
+      - 'v*'
 
   workflow_dispatch:
 
