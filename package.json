@@ -14,7 +14,10 @@
   "homepage": "https://github.com/tschmoderer/hal-publication-list#readme",
   "scripts": {
     "build": "rollup --bundleConfigAsCjs -c config/rollup.config.js",
-    "watch": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w"
+    "watch": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w",
+    "push": "npm version patch && git push",
+    "push-minor": "npm version minor && git push",
+    "push-major": "npm version major && git push"
   },
   "dependencies": {
     "@rollup/plugin-terser": "^0.4.3",
