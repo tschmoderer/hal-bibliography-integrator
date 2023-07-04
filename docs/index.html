@@ -1,64 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Menu Bar Example</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    #menubar {
-      background-color: #333;
-      color: #fff;
-      display: flex;
-    }
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="./assets/icons/site.webmanifest">
+  <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-config" content="./assets/icons/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
 
-    #menubar ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-    }
+  <title>HAL Bibliography Integrator</title>
 
-    #menubar li {
-      flex: 1;
-    }
-
-    #menubar li a {
-      display: block;
-      padding: 10px 20px;
-      text-decoration: none;
-      color: inherit;
-      text-align: center;
-    }
-
-    #menubar li a:hover {
-      background-color: #555;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
-  <div id="menubar">
-    <ul>
-      <li><a href="./index.html">Home</a></li>
-      <li><a href="./pages/demo.html">Demo</a></li>
-      <li>
-        <a href="#">ArtScore</a>
-        <ul>
-          <li><a href="pages/artscore/index.html">Index</a></li>
-          <li><a href="pages/artscore/standalone.html">Standalone</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="#">WordCloud</a>
-        <ul>
-          <li><a href="pages/wordcloud/index.html">Index</a></li>
-          <li><a href="pages/wordcloud/standalone.html">Standalone</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+  <header>
+    <nav>
+      <a href="#" id="logo-link">
+        <span class="logo"><i class="fa-solid fa-puzzle-piece"></i></span>
+        <span class="title hover-underline-animation">HAL Bibliography Integrator</span>
+      </a>
+      <ul class="nav-links">
+        <li class="hover-underline-animation"><a href="#" id="home-link">Home</a></li>
+        <li class="hover-underline-animation"><a href="#" id="demo-link">Demo</a></li>
+        <li class="hover-underline-animation"><a href="#" id="docs-link">Docs</a></li>
+        <li class="hover-underline-animation"><a href="https://github.com/tschmoderer/hal-bibliography-integrator" target="_blank" id="code-link">Code <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </li>
+      </ul>
+    </nav>
+
+  </header>
+  <main>
+    <iframe src="./pages/README.html" id="content-iframe"></iframe>
+  </main>
+
+  <footer>
+    &copy; <span id="current-year"></span> Timothée Schmoderer. All rights reserved. 
+        <a href="https://github.com/tschmoderer/hal-publication-list/blob/main/LICENSE">License</a> 
+        <a href="https://github.com/tschmoderer">
+            <i class="fa-brands fa-github"></i>
+        </a>
+  </footer>
+
+  <script type="text/javascript" src="./scripts.js"></script>
 </body>
+
 </html>

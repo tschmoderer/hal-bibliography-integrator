@@ -1,12 +1,14 @@
 'use strict';
 
-function init_wordcloud(container) {
+const hal_plugin_name = "hal-wordcloud-integrator";
+
+function init_wordcloud(container, debug) {
     var spinner = create_spinner("hal-wordcloud-spinner");
     container.appendChild(spinner);
 }
 
-function HALwordcloud(hal_wordcloud_div) {
-    if ((typeof halDebug !== "undefined") && (halDebug)) {
+function HALwordcloud(hal_wordcloud_div, debug) {
+    if (debug) {
         console.log(globalHalData);
     }
 
@@ -22,7 +24,7 @@ function HALwordcloud(hal_wordcloud_div) {
     var wordcloud_container = document.createElement("div");
     wordcloud_container.classList = "hal-cloud-word";
 
-    if ((typeof halDebug !== "undefined") && (halDebug)) {
+    if (debug) {
         console.log(data);
     }
 
@@ -64,27 +66,40 @@ function keywordElement(keyw, freq) {
     return container;
 }
 
-// Récupède la div ou placer le nuage de mots
-var hal_wordcloud_div = document.getElementById("wordcloud-hal");
 
-// Si elle n'existe pas on ne fait rien 
-if (hal_wordcloud_div === null) {
-    if ((typeof halDebug !== "undefined") && (halDebug)) {
-        console.log("No HAL wordcloud div on this page");
+
+document.addEventListener("halMainDone", () => {
+    // si le configuration n'est pas présente on quite immédiatement
+    if (typeof hal_integrator_config === 'undefined') {
+        return false; 
     }
-    // Sinon on créé le nuage de mot
-} else {
-    document.addEventListener("halMainDone", () => {
-        if ((typeof hal_plugins === "undefined") || !("wordcloud" in hal_plugins) || !("doit" in hal_plugins["wordcloud"]) || (hal_plugins["wordcloud"]["doit"])) {
 
-            init_wordcloud(hal_wordcloud_div);
-
-            if ((typeof halDebug !== "undefined") && (halDebug)) {
-                console.log("Create wordcloud of keywords in ");
-                console.log(hal_wordcloud_div);
-            }
-
-            HALwordcloud(hal_wordcloud_div);
+    // Récupède la div ou placer le nuage de mots
+    var hal_wordcloud_div = document.getElementById(hal_plugin_name);
+    var debug = hal_integrator_config["debug"];
+    if (typeof debug === "undefined") {
+        debug = false;
+    }
+    
+    // Si elle n'existe pas on ne fait rien 
+    if (hal_wordcloud_div === null) {
+        if (debug) {
+            console.log("No HAL wordcloud div on this page");
         }
-    });
-}
+        return false; 
+    } 
+
+    // Sinon on créé le nuage de mot
+    var hal_plugins = hal_integrator_config["plugins"];
+    if ((typeof hal_plugins === "undefined") || !("wordcloud" in hal_plugins) || !("doit" in hal_plugins["wordcloud"]) || (hal_plugins["wordcloud"]["doit"])) {
+
+        init_wordcloud(hal_wordcloud_div, debug);
+
+        if (debug) {
+            console.log("Create wordcloud of keywords in ");
+            console.log(hal_wordcloud_div);
+        }
+
+        HALwordcloud(hal_wordcloud_div, debug);
+    }
+});

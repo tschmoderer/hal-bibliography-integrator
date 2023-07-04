@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>HAL Publication List - Demo</title>
+    <title>HAL Bibliography Integrator - Demo</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
         integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
@@ -17,24 +17,6 @@
     <link rel="stylesheet" href="../assets/css/hal.min.css">
     <link rel="stylesheet" href="../assets/css/hal-wordcloud.min.css">
     <link rel="stylesheet" href="../assets/css/hal-artscore.min.css">
-
-    <script type="text/javascript">
-        const hal_plugins = {
-            "artscore": {
-                "scimago": {},
-
-                "semantic": {},
-
-                "scopus": {
-                    "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
-                }
-            }, 
-
-            "wordcloud": {
-                "doit": true
-            }
-        }
-    </script>
 
     <script>
         MathJax = {
@@ -59,21 +41,14 @@
         body {
             display: grid;
             grid-template-columns: auto 1fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 2% 3%; 
+            grid-template-rows: 1fr;
+            gap: 2% 3%;
             grid-auto-flow: row;
             grid-template-areas:
-                "header header"
-                "aside main"
-                "footer footer";
-            min-height: 100vh;
-            background-color:#e5e5e5;
-            width: 90%; 
+                "aside main";
+            background-color: #e5e5e5;
+            width: 90%;
             margin: auto;
-        }
-
-        header {
-            grid-area: header;
         }
 
         aside {
@@ -82,13 +57,6 @@
 
         main {
             grid-area: main;
-        }
-
-        footer {
-            grid-area: footer;
-            font-size: small;
-            text-align: right;
-            padding-bottom: 1em;
         }
 
         form button {
@@ -105,17 +73,10 @@
         fieldset {
             margin-top: 15px;
         }
-
-        footer a {
-            color: inherit;
-        }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1 style="text-align: center;">Hal publications list - Demo</h1>
-    </header>
     <aside>
         <form>
             <label for="idhal">HAL ID</label>
@@ -143,104 +104,103 @@
         </form>
     </aside>
     <main>
-        <div id="wordcloud-hal"></div>
-        <div id="publi-hal-all"></div>
+        <div id="hal-wordcloud-integrator"></div>
+        <div id="hal-bibliography-integrator"></div>
     </main>
-    <footer>
-        &copy; <span id="current-year"></span> Timothée Schmoderer. All rights reserved. 
-        <a href="https://github.com/tschmoderer/hal-publication-list/blob/main/LICENSE">License</a> 
-        <a href="https://github.com/tschmoderer">
-            <i class="fa-brands fa-github"></i>
-        </a>
-    </footer>
 
     <script type="text/javascript" src="../assets/js/hal.js"></script>
     <script type="text/javascript" src="../assets/js/hal-wordcloud.js"></script>
     <script type="text/javascript" src="../assets/js/hal-artscore.js"></script>
 
-    <script>
-        var currentYear = new Date().getFullYear();
-        document.getElementById('current-year').textContent = currentYear;
-    </script>
-
     <script type="text/javascript">
         // Get the form element
         const form = document.querySelector('form');
-        const docTypeToggles = document.getElementById("formDocTypes"); 
+        const docTypeToggles = document.getElementById("formDocTypes");
 
         for (const t in hal_helpers) {
-            var toggle = document.createElement('div'); 
-            var input  = document.createElement('input'); 
-            input.type = "checkbox"; 
-            input.id = "toggle-" + t; 
-            input.name = input.id; 
-            var label = document.createElement('label'); 
-            label.htmlFor = input.id; 
-            label.innerText = hal_helpers[t]["title_en"]; 
-            
-            toggle.appendChild(input); 
-            toggle.appendChild(label); 
+            var toggle = document.createElement('div');
+            var input = document.createElement('input');
+            input.type = "checkbox";
+            input.id = "toggle-" + t;
+            input.name = input.id;
+            var label = document.createElement('label');
+            label.htmlFor = input.id;
+            label.innerText = hal_helpers[t]["title_en"];
 
-            docTypeToggles.appendChild(toggle); 
+            toggle.appendChild(input);
+            toggle.appendChild(label);
+
+            docTypeToggles.appendChild(toggle);
         }
 
         // Add a submit event listener to the form
         form.addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent form submission
 
-            // Reset variables 
-            var idhal = "";
-            var publiList = []
-            var halDebug = false;
+            // Reset variables
+            hal_integrator_config = {
+                "id": "",
+                "typeList": [],
+                "doit": true,
+                "debug": false,
+                "plugins": {
+                    "artscore": {
+                        "scopus": {
+                            "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
+                        }
+                    },
+
+                    "wordcloud": {}
+                }
+            }
 
             // reset hal containers 
-            document.getElementById("wordcloud-hal").innerHTML = "";
-            document.getElementById("publi-hal-all").innerHTML = "";
+            document.getElementById("hal-wordcloud-integrator").innerHTML = "";
+            document.getElementById("hal-bibliography-integrator").innerHTML = "";
 
             // Get the value of the name field
             const nameInput = document.querySelector('#idhal');
-            const name = nameInput.value;
-            idhal = nameInput.value;
+            hal_integrator_config["id"] = nameInput.value;
 
             // Get the values of the toggle buttons
             docTypeToggles.querySelectorAll("input").forEach((tog) => {
-                var id = tog.id; 
-                var halElem = id.replace('toggle-',''); 
+                var id = tog.id;
+                var halElem = id.replace('toggle-', '');
 
                 const togInput = document.querySelector('#' + id);
                 const togValue = togInput.checked;
 
                 if (togValue) {
-                    publiList.push(halElem); 
+                    hal_integrator_config["typeList"].push(halElem);
                 }
 
             });
 
             if (form.querySelector("#toggle-wc").checked) {
-                hal_plugins["wordcloud"]["doit"] = true; 
+                hal_integrator_config["plugins"]["wordcloud"]["doit"] = true;
             } else {
-                hal_plugins["wordcloud"]["doit"] = false; 
+                hal_integrator_config["plugins"]["wordcloud"]["doit"] = false;
             }
 
             if (form.querySelector("#toggle-artdat").checked) {
-                hal_plugins["artscore"]["doit"] = true; 
+                hal_integrator_config["plugins"]["artscore"]["doit"] = true;
             } else {
-                hal_plugins["artscore"]["doit"] = false; 
+                hal_integrator_config["plugins"]["artscore"]["doit"] = false;
             }
 
-            if (publiList.length > 0) {
-                console.log(idhal, publiList);
-                make_hal(idhal, publiList, true);
+            if (hal_integrator_config["typeList"].length > 0) {
+                console.log(hal_integrator_config);
+                make_hal(hal_integrator_config["id"], hal_integrator_config["typeList"], hal_integrator_config["debug"]);
             }
         });
 
         // Plugins management 
         // ART SCORE
-        const artPluginCheckbox = form.querySelector("#toggle-artdat"); 
+        const artPluginCheckbox = form.querySelector("#toggle-artdat");
         artPluginCheckbox.addEventListener("click", function (event) {
             var toggleART = form.querySelector("#toggle-ART");
             if (event.target.checked) {
-                toggleART.checked = true; 
+                toggleART.checked = true;
                 toggleART.onclick = "return false;";
             } else {
                 toggleART.onclick = "";

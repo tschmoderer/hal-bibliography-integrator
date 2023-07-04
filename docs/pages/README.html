@@ -1,0 +1,477 @@
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style> html {scroll-behavior: smooth;} img {max-width: 75%;} a {text-decoration:none; color: inherit;} </style>
+<h1>Intégrateur de bibliographie HAL <a name="top"></a></h1>
+<p><a href="https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml"><img src="https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml/badge.svg?event=push" alt="release"></a>
+<a href="https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml"><img src="https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml/badge.svg?branch=main" alt="docs"></a>
+<a href="https://github.com/tschmoderer/hal-bibliography-integrator/releases"><img src="https://img.shields.io/github/v/tag/tschmoderer/hal-bibliography-integrator?label=download" alt="tag"></a>
+<a href="https://github.com/tschmoderer/hal-bibliography-integrator/blob/main/LICENSE"><img src="https://img.shields.io/github/license/tschmoderer/hal-bibliography-integrator?color=blue" alt="license"></a></p>
+<p>Ce dépôt contient un module JavaScript qui facilite l'intégration de la <strong>bibliographie</strong> HAL d'un auteur ou d'une auteure dans un site web. Le code utilise l'<a href="https://api.archives-ouvertes.fr/docs">API HAL</a> pour récupérer les données et les présente dans un style similaire à celui du <a href="https://cv.hal.science/">CV HAL</a>. Le package propose également plusieurs plugins pour enrichir les informations affichées.</p>
+<p><a href="https://tschmoderer.github.io/hal-bibliography-integrator/"><img src="https://img.shields.io/badge/documentation-blue" alt="docs"></a>
+<a href="https://tschmoderer.github.io/hal-bibliography-integrator/pages/demo.html"><img src="https://img.shields.io/badge/d%C3%A9mo-blue" alt="Static Badge"></a></p>
+<ul>
+<li><a href="#top">Intégrateur de bibliographie HAL</a>
+<ul>
+<li><a href="#tutoriel">Tutoriel</a>
+<ul>
+<li><a href="#typeList">Liste des types de publications HAL pris en charge</a></li>
+<li><a href="#addTypeList">Ajouter le support de nouveaux types</a></li>
+<li><a href="#limitations">Limitations</a></li>
+</ul>
+</li>
+<li><a href="#plugins">Plugins</a>
+<ul>
+<li><a href="#wordcloud">Nuage de mots clés</a></li>
+<li><a href="#artscore">Métriques liées aux articles</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Tutoriel<a name="tutoriel"></a></h2>
+<p>Pour intégrer une bibliographie HAL dans un site munissez vous de l'<a href="https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/">idHal</a> du chercheur ou de la chercheuse concerné(e).</p>
+<ol start="0">
+<li>
+<p>Téléchargez la dernière <a href="https://github.com/tschmoderer/hal-bibliography-integrator/releases">release</a> et extrayer les fichiers <em>hal.js</em> et <em>hal.css</em> depuis le fichier &quot;dist.zip&quot;.</p>
+</li>
+<li>
+<p>A l'endroit où vous souhaitez intégrer la bibliographie insérez le nœud HTML suivant</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;hal-bibliography-integrator&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+</li>
+<li>
+<p>Dans le <code>&lt;head&gt;</code> de votre page, insérez le code suivant pour charger les ressources CSS :</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css&quot;</span> <span class="hljs-attr">integrity</span>=<span class="hljs-string">&quot;sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==&quot;</span> <span class="hljs-attr">crossorigin</span>=<span class="hljs-string">&quot;anonymous&quot;</span> <span class="hljs-attr">referrerpolicy</span>=<span class="hljs-string">&quot;no-referrer&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;./path/to/hal.css&quot;</span>&gt;</span>
+</code></pre>
+</li>
+<li>
+<p>(<em>Optionnel</em>) Si certain titres d'articles contiennent des expressions mathématiques, pour qu'il soient correctement formatés, ajoutez dans le <code>&lt;head&gt;</code> de votre page le code suivant</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+    <span class="hljs-title class_">MathJax</span> = {
+        <span class="hljs-attr">tex</span>: {
+            <span class="hljs-attr">inlineMath</span>: [[<span class="hljs-string">&#x27;$&#x27;</span>, <span class="hljs-string">&#x27;$&#x27;</span>], [<span class="hljs-string">&#x27;\\(&#x27;</span>, <span class="hljs-string">&#x27;\\)&#x27;</span>]],
+            <span class="hljs-attr">processEscapes</span>: <span class="hljs-literal">true</span>,
+            <span class="hljs-attr">tags</span>: <span class="hljs-string">&quot;all&quot;</span>
+        },
+        <span class="hljs-attr">svg</span>: {
+            <span class="hljs-attr">fontCache</span>: <span class="hljs-string">&#x27;global&#x27;</span>
+        },
+        <span class="hljs-attr">loader</span>: {
+            <span class="hljs-attr">load</span>: [<span class="hljs-string">&#x27;[tex]/html&#x27;</span>]
+        }
+    };
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js&quot;</span> <span class="hljs-attr">integrity</span>=<span class="hljs-string">&quot;sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA==&quot;</span> <span class="hljs-attr">crossorigin</span>=<span class="hljs-string">&quot;anonymous&quot;</span> <span class="hljs-attr">referrerpolicy</span>=<span class="hljs-string">&quot;no-referrer&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</li>
+<li>
+<p>A la fin du <code>&lt;head&gt;</code> de votre page HTML, ajoutez le code suivant en configurant l'idHal cible et la liste des types de publications souhaitées (voir la liste des types pris en charge ci-dessous). La clé 'debug' permet d'afficher certaines informations du script dans la console du navigateur.</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+    <span class="hljs-keyword">const</span> hal_integrator_config = {
+       <span class="hljs-comment">// idHal personnalisé</span>
+       <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;timothee-schmoderer&quot;</span>,
+       <span class="hljs-comment">// Liste des types de publications souhaités</span>
+       <span class="hljs-string">&quot;typeList&quot;</span>: [<span class="hljs-string">&quot;THESE&quot;</span>, <span class="hljs-string">&quot;ART&quot;</span>, <span class="hljs-string">&quot;UNDEFINED&quot;</span>, <span class="hljs-string">&quot;COMM&quot;</span>],
+       <span class="hljs-comment">// (Optionnel: activation manuelle)</span>
+       <span class="hljs-string">&quot;doit&quot;</span>: <span class="hljs-literal">false</span>,
+       <span class="hljs-comment">// (Optionnel: mode de débogage)</span>
+       <span class="hljs-string">&quot;debug&quot;</span>: <span class="hljs-literal">false</span>,
+     }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</li>
+</ol>
+<p><em>Remarque</em> : Les différentes sections de publications apparaissent dans l'ordre défini par le tableau de la clé <em>typeList</em>.</p>
+<ol start="5">
+<li>
+<p>A la fin du <code>&lt;body&gt;</code> de votre page HTML, ajoutez la code suivant pour charger le script</p>
+<pre><code class="hljs language-html"> <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./path/to/hal.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+</li>
+</ol>
+<p><img src="./.github/img//result.png" alt="résultat"></p>
+<h3>Liste des types de publications HAL pris en charge<a name="typelist"></a></h3>
+<p>Le tableau suivant donne les keywords a utiliser dans la clé <em>typeList</em> pour obtenir la liste complète des publications de ce type. La dernière colonne indique si le type est pris en charge par le module javascript:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Keyword</th>
+<th>Description</th>
+<th style="text-align:center">Pris en charge</th>
+<th style="text-align:center">Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ART</td>
+<td>Article de journal</td>
+<td style="text-align:center">✔️</td>
+<td style="text-align:center"><img src=".github/img/icons/newspaper-solid.svg" alt="fa-newspaper" width="20"/></td>
+</tr>
+<tr>
+<td style="text-align:center">COMM</td>
+<td>Communication dans un congrès</td>
+<td style="text-align:center">✔️</td>
+<td style="text-align:center"><img src=".github/img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/></td>
+</tr>
+<tr>
+<td style="text-align:center">COUV</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">THESE</td>
+<td>Thèse</td>
+<td style="text-align:center">✔️</td>
+<td style="text-align:center"><img src=".github/img/icons/graduation-cap-solid.svg" alt="fa-graduation-cap" width="20"/></td>
+</tr>
+<tr>
+<td style="text-align:center">OUV</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">UNDEFINED</td>
+<td>Preprint, document de travail</td>
+<td style="text-align:center">✔️</td>
+<td style="text-align:center"><img src=".github/img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">OTHER</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">MEM</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">IMG</td>
+<td>Image</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">POSTER</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">ISSUE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">PROCEEDINGS</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">HDR</td>
+<td>Habilitation à diriger des recherche</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">NOTICE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">PATENT</td>
+<td>Brevet</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">BLOG</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_LABO</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">VIDEO</td>
+<td>Vidéo</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_MAST</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">LECTURE</td>
+<td>Cours</td>
+<td style="text-align:center">✔️</td>
+<td style="text-align:center"><img src=".github/img/icons/book-open-solid.svg" alt="fa-book-open" width="20"/></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_LPRO</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_LICE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">TRAD</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">SOFTWARE</td>
+<td>Logiciel</td>
+<td style="text-align:center">✔️</td>
+<td style="text-align:center"><img src=".github/img/icons/microchip-solid.svg" alt="fa-microchip" width="20"/></td>
+</tr>
+<tr>
+<td style="text-align:center">CREPORT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">PRESCONF</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_DOCT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_ETAB</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">MAP</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">SON</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_FORM</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_GMAST</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">OTHERREPORT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">NOTE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">SYNTHESE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_FPROJ</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_GLICE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPACT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">MEMLIC</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_RFOINT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_COOR</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">ETABTHESE</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">REPORT_RETABINT</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">MANUAL</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">DOUV</td>
+<td>?</td>
+<td style="text-align:center">❌</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h3>Ajouter le support de nouveaux types<a name="addTypeList"></a></h3>
+<p>Pour ajouter le support d'un nouveau type de publication, suivez les étapes ci-dessous :</p>
+<ol>
+<li>Clonez ce dépôt git.</li>
+<li>Ouvrez le fichier <em>hal-utils.js</em> dans le dossier local du dépôt.</li>
+<li>Dans la variable <em>hal_helpers</em>, ajoutez une nouvelle entrée pour le nouveau type de publication :</li>
+</ol>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+   <span class="hljs-attr">&quot;TYPE&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+       <span class="hljs-attr">&quot;icon&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;classe de l&#x27;icône&quot;</span><span class="hljs-punctuation">,</span>
+       <span class="hljs-attr">&quot;title_en&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;titre de la section pour ce type de publication&quot;</span>
+   <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>Assurez-vous de remplacer &quot;TYPE&quot; par le mot-clé correspondant au nouveau type de publications. Spécifiez la classe de l'icône associée au type en utilisant une icône mise à disposition par <a href="https://fontawesome.com/icons">Font Awesome</a>. Fournissez également le titre de la section en anglais pour ce type de publications.</p>
+<ol start="4">
+<li>Modifiez le fichier <em>README.md</em> en ajoutant dans le tableau ci-dessus le nouveau type pris en charge.</li>
+<li>Une fois que vous avez effectué les modifications, vous pouvez partager votre contribution en créant une pull request sur ce dépôt ou en envoyant la nouvelle version par e-mail à <a href="mailto:timothee.schmoderer@insa-rouen.fr">T. Schmoderer</a>.</li>
+</ol>
+<h2>Limitations</h2>
+<ul>
+<li>Une seule section de publications, par page où le script <em>hal.js</em> est chargé, est permise.</li>
+</ul>
+<h2>Plugins<a name="plugins"></a></h2>
+<p>Ce package propose l'ajout de plugins pour étendre les fonctionnalités du module. L'exécution des plugins est automatique a partir du moment ou les scripts <em>hal.js</em> et <em>hal-[plugin-name].js</em> sont présents. Les plugins sont configurables a travers le dictionaire contenu dans la clé &quot;plugins&quot; de la variable <em>hal_integrator_config</em> :</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+    <span class="hljs-keyword">const</span> hal_integrator_config = {
+        ...
+       <span class="hljs-string">&quot;plugins&quot;</span>: {
+         <span class="hljs-string">&quot;plugin-name&quot;</span>: {},
+       }
+     }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<p>Voir la <a href="https://tschmoderer.github.io/hal-bibliography-integrator/">documentation</a> pour le détail des options de configuration de chaque plugin.</p>
+<h3>Nuage de mots clés<a name="wordcloud"></a></h3>
+<p>Le plugin <strong>wordcloud</strong> permet d'intégrer un nuage de mots-clés associés à un auteur. Les mots-clés sont extraits des publications affichées par le module principal. Ainsi, pour utiliser ce plugin, il est nécessaire de suivre la procédure décrite dans le tutoriel ci-dessus pour intégrer le module principal. Néanmoins, si vous souhaitez afficher uniquement le nuage de mots sans les publications, vous pouvez simplement ajouter le style suivant :</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css">
+  <span class="hljs-selector-id">#hal-bibliography-integrator</span> {<span class="hljs-attribute">display</span>: none;}
+&lt;style&gt;
+</span></code></pre>
+<p><img src="./.github/img/plugins/wordcloud/wordcloud-light.png" alt="wordcloud-light"></p>
+<p>Pour intégrer le nuage de mots-clés de l'auteur dans votre page, suivez les étapes suivantes :</p>
+<ol>
+<li>À l'endroit où vous souhaitez afficher le nuage de mots-clés, insérez le nœud HTML suivant :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;hal-wordcloud-integrator&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<ol start="2">
+<li>Dans la section <code>&lt;head&gt;</code> de votre page, ajoutez le lien vers la feuille de styles spécifique au nuage de mots-clés. Assurez-vous de spécifier le chemin d'accès correct vers le fichier <code>hal-wordcloud.css</code> :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;./path/to/hal-wordcloud.css&quot;</span>&gt;</span>
+</code></pre>
+<ol start="3">
+<li>À la fin de la section <code>&lt;body&gt;</code> de votre page, ajoutez le script suivant pour charger le fichier <code>hal-wordcloud.js</code>. Assurez-vous également de spécifier le chemin d'accès correct vers le fichier :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./path/to/hal-wordcloud.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h3>Métriques liées aux articles<a name="artscore"></a></h3>
+<p>Le plugin <strong>artscore</strong> (article score) ajoute des métriques aux publications de type <em>ART</em> (articles de journaux). Le plugin récupère des métriques du journal (<a href="https://www.scimagojr.com/journalrank.php">SJR</a>, <a href="https://www.scimagojr.com/journalrank.php">quartile</a>, <a href="https://www.scimagojr.com/journalrank.php">h-index</a>, <a href="https://www.scopus.com/sources">CiteScore</a>) ainsi que le nombre de citations d'après <a href="https://www.semanticscholar.org/">semantic scholar</a>.</p>
+<p><img src="./.github/img/plugins/artscore/artscore-light.png" alt="artscore-light"></p>
+<p>Pour activer le plugin, veuillez suivre les étapes suivantes :</p>
+<ol>
+<li>Assurez-vous d'avoir ajouté le module principal <strong>hal.js</strong> à votre site web en suivant les instructions du <a href="#tutoriel">tutoriel</a>.</li>
+<li>Dans la section <code>&lt;head&gt;</code> de votre page, ajoutez le lien vers la feuille de styles :</li>
+</ol>
+<pre><code class="hljs language-html">    <span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;./path/to/hal-artscore.css&quot;</span>&gt;</span>
+</code></pre>
+<ol start="3">
+<li>Pour récupérer les infos de <a href="https://www.scopus.com/sources">scopus</a> (pour obtenir la métrique CiteScore du journal) procurez-vous une clé d'API à ce <a href="https://dev.elsevier.com/">lien</a> puis configurez le plugin via la variable :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">const</span> hal_integrator_config = {
+           ...
+          <span class="hljs-string">&quot;plugins&quot;</span>: {
+             <span class="hljs-string">&quot;artscore&quot;</span>: {
+                <span class="hljs-string">&quot;scopus&quot;</span>: {
+                    <span class="hljs-string">&quot;apiKey&quot;</span>: <span class="hljs-string">&quot;your-api-key&quot;</span>,
+                }
+              }
+          }
+        }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<ol start="5">
+<li>A la fin de la section <code>&lt;body&gt;</code>, ajoutez le lien vers le script du plugin :</li>
+</ol>
+<pre><code class="hljs language-html">    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./path/to/hal-artscore.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<p><strong>Warnings</strong>:</p>
+<ul>
+<li>Seulement les éléments de type &quot;ART&quot; (article de journaux) sont traités.</li>
+<li>Un certain nombre de problèmes liés à des données non trouvées peuvent être résolus en configurant manuellement le plugin, voir la <a href="https://tschmoderer.github.io/hal-bibliography-integrator/">documentation</a>.</li>
+</ul>
