@@ -37,13 +37,14 @@ jobs:
       
       - name: test
         run: tar --dereference --hard-dereference --directory docs/ -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git .
-        
+      
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
-          # Upload entire repository
-          path: 'docs/'
+          name: 'github-pages'
+          path: ${{ runner.temp }}/artifact.tar
           retention-days: 1
+          if-no-files-found: error
           
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
