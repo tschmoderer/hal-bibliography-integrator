@@ -1,4 +1,4 @@
-# Intégrateur de bibliographie HAL 
+# Intégrateur de bibliographie HAL <a name="top"></a>
 [![release](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml)
 [![docs](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml)
 [![tag](https://img.shields.io/github/v/tag/tschmoderer/hal-bibliography-integrator?label=download)](https://github.com/tschmoderer/hal-bibliography-integrator/releases)
@@ -10,7 +10,7 @@ Ce dépôt contient un module JavaScript qui facilite l'intégration de la **bib
 [![Static Badge](https://img.shields.io/badge/d%C3%A9mo-blue)](https://tschmoderer.github.io/hal-bibliography-integrator/pages/demo.html)
 
 
-- [Intégrateur de bibliographie HAL](#int-grateur-de-bibliographie-hal)
+- [Intégrateur de bibliographie HAL](#top)
   * [Tutoriel](#tutoriel)
     + [Liste des types de publications HAL pris en charge](#typeList)
     + [Ajouter le support de nouveaux types](#addTypeList)
@@ -19,7 +19,7 @@ Ce dépôt contient un module JavaScript qui facilite l'intégration de la **bib
     + [Nuage de mots clés](#wordcloud)
     + [Métriques liées aux articles](#artscore)
 
-## Tutoriel<a id="tutoriel"></a>
+## Tutoriel<a name="tutoriel"></a>
 
 Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/) du chercheur ou de la chercheuse concerné(e).
 
@@ -63,12 +63,14 @@ Pour intégrer une bibliographie HAL dans un site munissez vous de l'[idHal](htt
 
    ```html
    <script type="text/javascript">
-       const hal_config = {
-           // idHal personnalisé
+       const hal_integrator_config = {
+          // idHal personnalisé
           "id": "timothee-schmoderer",
-           // Liste des types de publications souhaités
+          // Liste des types de publications souhaités
           "typeList": ["THESE", "ART", "UNDEFINED", "COMM"],
-           // (Optionnel: mode de débogage)
+          // (Optionnel: activation manuelle)
+          "doit": false,
+          // (Optionnel: mode de débogage)
           "debug": false,
         }
    </script>
@@ -166,11 +168,11 @@ Assurez-vous de remplacer "TYPE" par le mot-clé correspondant au nouveau type d
 
 ## Plugins<a name="plugins"></a>
 
-Ce package propose l'ajout de plugins pour étendre les fonctionnalités du module. L'exécution des plugins est automatique a partir du moment ou les scripts *hal.js* et *hal-[plugin-name].js* sont présents. Les plugins sont configurables a travers le dictionaire contenu dans la clé "plugins" de la variable *hal_config* : 
+Ce package propose l'ajout de plugins pour étendre les fonctionnalités du module. L'exécution des plugins est automatique a partir du moment ou les scripts *hal.js* et *hal-[plugin-name].js* sont présents. Les plugins sont configurables a travers le dictionaire contenu dans la clé "plugins" de la variable *hal_integrator_config* : 
 
    ```html
    <script type="text/javascript">
-       const hal_config = {
+       const hal_integrator_config = {
            ...
           "plugins": {
             "plugin-name": {},
@@ -232,7 +234,7 @@ Pour activer le plugin, veuillez suivre les étapes suivantes :
 
 ```html
 <script type="text/javascript">
-const hal_config = {
+const hal_integrator_config = {
            ...
           "plugins": {
              "artscore": {
