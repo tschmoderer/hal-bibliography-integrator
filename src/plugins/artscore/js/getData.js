@@ -9,7 +9,7 @@ import { scimago_year } from "../data/scimagojr 2022";
     - Fetch Scimago data for Impactfactor 
     - Call XX api for Impact Factor (or h-index?)
 */
-export async function get_artdata(articleData) {
+export async function get_artdata(articleData, config, debug = false) {
     var res = {
         "scopus": {
             "success": false,
@@ -34,13 +34,13 @@ export async function get_artdata(articleData) {
     };
 
     try {
-        const tmp1 = await fetchJournalData(articleData["journalIssn_s"]);
+        const tmp1 = await fetchJournalData(articleData["journalIssn_s"], config, debug);
         res["scopus"]["success"] = true;
         res["scopus"]["score"] = tmp1["score"];
         res["scopus"]["url"] = tmp1["url"];
 
         try {
-            const tmp2 = await fetchJournalQuartile(articleData["journalTitle_s"]);
+            const tmp2 = await fetchJournalQuartile(articleData["journalTitle_s"], config, debug);
 
             res["scimago"]["success"] = true;
             res["scimago"]["categories"] = tmp2["Categories"];
@@ -51,7 +51,7 @@ export async function get_artdata(articleData) {
             console.log(error);
         }
 
-        const tmp3 = await fetchArticleData(articleData["doiId_s"]);
+        const tmp3 = await fetchArticleData(articleData["doiId_s"], config, debug);
         res["semantic"]["success"] = true;
         res["semantic"]["citations"] = tmp3["nb"];
         res["semantic"]["url"] = tmp3["src"];

@@ -1,12 +1,12 @@
 // Fonction pour gérer les popups de citations
-export default function copyCitation(idDoc) {
+export function copyCitation(idDoc, debug = false) {
     const id = "hal-citation-biblatex-" + idDoc;
     const elem = document.getElementById(id); 
 
     // Copy the text inside the text field
     navigator.clipboard.writeText(elem.innerText);
 
-    if ((typeof halDebug !== "undefined") && (halDebug)) {
+    if (debug) {
         console.log("Copy text to clipboard")
         console.log(elem.innerText);
     }

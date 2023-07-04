@@ -1,4 +1,6 @@
-export default function collapse(elem) {
+export function collapse(event) {
+    event.preventDefault();
+    const elem = event.target.closest("button");
     const elem2 = document.getElementById(elem.getAttribute("data-target").replace('#', ''));
     if (elem2.style.display === "none") {
         elem2.style.display = "block";

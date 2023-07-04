@@ -101,7 +101,7 @@ function base_structure() {
     return artscoreContainer;
 }
 
-export function display_artscore(row, artData) {
+export function display_artscore(row, artData, debug = false) {
     var col = base_structure();
     col.classList.add("artscore-column");
 

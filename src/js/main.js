@@ -1,19 +1,20 @@
 import '../scss/main.scss'
 
 import create_hal_publication_list from "./hal_publications";
-import collapse from "./hal_collapse";
-import copyCitation from "./hal_citations";
 
 function make_hal(id, pubType, debug) {
-    var debug = true;
-    if ((typeof halDebug !== "undefined") && (halDebug)) {
+    if ((typeof debug !== "undefined") && (debug)) {
         console.log(id);
         console.log(pubType);
     } else {
-        debug = false;
+        var debug = false;
     }
 
     create_hal_publication_list(id, pubType, debug);
 }
 
-document.addEventListener("DOMContentLoaded", make_hal(idhal, publiList, halDebug), false);
+if (typeof hal_integrator_config !== 'undefined') {
+    if (!("doit" in hal_integrator_config) || (hal_integrator_config["doit"])) {
+        document.addEventListener("DOMContentLoaded", make_hal(hal_integrator_config["id"], hal_integrator_config["typeList"], hal_integrator_config["debug"]), false);
+    }
+}

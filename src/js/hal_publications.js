@@ -1,5 +1,7 @@
 import { callHALAPI } from "./hal_api";
-import { hal_helpers, eventNameHalDone, eventNameArtDone, globalHalData } from "./hal_utils";
+import { hal_module_name, hal_helpers, eventNameHalDone, eventNameArtDone, globalHalData } from "./hal_utils";
+import { collapse } from "./hal_collapse";
+import { copyCitation } from "./hal_citations";
 
 function trigger_hal(eventName) {
     const event = new Event(eventName);
@@ -12,68 +14,76 @@ function trigger_hal_article_end() {
 
 function trigger_hal_end() {
     trigger_hal(eventNameHalDone);
-    /*if (Object.keys(globalHalData).length === totalNbAPIcall) {
-        if (debug) {
-            console.log(globalHalData);
-        }
-        const event = new Event("halMainDone");
-        document.dispatchEvent(event);
-    } else {
-        setTimeout(trigger_hal_end, 100, debug)
-    }*/
-//    const event = new Event("halMainDone");
-//    document.dispatchEvent(event);
 }
 
 function create_spinner(id = null) {
-    var spinner = document.createElement("div");
+    const spinner = document.createElement("div");
     spinner.classList = "hal-spinner";
-    spinner.id = id;
+    if (id) {
+        spinner.id = id;
+    }
 
-    var ellipsis = document.createElement("div");
-    ellipsis.classList = "lds-ellipsis"; 
+    const ellipsis = document.createElement("div");
+    ellipsis.classList.add("lds-ellipsis");
     for (let i = 1; i <= 4; i++) {
         ellipsis.appendChild(document.createElement("div"));
     }
 
-    spinner.appendChild(ellipsis); 
-
+    spinner.appendChild(ellipsis);
     return spinner;
 }
 
+
 function initialHTML(type) {
-    var container = document.createElement("div");
-    container.classList = 'hal-list';
-    container.id = "hal-" + type;
+    const container = document.createElement("div");
+    container.classList.add('hal-list');
+    container.id = `hal-${type}`;
 
-    var button = document.createElement("button");
-    button.classList = "hal-btn";
-    button.setAttribute("data-target", "#" + type);
-    button.setAttribute("onclick", "collapse(this)");
+    const button = document.createElement("button");
+    button.classList.add("hal-btn");
+    button.setAttribute("data-target", `#${type}`);
 
-    button.innerHTML = "<i class='hal-icon fa-solid " + hal_helpers[type]["icon"] + "'></i>"; 
-    button.innerHTML += "<a id='hal-" + type + "-card-title'>" + hal_helpers[type]["title_en"] + "</a>";
-    button.innerHTML += "<i class='hal-icon icon-drop_down fa-solid fa-caret-down'></i>";
+    const icon = document.createElement("i");
+    icon.classList.add('hal-icon', 'fa-solid', hal_helpers[type]["icon"]);
+    button.appendChild(icon);
+
+    const title = document.createElement("a");
+    title.id = `hal-${type}-card-title`;
+    title.textContent = hal_helpers[type]["title_en"];
+    button.appendChild(title);
+
+    const caretIcon = document.createElement("i");
+    caretIcon.classList.add('hal-icon', 'icon-drop_down', 'fa-solid', 'fa-caret-down');
+    button.appendChild(caretIcon);
+
+    button.addEventListener("click", collapse);
 
     container.appendChild(button);
 
-    var spinner = create_spinner( "hal-" + type + "-spinner")
+    const spinner = create_spinner(`hal-${type}-spinner`);
 
     container.appendChild(spinner);
 
-    var content = document.createElement("div"); 
-    content.classList = "hal-content"; 
-    content.id = type; 
-    content.innerHTML = "<table class='hal-results-table'><tbody id='hal-" + type + "-table'>" + "</tbody></table>";
+    const content = document.createElement("div");
+    content.classList.add("hal-content");
+    content.id = type;
 
-    container.append(content);
+    const table = document.createElement("table");
+    table.classList.add("hal-results-table");
+
+    const tbody = document.createElement("tbody");
+    tbody.id = `hal-${type}-table`;
+
+    table.appendChild(tbody);
+    content.appendChild(table);
+    container.appendChild(content);
 
     return container;
 }
 
-function genListPubli(id, type) {
+async function genListPubli(id, type, debug = false) {
     const param = {
-        q: "authIdHal_s:" + id, 
+        q: `authIdHal_s: ${id}`,
         fl: [
             "title_s",
             "halId_s",
@@ -82,15 +92,15 @@ function genListPubli(id, type) {
             "journalTitle_s",
             "authFullName_s",
             "publicationDate_tdate",
-            "fileMain_s", 
+            "fileMain_s",
             "thumbId_i",
             "label_bibtex",
             "en_keyword_s",
             "journalIssn_s",
             "doiId_s",
         ],
-        fq: "docType_s:" + type,
-        sort: "publicationDate_tdate desc", 
+        fq: `docType_s: ${type}`,
+        sort: "publicationDate_tdate desc",
         wt: "json",
     }
 
@@ -98,62 +108,120 @@ function genListPubli(id, type) {
         // Sauvegarde des data dans une variable global pour les plugins 
         globalHalData[type] = data;
         // Set title 
-        document.getElementById("hal-" + type + "-card-title").innerText = hal_helpers[type]["title_en"] + " (" + data.length + ")";
+        document.getElementById(`hal-${type}-card-title`).innerText = `${hal_helpers[type]["title_en"]} (${data.length})`;
 
         // Complete list 
-        var tab = document.getElementById("hal-" + type + "-table");
+        var tab = document.getElementById(`hal-${type}-table`);
         for (const p of data) {
-            if ((typeof halDebug !== "undefined") && (halDebug)) {
+            if (debug) {
                 console.log(p);
             }
-            var str = ""
-            str = str + "<tr id='row-" + p.halId_s + "'>";
+
+            const row = document.createElement("tr");
+            row.id = `row-${p.halId_s}`;
+
+            const cell = document.createElement("td");
+            cell.classList.add("d-sm-table-cell");
+
             if (p.thumbId_i) {
-                str += "<td class='d-sm-table-cell'>" +
-                    "<a href=" + p.fileMain_s + ">" +
-                    "<div class='hal-media d-sm-block'>" +
-                    "<img src='https://thumb.ccsd.cnrs.fr/" + p.thumbId_i + "/thumb' alt='Image document'>" +
-                    "</div>" +
-                    "</a>" +
-                    "</td>";
-            } else {
-                str += "<td class='d-sm-table-cell'></td>"
+                const link = document.createElement("a");
+                link.href = p.fileMain_s;
+
+                const mediaDiv = document.createElement("div");
+                mediaDiv.classList.add("hal-media", "d-sm-block");
+
+                const image = document.createElement("img");
+                image.src = `https://thumb.ccsd.cnrs.fr/${p.thumbId_i}/thumb`;
+                image.alt = "Image document";
+
+                mediaDiv.appendChild(image);
+                link.appendChild(mediaDiv);
+                cell.appendChild(link);
             }
-            // removed style='width: 100%'  from the style below
-            str += "<td class='hal-title'>" +
-                "<a href='https://hal.science/" + p.halId_s + "' target='_blank'>" +
-                "<h3 class='title-results'>" +
-                p.title_s[0] +
-                "</h3>";
+
+            const titleCell = document.createElement("td");
+            titleCell.classList.add("hal-title");
+
+            const titleLink = document.createElement("a");
+            titleLink.href = `https://hal.science/${p.halId_s}`;
+            titleLink.target = "_blank";
+
+            const titleHeading = document.createElement("h3");
+            titleHeading.classList.add("title-results");
+            titleHeading.textContent = p.title_s[0];
+
+            titleLink.appendChild(titleHeading);
+            titleCell.appendChild(titleLink);
+
 
             let nbit = p.authFullName_s.length;
-            for (const a of p.authFullName_s) {
-                str = str +
-                    "<a href='https://hal.science/search/?q=*&authFullName_s=" +
-                    a + "' alt='Documents de l auteur' target='_blank'>" +
-                    a + "</a>";
-                if (--nbit) {
-                    str = str + " ; ";
-                };
-            };
+            for (const author of p.authFullName_s) {
+                const authorLink = document.createElement("a");
+                authorLink.href = `https://hal.science/search/?q=*&authFullName_s=${author}`;
+                authorLink.alt = "Documents de l auteur";
+                authorLink.target = "_blank";
+                authorLink.textContent = author;
 
-            str = str + "</a>";
-            str = str + "<br>";
-            str = str +
-                "<div class='citation-results'>" +
-                p.citationRef_s +
-                "</div>";
-            str = str +
-                "<div class='export-result'>";
+                titleCell.appendChild(authorLink);
+
+                if (--nbit) {
+                    titleCell.appendChild(document.createTextNode(" ; "));
+                }
+            }
+
+            const citationDiv = document.createElement("div");
+            citationDiv.classList.add("citation-results");
+            citationDiv.innerHTML = p.citationRef_s;
+
+            titleCell.appendChild(document.createElement("br"));
+            titleCell.appendChild(citationDiv);
+
+            const exportDiv = document.createElement("div");
+            exportDiv.classList.add("export-result");
             if (p.thumbId_i) {
-                str = str + "<a href='" + p.fileMain_s  + "' target='_blank' class='hal-export-pdf'><i class='fa-regular fa-file-pdf'></i></a>";
-            }   
-            str = str + "<a class='hal-export-cite' onclick='copyCitation(\"" + p.halId_s + "\")' title='Copy BibLatex Citation'><i class='fa-solid fa-quote-right'></i><a id='hal-copy-success' class='hal-citation-copy-success hidden'>BibLatex citation copied</a>" +
-            "<p class='hal-biblatex-citation' id='hal-citation-biblatex-"+ p.halId_s +"'>"+ p.label_bibtex+ "</p></a>" + 
-                "</div>";
-            str = str + "</td>" +
-                " </tr>";
-            tab.innerHTML += str;
+                const pdfLink = document.createElement("a");
+                pdfLink.href = p.fileMain_s;
+                pdfLink.target = "_blank";
+                pdfLink.classList.add("hal-export-pdf");
+
+                const pdfIcon = document.createElement("i");
+                pdfIcon.classList.add("fa-regular", "fa-file-pdf");
+
+                pdfLink.appendChild(pdfIcon);
+                exportDiv.appendChild(pdfLink);
+            }
+
+            const citeLink = document.createElement("a");
+            citeLink.classList.add("hal-export-cite");
+            citeLink.addEventListener("click", () => {copyCitation(p.halId_s, debug);});
+            citeLink.title = "Copy BibLatex Citation";
+
+            const quoteIcon = document.createElement("i");
+            quoteIcon.classList.add("fa-solid", "fa-quote-right");
+
+            const copySuccess = document.createElement("a");
+            copySuccess.id = "hal-copy-success";
+            copySuccess.classList.add("hal-citation-copy-success", "hidden");
+            copySuccess.textContent = "BibLatex citation copied";
+
+            const bibtexCitation = document.createElement("p");
+            bibtexCitation.classList.add("hal-biblatex-citation");
+            bibtexCitation.id = `hal-citation-biblatex-${p.halId_s}`;
+            bibtexCitation.textContent = p.label_bibtex;
+
+            citeLink.appendChild(quoteIcon);
+            citeLink.appendChild(copySuccess);
+            citeLink.appendChild(bibtexCitation);
+            exportDiv.appendChild(citeLink);
+
+            titleCell.appendChild(exportDiv);
+
+            row.appendChild(cell);
+            row.appendChild(titleCell);
+
+            tab.appendChild(row);
+
+
         };
 
         // Remove loader
@@ -172,7 +240,7 @@ function genListPubli(id, type) {
 
 export default function create_hal_publication_list(idhal, pubTypeList, debug = false) {
     // Récupère la div ou placer la liste des publications 
-    var hal_publi_div = document.getElementById("publi-hal-all");
+    var hal_publi_div = document.getElementById(hal_module_name);
 
     // Si elle n'existe pas on ne fait rien 
     if (hal_publi_div === null) {
@@ -180,18 +248,18 @@ export default function create_hal_publication_list(idhal, pubTypeList, debug = 
             console.log("No HAL publication div on this page");
         }
         return false;
-    } 
+    }
 
     if (debug) {
         console.log("Create a list of publications in ");
         console.log(hal_publi_div);
     }
-    
+
     // Sinon pour chaque type de publication on créé la liste
-    var apiCalls = []; 
+    var apiCalls = [];
     for (const p of pubTypeList) {
         hal_publi_div.appendChild(initialHTML(p));
-        apiCalls.push(genListPubli(idhal, p));
+        apiCalls.push(genListPubli(idhal, p, debug));
     }
 
     Promise.all(apiCalls).then(() => {

@@ -1,3 +1,5 @@
+export const hal_module_name = "hal-bibliography-integrator";
+
 export const hal_helpers = {
     "THESE": {
         "icon": "fa-graduation-cap",

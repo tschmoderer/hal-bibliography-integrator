@@ -1,6 +1,6 @@
 const apiUrl = 'https://api.semanticscholar.org/graph/v1/paper/';
 
-export async function fetchArticleData(artDOI) {
+export async function fetchArticleData(artDOI, config, debug) {
     try {
         var url = new URL(apiUrl + artDOI); 
         const param = new URLSearchParams({
@@ -19,7 +19,7 @@ export async function fetchArticleData(artDOI) {
         });
         const data = await response.json();
 
-        if ((typeof halDebug !== "undefined") && (halDebug)) {
+        if (debug) {
             console.log(data);
             console.log(`Number of citations for the article "${artDOI}": ${data["citationCount"]}`);
         }

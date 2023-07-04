@@ -1,7 +1,6 @@
-const apiKey = hal_plugins["artscore"]["scopus"]["apiKey"]; // Replace with your Scopus API key
-
-export function fetchJournalData(journalISSN) {
+export function fetchJournalData(journalISSN, config, debug) {
   return new Promise((resolve, reject) => {
+    const apiKey = config["artscore"]["scopus"]["apiKey"]; // Replace with your Scopus API key
     fetch(`https://api.elsevier.com/content/serial/title/issn/${encodeURIComponent(journalISSN)}?apiKey=${apiKey}`)
       .then(response => {
         if (!response.ok) {
@@ -11,7 +10,7 @@ export function fetchJournalData(journalISSN) {
       })
       .then(data => {
         // Process the fetched data
-        if ((typeof halDebug !== "undefined") && (halDebug)) {
+        if (debug) {
           console.log(data);
         }
 
