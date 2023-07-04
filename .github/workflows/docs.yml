@@ -36,7 +36,7 @@ jobs:
         uses: actions/configure-pages@v3
       
       - name: test
-        run: ls -laR docs/
+        run: tar --dereference --hard-dereference --directory docs/ -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
@@ -44,7 +44,6 @@ jobs:
           # Upload entire repository
           path: |
             'docs/'
-            'docs/pages/.github/'
           retention-days: 1
           
       - name: Deploy to GitHub Pages
