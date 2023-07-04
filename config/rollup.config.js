@@ -6,6 +6,7 @@ import watch from "rollup-plugin-watch";
 const path = require('path');
 const fs   = require('fs');
 const sass = require('sass');
+const markdown = require('./rollup-plugin-markdown');
 
 const InFile = {
     // Main script
@@ -92,8 +93,51 @@ export default [
                 targets: [
                   { src: 'dist/js/*.js', dest: 'docs/assets/js/' },
                   { src: 'dist/css/*.min.css', dest: 'docs/assets/css/' },
-                ]
+                  { src: '.github/img', dest: 'docs/pages/.github' },
+                ],
+                verbose: true,
             }),
+
+            markdown({
+                targets: [
+                    { src: './README.md', dest: 'docs/pages' }
+                ], 
+
+                mdopts: {
+                    html:         true,        // Enable HTML tags in source
+                    xhtmlOut:     false,        // Use '/' to close single tags (<br />).
+                                                // This is only for full CommonMark compatibility.
+                    breaks:       false,        // Convert '\n' in paragraphs into <br>
+                    langPrefix:   'language-',  // CSS language prefix for fenced blocks. Can be
+                                                // useful for external highlighters.
+                    linkify:      false,        // Autoconvert URL-like text to links
+                  
+                    // Enable some language-neutral replacement + quotes beautification
+                    typographer:  false,
+                  
+                    // Double + single quotes replacement pairs, when typographer enabled,
+                    // and smartquotes on. Could be either a String or an Array.
+                    //
+                    // For example, you can use '«»„“' for Russian, '„“‚‘' for German,
+                    // and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
+                    quotes: '“”‘’',
+                  
+                    // Highlighter function. Should return escaped HTML,
+                    // or '' if the source string is not changed and should be escaped externaly.
+                    // If result starts with <pre... internal wrapper is skipped.
+                    highlight: function (str, lang) {
+                        if (lang && hljs.getLanguage(lang)) {
+                          try {
+                            return '<pre class="hljs"><code>' +
+                              hljs.highlight(lang, str, true).value +
+                              '</code></pre>';
+                          } catch (__) {}
+                        }
+                    
+                        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+                    }
+                  },
+            })
         ]
     },
 ];
