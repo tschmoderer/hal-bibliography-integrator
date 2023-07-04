@@ -36,7 +36,7 @@ jobs:
         uses: actions/configure-pages@v3
       
       - name: test
-        run: tar --dereference --hard-dereference --directory docs/ -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git
+        run: tar --dereference --hard-dereference --directory docs/ -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git .
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
