@@ -84,6 +84,7 @@ function initialHTML(type) {
 async function genListPubli(id, type, debug = false) {
     const param = {
         q: `authIdHal_s: ${id}`,
+		rows: "10000",
         fl: [
             "title_s",
             "halId_s",
