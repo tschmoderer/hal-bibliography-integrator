@@ -20,7 +20,18 @@ export const hal_helpers = {
         "icon": "fa-microphone",
         "title_en": "Communications",
     },
-
+	"POSTER":{
+		"icon":"fa-image",
+        "title_en": "Poster",
+	},
+	"OUV":{
+		"icon":"fa-book",
+        "title_en": "Book",
+	},
+	"COUV":{
+		"icon":"fa-book",
+        "title_en": "Book Chapters",
+	},
     "LECTURE": {
         "icon": "fa-book-open",
         "title_en": "Lectures",
