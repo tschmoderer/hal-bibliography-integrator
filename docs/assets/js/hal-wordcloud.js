@@ -7,7 +7,7 @@ function init_wordcloud(container, debug) {
     container.appendChild(spinner);
 }
 
-function HALwordcloud(hal_wordcloud_div, debug) {
+function HALwordcloud(hal_wordcloud_div, idhal, debug) {
     if (debug) {
         console.log(globalHalData);
     }
@@ -50,14 +50,14 @@ function HALwordcloud(hal_wordcloud_div, debug) {
         var word = Object.keys(wordFreq)[suffle[i]];
         var freq = Object.values(wordFreq)[suffle[i]];
         var new_freq = (9 * freq + max - 10 * min) / (max - min);
-        wordcloud_container.appendChild(keywordElement(word, new_freq));
+        wordcloud_container.appendChild(keywordElement(word, idhal, new_freq));
     };
 
     hal_wordcloud_div.appendChild(wordcloud_container);
     document.getElementById("hal-wordcloud-spinner").style.display = "none";
 }
 
-function keywordElement(keyw, freq) {
+function keywordElement(keyw, idhal, freq) {
     var container = document.createElement("a");
     container.classList = "keyword keyword-" + freq;
     container.setAttribute("href", "https://hal.science/search/?q=*&authIdHal_s=" + idhal + "&keyword_s=" + keyw);
@@ -99,6 +99,6 @@ document.addEventListener("halMainDone", () => {
             console.log(hal_wordcloud_div);
         }
 
-        HALwordcloud(hal_wordcloud_div, debug);
+        HALwordcloud(hal_wordcloud_div,hal_integrator_config["id"], debug);
     }
 });
