@@ -37,6 +37,11 @@ export const hal_helpers = {
         "title_en": "Lectures",
     },
 
+    "PATENT": {
+        "icon": "fa-lightbulb",
+        "title_en": "Patents",
+    },
+
     "SOFTWARE": {
         "icon": "fa-microchip",
         "title_en": "Softwares",

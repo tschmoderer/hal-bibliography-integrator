@@ -100,6 +100,13 @@
                 <legend>Documents Types</legend>
             </fieldset>
 
+            <fieldset>
+                <legend>Display</legend>
+                <div>
+                    <input type="checkbox" id="toggle-display" name="toggle-display">
+                    <label for="toggle-display">Collapsed Articles Data onLoad</label>
+                </div>
+            </fieldset>
             <button type="submit">Submit</button>
         </form>
     </aside>
@@ -140,6 +147,7 @@
             // Reset variables
             hal_integrator_config = {
                 "id": "",
+				"onLoad":"collapsed",
                 "typeList": [],
                 "doit": true,
                 "debug": false,
@@ -182,6 +190,11 @@
                 hal_integrator_config["plugins"]["wordcloud"]["doit"] = false;
             }
 
+            if (form.querySelector("#toggle-display").checked) {
+                hal_integrator_config["onLoad"] = "collapsed";
+            } else {
+                hal_integrator_config["onLoad"] = "expanded";
+            }
             if (form.querySelector("#toggle-artdat").checked) {
                 hal_integrator_config["plugins"]["artscore"]["doit"] = true;
             } else {
