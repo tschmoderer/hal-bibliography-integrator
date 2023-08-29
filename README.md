@@ -95,20 +95,20 @@ Le tableau suivant donne les keywords a utiliser dans la clé *typeList* pour ob
 | :---------: | ----------- | :------------: | :------------: |
 | ART         | Article de journal | :heavy_check_mark: | <img src=".github/img/icons/newspaper-solid.svg" alt="fa-newspaper" width="20"/> |
 | COMM        | Communication dans un congrès | :heavy_check_mark: | <img src=".github/img/icons/microphone-solid.svg" alt="fa-microphone" width="20"/> |
-| COUV        | ? | :x: |  |
+| COUV        | Chapitre de livre | :heavy_check_mark: | <img src=".github/img/icons/book-solid.svg" alt="fa-book" width="20"/> |
 | THESE       | Thèse | :heavy_check_mark: | <img src=".github/img/icons/graduation-cap-solid.svg" alt="fa-graduation-cap" width="20"/> |
-| OUV         | ? | :x: |  |
+| OUV         | Livre | :heavy_check_mark: | <img src=".github/img/icons/book-solid.svg" alt="fa-book" width="20"/> |
 | UNDEFINED   | Preprint, document de travail | :heavy_check_mark: | <img src=".github/img/icons/file-pen-solid.svg" alt="fa-file-pen" width="20"/> |
 | REPORT      | ? | :x: |  |
 | OTHER       | ? | :x: |  |
 | MEM         | ? | :x: |  |
 | IMG         | Image | :x: |  |
-| POSTER      | ? | :x: |  |
+| POSTER      | Poster de conférence |  :heavy_check_mark: | <img src=".github/img/icons/image-solid.svg" alt="fa-image" width="20"/> |
 | ISSUE       | ? | :x: |  |
-| PROCEEDINGS | ? | :x: |  |
+| PROCEEDINGS | Proceedings | :heavy_check_mark: | <img src=".github/img/icons/file-solid.svg" alt="fa-file" width="20"/> |
 | HDR         | Habilitation à diriger des recherche | :x: |  |
 | NOTICE      | ? | :x: |  |
-| PATENT      | Brevet | :x: |  |
+| PATENT      | Brevet | :heavy_check_mark: | <img src=".github/img/icons/lightbulb-solid.svg" alt="fa-lightbulb" width="20"/> |
 | BLOG        | ? | :x: |  |
 | REPORT_LABO | ? | :x: |  |
 | VIDEO       | Vidéo | :x: |  |

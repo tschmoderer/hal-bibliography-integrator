@@ -78,7 +78,11 @@ const hal_helpers = {
     "SOFTWARE": {
         "icon": "fa-microchip",
         "title_en": "Softwares",
-    }
+    },
+	"PROCEEDINGS":{
+        "icon": "fa-file",
+        "title_en": "Proceedings",
+	}
 };
 
 var globalHalData = {};
