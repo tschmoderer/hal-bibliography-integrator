@@ -128,6 +128,7 @@ async function genListPubli(id, type, debug = false) {
             if (p.thumbId_i) {
                 const link = document.createElement("a");
                 link.href = p.fileMain_s;
+                link.target = "_blank";
 
                 const mediaDiv = document.createElement("div");
                 mediaDiv.classList.add("hal-media", "d-sm-block");
