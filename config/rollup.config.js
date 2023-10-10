@@ -1,5 +1,4 @@
 import scss from 'rollup-plugin-scss';
-import terser from '@rollup/plugin-terser';
 import copy from 'rollup-plugin-copy';
 import watch from "rollup-plugin-watch";
 
