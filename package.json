@@ -1,6 +1,6 @@
 {
   "name": "hal-publication-list",
-  "version": "3.3.2",
+  "version": "3.4.0",
   "description": "Package to get a researcher publication list from the HAL archive.",
   "repository": {
     "type": "git",
