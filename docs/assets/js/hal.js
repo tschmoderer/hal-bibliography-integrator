@@ -49,16 +49,36 @@ const hal_helpers = {
         "icon": "fa-microphone",
         "title_en": "Communications",
     },
-
+	"POSTER":{
+		"icon":"fa-image",
+        "title_en": "Poster",
+	},
+	"OUV":{
+		"icon":"fa-book",
+        "title_en": "Book",
+	},
+	"COUV":{
+		"icon":"fa-book",
+        "title_en": "Book Chapters",
+	},
     "LECTURE": {
         "icon": "fa-book-open",
         "title_en": "Lectures",
     },
 
+    "PATENT": {
+        "icon": "fa-lightbulb",
+        "title_en": "Patents",
+    },
+
     "SOFTWARE": {
         "icon": "fa-microchip",
         "title_en": "Softwares",
-    }
+    },
+	"PROCEEDINGS":{
+        "icon": "fa-file",
+        "title_en": "Proceedings",
+	}
 };
 
 var globalHalData = {};
@@ -140,6 +160,7 @@ function initialHTML(type) {
     container.id = `hal-${type}`;
 
     const button = document.createElement("button");
+    button.id=`hal-btn-${type}`;
     button.classList.add("hal-btn");
     button.setAttribute("data-target", `#${type}`);
 
@@ -184,6 +205,7 @@ function initialHTML(type) {
 async function genListPubli(id, type, debug = false) {
     const param = {
         q: `authIdHal_s: ${id}`,
+		rows: "10000",
         fl: [
             "title_s",
             "halId_s",
@@ -226,6 +248,7 @@ async function genListPubli(id, type, debug = false) {
             if (p.thumbId_i) {
                 const link = document.createElement("a");
                 link.href = p.fileMain_s;
+                link.target = "_blank";
 
                 const mediaDiv = document.createElement("div");
                 mediaDiv.classList.add("hal-media", "d-sm-block");
@@ -327,6 +350,10 @@ async function genListPubli(id, type, debug = false) {
         // Remove loader
         document.getElementById("hal-" + type + "-spinner").style.display = "none";
         document.getElementById("hal-" + type).style.display = "block";
+        if(hal_integrator_config["onLoad"].toLowerCase() === "collapsed"){
+            document.getElementById(type).style.display = "none";
+            document.getElementById("hal-btn-" + type).querySelector(".icon-drop_down").classList.add("fa-rotate-by");
+        }
 
         // Update mathjax
         MathJax.typeset([document.getElementById(type)]);
