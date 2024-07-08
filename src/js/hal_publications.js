@@ -230,7 +230,7 @@ async function genListPubli(id, type, debug = false) {
         // Remove loader
         document.getElementById("hal-" + type + "-spinner").style.display = "none";
         document.getElementById("hal-" + type).style.display = "block";
-        if(hal_integrator_config["onLoad"].toLowerCase() === "collapsed"){
+        if("onLoad" in hal_integrator_config && hal_integrator_config["onLoad"].toLowerCase() === "collapsed"){
             document.getElementById(type).style.display = "none";
             document.getElementById("hal-btn-" + type).querySelector(".icon-drop_down").classList.add("fa-rotate-by");
         }
