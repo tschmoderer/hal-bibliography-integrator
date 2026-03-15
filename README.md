@@ -18,6 +18,7 @@ Ce dépôt contient un module JavaScript qui facilite l'intégration de la **bib
   * [Plugins](#plugins)
     + [Nuage de mots clés](#wordcloud)
     + [Métriques liées aux articles](#artscore)
+    + [Graphiques de métriques liées aux articles](#charts)
 
 ## Tutoriel<a name="tutoriel"></a>
 
@@ -255,3 +256,128 @@ const hal_integrator_config = {
 **Warnings**: 
 - Seulement les éléments de type "ART" (article de journaux) sont traités.
 - Un certain nombre de problèmes liés à des données non trouvées peuvent être résolus en configurant manuellement le plugin, voir la [documentation](https://tschmoderer.github.io/hal-bibliography-integrator/). 
+
+### Graphiques bibliométriques<a name="charts"></a>
+
+Le plugin **charts** génère des visualisations scientifiques à partir des publications HAL d'un auteur. Il affiche :
+
+- des **indicateurs bibliométriques** (nombre de publications, citations, indice h) ;
+- des graphiques de **thématiques scientifiques** extraits des mots-clés HAL ;
+- des graphiques de **domaines d'application** issus des codes de domaine HAL ;
+- un histogramme de **citations par année**, avec source configurable ([Semantic Scholar](https://www.semanticscholar.org/), [Scopus](https://www.scopus.com/)).
+
+![charts](./.github/img/plugins/charts/charts-light.png)
+
+Pour activer le plugin, veuillez suivre les étapes suivantes :
+
+1. Assurez-vous d'avoir ajouté le module principal **hal.js** à votre site web en suivant les instructions du [tutoriel](#tutoriel).
+
+2. À l'endroit où vous souhaitez afficher les graphiques, insérez le nœud HTML suivant :
+
+```html
+<div id="hal-charts-integrator"></div>
+```
+
+3. Dans la section `<head>` de votre page, ajoutez le lien vers la feuille de styles :
+
+```html
+<link rel="stylesheet" href="./path/to/hal-charts.css">
+```
+
+4. Configurez le plugin via `hal_integrator_config`. La configuration minimale ne requiert aucune clé :
+
+```html
+<script type="text/javascript">
+const hal_integrator_config = {
+    // ...
+    "plugins": {
+        "charts": {}
+    }
+}
+</script>
+```
+
+5. À la fin de la section `<body>`, ajoutez le lien vers le script du plugin :
+
+```html
+<script type="text/javascript" src="./path/to/hal-charts.js"></script>
+```
+
+---
+
+#### Options de configuration
+
+Toutes les options sont facultatives.
+
+```html
+<script type="text/javascript">
+const hal_integrator_config = {
+    // ...
+    "plugins": {
+        "charts": {
+
+            // Graphiques à afficher (tous par défaut)
+            // Clés disponibles : "metrics", "thematiques", "domaines", "citations"
+            "show": ["metrics", "citations"],
+
+            // Nombre maximum de catégories dans les graphiques thématiques/domaines
+            "maxCategories": 6,
+
+            // Source des citations : Semantic Scholar (recommandé, gratuit, CORS natif)
+            "semanticScholar": {
+                "authorId": "2109238827",  // semanticscholar.org/author/Nom/2109238827
+                "apiKey":   "votre-clé"   // optionnel — x8 plus rapide (1 req/s → 10 req/s)
+            },
+
+            // Source des citations : Scopus (fallback si Semantic Scholar échoue)
+            "scopus": {
+                "apiKey":   "votre-clé-elsevier",  // dev.elsevier.com
+                "authorId": "57346250300"           // dans l'URL scopus.com/authid/…
+            },
+
+            // Renommage manuel des thématiques détectées automatiquement
+            "renameThematiques": {
+                "deep learning": "Apprentissage profond",
+                "mri":           "IRM"
+            },
+
+            // Renommage manuel des domaines HAL
+            "renameDomaines": {
+                "spi.signal": "Traitement du signal",
+                "sdv.can":    "Oncologie"
+            }
+        }
+    }
+}
+</script>
+```
+
+---
+
+#### Source des citations
+
+Le plugin tente d'obtenir les citations dans l'ordre suivant :
+
+| Priorité | Source | Clé requise | Vitesse |
+|---|---|---|---|
+| 1 | **Semantic Scholar** (par `authorId`) | non | ~1 req/s sans clé, ~10 req/s avec clé |
+| 2 | **Semantic Scholar** (par nom HAL) | non | idem, résultats moins fiables |
+| 3 | **Semantic Scholar** (par DOI HAL) | non | idem, par lot POST |
+| 4 | **Scopus** | `apiKey` + `authorId` | selon quota Elsevier |
+
+Pour trouver votre **Semantic Scholar Author ID**, rendez-vous sur [semanticscholar.org](https://www.semanticscholar.org/), cherchez votre profil et relevez le numéro en fin d'URL :
+```
+https://www.semanticscholar.org/author/Prénom-Nom/2109238827
+                                                   ^^^^^^^^^^
+```
+
+Pour demander une **clé API Semantic Scholar** (gratuite, augmente la limite de 1 à 10 req/s) :
+[semanticscholar.org/product/api](https://www.semanticscholar.org/product/api)
+
+---
+
+**Avertissements :**
+
+- Sans `authorId` Semantic Scholar configuré, le plugin recherche l'auteur par son identifiant HAL. Les résultats peuvent être incorrects si le nom est ambigu.
+- Le chargement des citations peut prendre plusieurs dizaines de secondes sans clé API, selon le nombre de publications citées. Un message de progression est affiché.
+- Le graphique de citations par année reflète l'**année de publication des articles citants**, ce qui correspond à l'affichage de Google Scholar et Web of Science.

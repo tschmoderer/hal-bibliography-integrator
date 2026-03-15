@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../assets/css/hal.min.css">
     <link rel="stylesheet" href="../assets/css/hal-wordcloud.min.css">
     <link rel="stylesheet" href="../assets/css/hal-artscore.min.css">
+    <link rel="stylesheet" href="../assets/css/hal-charts.css">
 
     <script>
         MathJax = {
@@ -94,10 +95,18 @@
                     <input type="checkbox" id="toggle-artdat" name="toggle-artdat">
                     <label for="toggle-artdat">Articles data</label>
                 </div>
+                <div>
+                    <input type="checkbox" id="toggle-charts" name="toggle-charts">
+                    <label for="toggle-charts">Charts</label>
+                </div>
             </fieldset>
 
             <fieldset id="formDocTypes">
                 <legend>Documents Types</legend>
+            </fieldset>
+
+            <fieldset id="formChartTypes">
+                <legend>Chart Types</legend>
             </fieldset>
 
             <fieldset>
@@ -113,16 +122,37 @@
     <main>
         <div id="hal-wordcloud-integrator"></div>
         <div id="hal-bibliography-integrator"></div>
+        <div id="hal-charts-integrator"></div>
     </main>
 
     <script type="text/javascript" src="../assets/js/hal.js"></script>
     <script type="text/javascript" src="../assets/js/hal-wordcloud.js"></script>
     <script type="text/javascript" src="../assets/js/hal-artscore.js"></script>
+    <script type="text/javascript" src="../assets/js/hal-charts.js"></script>
 
     <script type="text/javascript">
         // Get the form element
         const form = document.querySelector('form');
         const docTypeToggles = document.getElementById("formDocTypes");
+
+        // Peupler les types de graphiques depuis HAL_CHARTS_SHOW_OPTIONS
+        const chartTypeToggles = document.getElementById("formChartTypes");
+        if (typeof HAL_CHARTS_SHOW_OPTIONS !== "undefined") {
+            HAL_CHARTS_SHOW_OPTIONS.forEach(function(opt) {
+                var toggle = document.createElement("div");
+                var input  = document.createElement("input");
+                input.type    = "checkbox";
+                input.id      = "toggle-chart-" + opt.key;
+                input.name    = input.id;
+                input.checked = true;
+                var label = document.createElement("label");
+                label.htmlFor   = input.id;
+                label.innerText = opt.label;
+                toggle.appendChild(input);
+                toggle.appendChild(label);
+                chartTypeToggles.appendChild(toggle);
+            });
+        }
 
         for (const t in hal_helpers) {
             var toggle = document.createElement('div');
@@ -158,13 +188,26 @@
                         }
                     },
 
-                    "wordcloud": {}
+                    "wordcloud": {},
+					"charts": {
+						"show":[],
+                        "scopus": {
+                            "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
+							"authorId": "57346250300"
+                        },
+						"semanticScholar": {
+						  "authorId": "",   // URL : semanticscholar.org/author/Nom/2109238827
+						  "apiKey":   "Io1PNVnOo49Dl6DHwuQ1E1EfVwB1s76S43ASGgI3"     // optionnel — 10 req/s au lieu de 1
+						},
+						"maxCategories": 6
+					}
                 }
             }
 
             // reset hal containers 
             document.getElementById("hal-wordcloud-integrator").innerHTML = "";
             document.getElementById("hal-bibliography-integrator").innerHTML = "";
+            document.getElementById("hal-charts-integrator").innerHTML = "";
 
             // Get the value of the name field
             const nameInput = document.querySelector('#idhal');
@@ -199,6 +242,27 @@
                 hal_integrator_config["plugins"]["artscore"]["doit"] = true;
             } else {
                 hal_integrator_config["plugins"]["artscore"]["doit"] = false;
+            }
+            if (form.querySelector("#toggle-charts").checked) {
+                hal_integrator_config["plugins"]["charts"]["doit"] = true;
+            } else {
+                hal_integrator_config["plugins"]["charts"]["doit"] = false;
+            }
+
+            // Graphiques sélectionnés
+            if (typeof HAL_CHARTS_SHOW_OPTIONS !== "undefined") {
+                var selectedCharts = [];
+                chartTypeToggles.querySelectorAll("input").forEach(function(cb) {
+                    // id = "toggle-chart-metrics" → clé = "metrics"
+                    var key = cb.id.replace("toggle-chart-", "");
+                    if (cb.checked) selectedCharts.push(key);
+                });
+                // Tout coché → pas de filtre (tout afficher, comportement par défaut)
+                if (selectedCharts.length > 0 && selectedCharts.length < HAL_CHARTS_SHOW_OPTIONS.length) {
+                    hal_integrator_config["plugins"]["charts"]["show"] = selectedCharts;
+                } else {
+                    delete hal_integrator_config["plugins"]["charts"]["show"];
+                }
             }
 
             if (hal_integrator_config["typeList"].length > 0) {

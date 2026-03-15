@@ -1,6 +1,6 @@
 import scss from 'rollup-plugin-scss';
 import copy from 'rollup-plugin-copy';
-import watch from "rollup-plugin-watch";
+// import watch from "rollup-plugin-watch";
 
 const path = require('path');
 const fs   = require('fs');
@@ -14,6 +14,8 @@ const InFile = {
     "hal-wordcloud": path.resolve(__dirname, '../src/plugins/wordcloud/js/main.js'),
     // Article score plugin 
     "hal-artscore": path.resolve(__dirname, '../src/plugins/artscore/js/main.js'),
+	// Charts plugin
+    "hal-charts": path.resolve(__dirname, '../src/plugins/charts/js/main.js'),
 };
 
 export default [
@@ -45,9 +47,9 @@ export default [
         treeshake: false,
 
         plugins: [
-            watch({
-                dir: path.resolve(__dirname, "../src/"),
-            }),
+            /* watch({
+                dir: path.resolve(__dirname, "../src"),
+            }), */
 
             scss({
                 output: function (styles, styleNodes) {

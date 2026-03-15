@@ -1,0 +1,195 @@
+/* ============================================================
+   hal-charts.css — Plugin de visualisation pour hal-bibliography-integrator
+   Style aligné sur hal-indicator (fond blanc, typographie sobre, pas de card)
+   Intégration : charger après hal.css
+   ============================================================ */
+
+#hal-charts-integrator {
+  font-family: inherit;
+  margin: 1.5rem 0;
+}
+
+/* ── En-tête de section ──────────────────────────────────────────────────────
+   Aligné sur les titres de section de hal.css (h2 de liste de publications)  */
+.hal-charts-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid #e8edf3;
+}
+
+/* ── Bandeau métriques ───────────────────────────────────────────────────────
+   Inspiré du tableau de bord hal-indicator : chiffres clés en ligne, fond
+   neutre très léger, pas de couleur accent saturée                            */
+.hal-charts-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.hal-charts-metric-card {
+  flex: 1 1 110px;
+  background: #f7f8fa;
+  border: 1px solid #e2e6ec;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  text-align: center;
+}
+
+.hal-charts-metric-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1;
+}
+
+.hal-charts-metric-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.35rem;
+}
+
+.hal-charts-metric-sub {
+  font-size: 0.67rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+/* ── Grille de graphiques ────────────────────────────────────────────────────
+   Deux colonnes sur desktop, une sur mobile                                   */
+.hal-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Carte graphique — style hal-indicator ───────────────────────────────────
+   Fond blanc, pas d'ombre, titre noir en gras, légende centrée en bas.
+   Correspond exactement au rendu de la capture d'écran "Times Cited…"         */
+.hal-charts-card {
+  background: #fff;
+  border: 1px solid #e2e6ec;
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem 1rem;
+}
+
+.hal-charts-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 0.9rem;
+  text-align: left;
+}
+
+.hal-charts-canvas-wrapper {
+  position: relative;
+  height: 240px;
+}
+
+/* ── Légende ─────────────────────────────────────────────────────────────────
+   Positionnée en bas, centrée horizontalement, items en ligne (comme la
+   légende "Publications · Citations" de hal-indicator)                        */
+.hal-charts-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 1.25rem;
+  margin-top: 0.85rem;
+}
+
+.hal-charts-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+/* Pastille ronde pour les thématiques/domaines (camembert / barres empilées) */
+.hal-charts-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Icône ligne pour la légende "Citations" (trait + point central) */
+.hal-charts-legend-line {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  position: relative;
+}
+.hal-charts-legend-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: inherit;
+  border: 1.5px solid #fff;
+}
+
+/* ── Carte pleine largeur (graphique citations) ──────────────────────────────*/
+.hal-charts-card--full {
+  grid-column: 1 / -1;
+}
+
+/* ── Ligne de résumé citations (sous le graphique) ──────────────────────────*/
+.hal-charts-cites-year {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: center;
+  margin-top: -0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.hal-charts-cites-year strong {
+  color: #1a1a2e;
+}
+
+/* ── États chargement / erreur ───────────────────────────────────────────────*/
+.hal-charts-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+  font-size: 0.875rem;
+}
+
+.hal-charts-error {
+  text-align: center;
+  padding: 2rem;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────────*/
+@media (max-width: 640px) {
+  .hal-charts-grid {
+    grid-template-columns: 1fr;
+  }
+  .hal-charts-metrics {
+    gap: 0.5rem;
+  }
+  .hal-charts-metric-card {
+    flex: 1 1 80px;
+    padding: 0.65rem 0.75rem;
+  }
+  .hal-charts-metric-value {
+    font-size: 1.5rem;
+  }
+  .hal-charts-canvas-wrapper {
+    height: 200px;
+  }
+}
