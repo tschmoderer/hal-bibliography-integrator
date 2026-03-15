@@ -266,7 +266,7 @@ Le plugin **charts** génère des visualisations scientifiques à partir des pub
 - des graphiques de **domaines d'application** issus des codes de domaine HAL ;
 - un histogramme de **citations par année**, avec source configurable ([Semantic Scholar](https://www.semanticscholar.org/), [Scopus](https://www.scopus.com/)).
 
-![charts](./.github/img/plugins/charts/charts-light.png)
+![charts](./.github/img/plugins/charts/results_citations_metrics.png)
 
 Pour activer le plugin, veuillez suivre les étapes suivantes :
 

@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="../assets/css/hal.min.css">
     <link rel="stylesheet" href="../assets/css/hal-wordcloud.min.css">
     <link rel="stylesheet" href="../assets/css/hal-artscore.min.css">
-    <link rel="stylesheet" href="../assets/css/hal-charts.css">
+    <link rel="stylesheet" href="../assets/css/hal-charts.min.css">
 
     <script>
         MathJax = {
@@ -144,7 +144,6 @@
                 input.type    = "checkbox";
                 input.id      = "toggle-chart-" + opt.key;
                 input.name    = input.id;
-                input.checked = true;
                 var label = document.createElement("label");
                 label.htmlFor   = input.id;
                 label.innerText = opt.label;
@@ -193,7 +192,7 @@
 						"show":[],
                         "scopus": {
                             "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
-							"authorId": "57346250300"
+							"authorId": ""
                         },
 						"semanticScholar": {
 						  "authorId": "",   // URL : semanticscholar.org/author/Nom/2109238827
@@ -281,6 +280,30 @@
                 toggleART.onclick = "return false;";
             } else {
                 toggleART.onclick = "";
+            }
+        });
+        // Plugins management 
+        // ART SCORE
+        const chartPluginCheckbox = form.querySelector("#toggle-charts");
+        chartPluginCheckbox.addEventListener("click", function (event) {
+            var toggleART = form.querySelector("#toggle-ART");
+            var artPluginCheckbox = form.querySelector("#toggle-artdat");
+            var toggleChart = form.querySelector("#toggle-chart-metrics");
+            var toggleCitations = form.querySelector("#toggle-chart-citations");
+            if (event.target.checked) {
+                toggleART.checked = true;
+                toggleART.onclick = "return false;";
+				toggleChart.checked = true;
+                toggleChart.onclick = "return false;";
+				toggleCitations.checked = true;
+                toggleCitations.onclick = "return false;";
+				artPluginCheckbox.checked = true;
+                artPluginCheckbox.onclick = "return false;";
+            } else {
+                toggleART.onclick = "";
+                toggleChart.onclick = "";
+                toggleCitations.onclick = "";
+				artPluginCheckbox.onclick = "";
             }
         });
     </script>

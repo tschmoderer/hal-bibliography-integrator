@@ -7,6 +7,7 @@
 #hal-charts-integrator {
   font-family: inherit;
   margin: 1.5rem 0;
+  color:inherit;
 }
 
 /* ── En-tête de section ──────────────────────────────────────────────────────
@@ -14,7 +15,7 @@
 .hal-charts-section-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #1a1a2e;
+  /* color: #1a1a2e; */
   margin: 2rem 0 1rem 0;
   padding-bottom: 0.4rem;
   border-bottom: 2px solid #e8edf3;
@@ -42,14 +43,14 @@
 .hal-charts-metric-value {
   font-size: 1.9rem;
   font-weight: 700;
-  color: #1a1a2e;
+  /* color: #1a1a2e; */
   line-height: 1;
 }
 
 .hal-charts-metric-label {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #555;
+  /* color: #555; */
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.35rem;
@@ -57,7 +58,7 @@
 
 .hal-charts-metric-sub {
   font-size: 0.67rem;
-  color: #999;
+  /* color: #999; */
   margin-top: 0.2rem;
 }
 
@@ -83,7 +84,7 @@
 .hal-charts-card-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1a1a2e;
+  /* color: #1a1a2e; */
   margin-bottom: 0.9rem;
   text-align: left;
 }
@@ -109,7 +110,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.75rem;
-  color: #555;
+  /* color: #555; */
 }
 
 /* Pastille ronde pour les thématiques/domaines (camembert / barres empilées) */

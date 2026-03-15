@@ -13,6 +13,7 @@
  *
  * @license GPL-3.0
  */
+import '../scss/main.scss'
 
 var hal_charts_plugin_name = "hal-charts-integrator";
 

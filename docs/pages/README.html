@@ -23,6 +23,7 @@
 <ul>
 <li><a href="#wordcloud">Nuage de mots clés</a></li>
 <li><a href="#artscore">Métriques liées aux articles</a></li>
+<li><a href="#charts">Graphiques de métriques liées aux articles</a></li>
 </ul>
 </li>
 </ul>
@@ -474,4 +475,142 @@
 <ul>
 <li>Seulement les éléments de type &quot;ART&quot; (article de journaux) sont traités.</li>
 <li>Un certain nombre de problèmes liés à des données non trouvées peuvent être résolus en configurant manuellement le plugin, voir la <a href="https://tschmoderer.github.io/hal-bibliography-integrator/">documentation</a>.</li>
+</ul>
+<h3>Graphiques bibliométriques<a name="charts"></a></h3>
+<p>Le plugin <strong>charts</strong> génère des visualisations scientifiques à partir des publications HAL d'un auteur. Il affiche :</p>
+<ul>
+<li>des <strong>indicateurs bibliométriques</strong> (nombre de publications, citations, indice h) ;</li>
+<li>des graphiques de <strong>thématiques scientifiques</strong> extraits des mots-clés HAL ;</li>
+<li>des graphiques de <strong>domaines d'application</strong> issus des codes de domaine HAL ;</li>
+<li>un histogramme de <strong>citations par année</strong>, avec source configurable (<a href="https://www.semanticscholar.org/">Semantic Scholar</a>, <a href="https://www.scopus.com/">Scopus</a>).</li>
+</ul>
+<p><img src="./.github/img/plugins/charts/results_citations_metrics.png" alt="charts"></p>
+<p>Pour activer le plugin, veuillez suivre les étapes suivantes :</p>
+<ol>
+<li>
+<p>Assurez-vous d'avoir ajouté le module principal <strong>hal.js</strong> à votre site web en suivant les instructions du <a href="#tutoriel">tutoriel</a>.</p>
+</li>
+<li>
+<p>À l'endroit où vous souhaitez afficher les graphiques, insérez le nœud HTML suivant :</p>
+</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;hal-charts-integrator&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<ol start="3">
+<li>Dans la section <code>&lt;head&gt;</code> de votre page, ajoutez le lien vers la feuille de styles :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;./path/to/hal-charts.css&quot;</span>&gt;</span>
+</code></pre>
+<ol start="4">
+<li>Configurez le plugin via <code>hal_integrator_config</code>. La configuration minimale ne requiert aucune clé :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">const</span> hal_integrator_config = {
+    <span class="hljs-comment">// ...</span>
+    <span class="hljs-string">&quot;plugins&quot;</span>: {
+        <span class="hljs-string">&quot;charts&quot;</span>: {}
+    }
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<ol start="5">
+<li>À la fin de la section <code>&lt;body&gt;</code>, ajoutez le lien vers le script du plugin :</li>
+</ol>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./path/to/hal-charts.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<hr>
+<h4>Options de configuration</h4>
+<p>Toutes les options sont facultatives.</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">const</span> hal_integrator_config = {
+    <span class="hljs-comment">// ...</span>
+    <span class="hljs-string">&quot;plugins&quot;</span>: {
+        <span class="hljs-string">&quot;charts&quot;</span>: {
+
+            <span class="hljs-comment">// Graphiques à afficher (tous par défaut)</span>
+            <span class="hljs-comment">// Clés disponibles : &quot;metrics&quot;, &quot;thematiques&quot;, &quot;domaines&quot;, &quot;citations&quot;</span>
+            <span class="hljs-string">&quot;show&quot;</span>: [<span class="hljs-string">&quot;metrics&quot;</span>, <span class="hljs-string">&quot;citations&quot;</span>],
+
+            <span class="hljs-comment">// Nombre maximum de catégories dans les graphiques thématiques/domaines</span>
+            <span class="hljs-string">&quot;maxCategories&quot;</span>: <span class="hljs-number">6</span>,
+
+            <span class="hljs-comment">// Source des citations : Semantic Scholar (recommandé, gratuit, CORS natif)</span>
+            <span class="hljs-string">&quot;semanticScholar&quot;</span>: {
+                <span class="hljs-string">&quot;authorId&quot;</span>: <span class="hljs-string">&quot;2109238827&quot;</span>,  <span class="hljs-comment">// semanticscholar.org/author/Nom/2109238827</span>
+                <span class="hljs-string">&quot;apiKey&quot;</span>:   <span class="hljs-string">&quot;votre-clé&quot;</span>   <span class="hljs-comment">// optionnel — x8 plus rapide (1 req/s → 10 req/s)</span>
+            },
+
+            <span class="hljs-comment">// Source des citations : Scopus (fallback si Semantic Scholar échoue)</span>
+            <span class="hljs-string">&quot;scopus&quot;</span>: {
+                <span class="hljs-string">&quot;apiKey&quot;</span>:   <span class="hljs-string">&quot;votre-clé-elsevier&quot;</span>,  <span class="hljs-comment">// dev.elsevier.com</span>
+                <span class="hljs-string">&quot;authorId&quot;</span>: <span class="hljs-string">&quot;57346250300&quot;</span>           <span class="hljs-comment">// dans l&#x27;URL scopus.com/authid/…</span>
+            },
+
+            <span class="hljs-comment">// Renommage manuel des thématiques détectées automatiquement</span>
+            <span class="hljs-string">&quot;renameThematiques&quot;</span>: {
+                <span class="hljs-string">&quot;deep learning&quot;</span>: <span class="hljs-string">&quot;Apprentissage profond&quot;</span>,
+                <span class="hljs-string">&quot;mri&quot;</span>:           <span class="hljs-string">&quot;IRM&quot;</span>
+            },
+
+            <span class="hljs-comment">// Renommage manuel des domaines HAL</span>
+            <span class="hljs-string">&quot;renameDomaines&quot;</span>: {
+                <span class="hljs-string">&quot;spi.signal&quot;</span>: <span class="hljs-string">&quot;Traitement du signal&quot;</span>,
+                <span class="hljs-string">&quot;sdv.can&quot;</span>:    <span class="hljs-string">&quot;Oncologie&quot;</span>
+            }
+        }
+    }
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<hr>
+<h4>Source des citations</h4>
+<p>Le plugin tente d'obtenir les citations dans l'ordre suivant :</p>
+<table>
+<thead>
+<tr>
+<th>Priorité</th>
+<th>Source</th>
+<th>Clé requise</th>
+<th>Vitesse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Semantic Scholar</strong> (par <code>authorId</code>)</td>
+<td>non</td>
+<td>~1 req/s sans clé, ~10 req/s avec clé</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Semantic Scholar</strong> (par nom HAL)</td>
+<td>non</td>
+<td>idem, résultats moins fiables</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Semantic Scholar</strong> (par DOI HAL)</td>
+<td>non</td>
+<td>idem, par lot POST</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Scopus</strong></td>
+<td><code>apiKey</code> + <code>authorId</code></td>
+<td>selon quota Elsevier</td>
+</tr>
+</tbody>
+</table>
+<p>Pour trouver votre <strong>Semantic Scholar Author ID</strong>, rendez-vous sur <a href="https://www.semanticscholar.org/">semanticscholar.org</a>, cherchez votre profil et relevez le numéro en fin d'URL :</p>
+<pre><code class="hljs">https://www.semanticscholar.org/author/Prénom-Nom/2109238827
+                                                   ^^^^^^^^^<span class="hljs-built_in">^</span>
+</code></pre>
+<p>Pour demander une <strong>clé API Semantic Scholar</strong> (gratuite, augmente la limite de 1 à 10 req/s) :
+<a href="https://www.semanticscholar.org/product/api">semanticscholar.org/product/api</a></p>
+<hr>
+<p><strong>Avertissements :</strong></p>
+<ul>
+<li>Sans <code>authorId</code> Semantic Scholar configuré, le plugin recherche l'auteur par son identifiant HAL. Les résultats peuvent être incorrects si le nom est ambigu.</li>
+<li>Le chargement des citations peut prendre plusieurs dizaines de secondes sans clé API, selon le nombre de publications citées. Un message de progression est affiché.</li>
+<li>Le graphique de citations par année reflète l'<strong>année de publication des articles citants</strong>, ce qui correspond à l'affichage de Google Scholar et Web of Science.</li>
 </ul>
