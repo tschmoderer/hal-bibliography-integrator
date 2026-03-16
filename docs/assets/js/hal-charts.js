@@ -1,20 +1,6 @@
 'use strict';
 
-/**
- * hal-charts.js — v3.5.0
- * Plugin de visualisation scientifique pour hal-bibliography-integrator
- *
- * v3.5 :
- *   - Citations S2 : requêtes parallèles par lots (batch)
- *     Sans clé : lot de 1, délai 1100ms  → même vitesse max mais sans overhead
- *     Avec clé : lot de 8, délai 120ms   → ~8× plus rapide
- *   - Batch API S2 : POST /graph/v1/paper/batch pour récupérer
- *     paperId+citationCount de tous les papiers en 1 seule requête
- *   - fetchCitingYears parallélisé : toutes les pages d'un même papier
- *     sont fetchées en parallèle si > 1000 citants
- *
- * @license GPL-3.0
- */
+'use strict';
 
 var hal_charts_plugin_name = "hal-charts-integrator";
 
@@ -30,11 +16,9 @@ document.addEventListener("halMainDone", function () {
   var plugin_cfg  = (hal_plugins && hal_plugins["charts"]) ? hal_plugins["charts"] : {};
   var doit = ("doit" in plugin_cfg) ? plugin_cfg["doit"] : true;
   if (!doit) { if (debug) console.log("[hal-charts] Désactivé."); return false; }
-  console.log(plugin_cfg);
   initHALCharts(hal_charts_div, plugin_cfg, debug);
 });
 
-// Graphiques disponibles et leurs libellés (ordre d'affichage)
 var HAL_CHARTS_SHOW_OPTIONS = [
   { key: "metrics",     label: "Indicateurs bibliométriques" },
   { key: "thematiques", label: "Thématiques scientifiques"   },
@@ -46,16 +30,17 @@ function initHALCharts(container, cfg, debug) {
   var maxN              = cfg["maxCategories"]     || 8;
   var renameThematiques = cfg["renameThematiques"] || {};
   var renameDomaines    = cfg["renameDomaines"]    || {};
-
-  // cfg.show : tableau de clés, ex. ["metrics","citations"]
-  // Absent ou vide → tout afficher
   var showAll = !cfg["show"] || !cfg["show"].length;
   var showSet = {};
   HAL_CHARTS_SHOW_OPTIONS.forEach(function (o) {
     showSet[o.key] = showAll || cfg["show"].indexOf(o.key) !== -1;
   });
-
-  container.innerHTML = "<div class=\"hal-charts-loading\">Chargement des données…</div>";
+  // Afficher immédiatement une barre CSS (avant même que progressbar.js soit chargé)
+  halChartsProgressCSS(container, "Chargement des données…");
+  // Charger progressbar.js en arrière-plan, puis upgrader vers la barre animée
+  halChartsLoadProgressBar(function () {
+    halChartsProgress(container, "Chargement des données…", 0, 1);
+  });
   fetchHalData(hal_integrator_config["id"], hal_integrator_config["typeList"] || [])
     .then(function (docs) {
       if (debug) console.log("[hal-charts] HAL :", docs.length, "publications.");
@@ -63,6 +48,8 @@ function initHALCharts(container, cfg, debug) {
     })
     .catch(function (err) {
       console.error("[hal-charts]", err);
+      halChartsProgressDone(container);
+      halChartsProgressDone(container);
       container.innerHTML = "<div class=\"hal-charts-error\">Erreur HAL : " + err.message + "</div>";
     });
 }
@@ -83,25 +70,28 @@ function fetchHalData(idHal, typeList) {
     .then(function (d) { return d.response.docs || []; });
 }
 
-
 // ═══════════════════════════════════════════════════════════════════════════════
-// CITATIONS SEMANTIC SCHOLAR — moteur parallèle par lots
+// CITATIONS SEMANTIC SCHOLAR
 // ═══════════════════════════════════════════════════════════════════════════════
 function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, renameDomaines, showSet, debug) {
 
-  var s2Cfg    = (hal_integrator_config &&
-                  hal_integrator_config.plugins &&
-                  hal_integrator_config.plugins.charts &&
-                  hal_integrator_config.plugins.charts.semanticScholar)
-                  ? hal_integrator_config.plugins.charts.semanticScholar : null;
+  var s2Cfg = (hal_integrator_config &&
+               hal_integrator_config.plugins &&
+               hal_integrator_config.plugins.charts &&
+               hal_integrator_config.plugins.charts.semanticScholar)
+               ? hal_integrator_config.plugins.charts.semanticScholar : null;
 
   var s2ApiKey = (s2Cfg && s2Cfg.apiKey) ? s2Cfg.apiKey : "";
 
-  // ── Taille de lot et délai entre lots ──────────────────────────────────────
+  // Taille de lot et délai
   // Sans clé : 1 req/s  → lot=1,  délai=1050ms
-  // Avec clé : ~10 req/s → lot=8,  délai=850ms  (conservateur mais sûr)
-  var BATCH_SIZE  = s2ApiKey ? 8  : 1;
-  var BATCH_DELAY = s2ApiKey ? 850 : 1050;
+  // Avec clé  : ~10 req/s → lot=3,  délai=350ms (conservateur vs 429)
+  var BATCH_SIZE  = 1;                          // séquentiel — évite les bursts 429
+  var BATCH_DELAY = s2ApiKey ? 200 : 1100;      // avec clé : 200ms = 5 req/s (sous la limite 10)
+
+  // Retry exponentiel sur 429
+  var MAX_RETRIES = 4;     // 4 tentatives : 3s, 6s, 12s, 24s
+  var RETRY_BASE  = 3000;
 
   function s2Headers() {
     var h = { "Accept": "application/json" };
@@ -109,7 +99,7 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     return h;
   }
 
-  function s2Get(url) {
+  function s2FetchRaw(url) {
     return fetch(url, { headers: s2Headers() }).then(function (r) {
       if (r.status === 429) throw new Error("S2 rate-limit 429");
       if (!r.ok) throw new Error("S2 HTTP " + r.status);
@@ -117,7 +107,26 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     });
   }
 
-  function s2Post(url, body) {
+  function isRateLimitError(err) {
+    // Firefox masque le 429 derrière "NetworkError" quand CORS header absent
+    return err.message.indexOf("429") !== -1 || err.message.indexOf("NetworkError") !== -1;
+  }
+
+  function s2Get(url, attempt) {
+    attempt = attempt || 0;
+    return s2FetchRaw(url).catch(function (err) {
+      if (isRateLimitError(err) && attempt < MAX_RETRIES) {
+        var wait = RETRY_BASE * Math.pow(2, attempt);
+        console.warn("[hal-charts][S2] 429/NetworkError — retry dans " + wait + "ms (" + (attempt + 1) + "/" + MAX_RETRIES + ")");
+        return new Promise(function (res) {
+          setTimeout(function () { res(s2Get(url, attempt + 1)); }, wait);
+        });
+      }
+      throw err;
+    });
+  }
+
+  function s2PostOnce(url, body) {
     return fetch(url, {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, s2Headers()),
@@ -129,28 +138,34 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     });
   }
 
-  // ── Utilitaire : exécuter un tableau de fonctions en lots parallèles ───────
-  // tasks : tableau de fonctions () => Promise
-  // Chaque lot de BATCH_SIZE tâches est lancé en parallèle.
-  // Un délai de BATCH_DELAY ms sépare les lots.
-  // onProgress(done, total) appelé après chaque tâche terminée.
+  function s2Post(url, body, attempt) {
+    attempt = attempt || 0;
+    return s2PostOnce(url, body).catch(function (err) {
+      if (isRateLimitError(err) && attempt < MAX_RETRIES) {
+        var wait = RETRY_BASE * Math.pow(2, attempt);
+        console.warn("[hal-charts][S2] POST 429/NetworkError — retry dans " + wait + "ms (" + (attempt+1) + "/" + MAX_RETRIES + ")");
+        return new Promise(function (res) {
+          setTimeout(function () { res(s2Post(url, body, attempt + 1)); }, wait);
+        });
+      }
+      throw err;
+    });
+  }
+
+  // Pool de workers parallèles
   function runBatched(tasks, onProgress) {
     if (!tasks.length) return Promise.resolve([]);
     var results = new Array(tasks.length);
     var done    = 0;
-
     return new Promise(function (resolve) {
       var batchStart = 0;
-
       function launchBatch() {
         if (batchStart >= tasks.length) return;
-        var end   = Math.min(batchStart + BATCH_SIZE, tasks.length);
-        var slice = tasks.slice(batchStart, end);
+        var end    = Math.min(batchStart + BATCH_SIZE, tasks.length);
+        var slice  = tasks.slice(batchStart, end);
+        var offset = batchStart;
         batchStart = end;
-
         var pending = slice.length;
-        var offset  = end - slice.length; // index de départ dans results
-
         slice.forEach(function (task, i) {
           var idx = offset + i;
           task()
@@ -160,21 +175,16 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
               done++;
               if (onProgress) onProgress(done, tasks.length);
               if (--pending === 0) {
-                if (batchStart >= tasks.length) {
-                  resolve(results);
-                } else {
-                  setTimeout(launchBatch, BATCH_DELAY);
-                }
+                if (batchStart >= tasks.length) resolve(results);
+                else setTimeout(launchBatch, BATCH_DELAY);
               }
             });
         });
       }
-
       launchBatch();
     });
   }
 
-  // ── h-index ────────────────────────────────────────────────────────────────
   function calcHIndex(citCounts) {
     var s = citCounts.slice().sort(function (a, b) { return b - a; });
     var h = 0;
@@ -182,21 +192,22 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     return h;
   }
 
-  // ── fetchCitingYears : toutes les pages d'un papier en parallèle ──────────
-  // S2 limite à 1000 par page. On fait d'abord la page 0 pour connaître
-  // le total, puis on lance toutes les pages suivantes en parallèle.
+  function extractYears(entries) {
+    var now = new Date().getFullYear(), out = [];
+    entries.forEach(function (e) {
+      var y = e.citingPaper && e.citingPaper.year;
+      if (y && y >= 1900 && y <= now + 1) out.push(y);
+    });
+    return out;
+  }
+
   function fetchCitingYears(paperId) {
     var BASE = "https://api.semanticscholar.org/graph/v1/paper/"
       + encodeURIComponent(paperId) + "/citations?fields=year&limit=1000";
-
     return s2Get(BASE + "&offset=0").then(function (data) {
       var entries = data.data || [];
       var years   = extractYears(entries);
-
-      // Pas de page supplémentaire (cas courant)
       if (entries.length < 1000) return years;
-
-      // Pagination : on connaît le total via data.total (champ S2)
       var total = data.total || entries.length;
       var pages = [];
       for (var off = 1000; off < total; off += 1000) {
@@ -209,43 +220,25 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
         })(off);
       }
       if (!pages.length) return years;
-
       return runBatched(pages, null).then(function (results) {
-        results.forEach(function (r) {
-          if (r.ok) years = years.concat(r.value);
-        });
+        results.forEach(function (r) { if (r.ok) years = years.concat(r.value); });
         return years;
       });
     });
   }
 
-  function extractYears(entries) {
-    var now = new Date().getFullYear();
-    var out = [];
-    entries.forEach(function (e) {
-      var y = e.citingPaper && e.citingPaper.year;
-      if (y && y >= 1900 && y <= now + 1) out.push(y);
-    });
-    return out;
-  }
-
-  // ── Agrégation années → byYear ─────────────────────────────────────────────
   function yearsToByYear(allYearsArrays) {
     var byYear = {}, total = 0;
     allYearsArrays.forEach(function (years) {
-      years.forEach(function (y) {
-        byYear[y] = (byYear[y] || 0) + 1;
-        total++;
-      });
+      years.forEach(function (y) { byYear[y] = (byYear[y] || 0) + 1; total++; });
     });
     return { byYear: byYear, total: total };
   }
 
-  // ── Stratégie A : authorId S2 connu ───────────────────────────────────────
+  // Stratégie A : authorId S2 connu
   function fetchByAuthorId(authorId) {
     if (debug) console.log("[hal-charts][S2] AuthorID :", authorId);
-    container.innerHTML = "<div class=\"hal-charts-loading\">Récupération des papiers (S2)…</div>";
-
+    halChartsProgress(container, "Récupération des papiers…", 0, 1);
     return s2Get(
       "https://api.semanticscholar.org/graph/v1/author/"
       + encodeURIComponent(authorId)
@@ -253,36 +246,31 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     ).then(function (data) {
       var papers = data.data || [];
       if (debug) console.log("[hal-charts][S2]", papers.length, "papiers.");
-
       var hIndex = calcHIndex(papers.map(function (p) {
         return typeof p.citationCount === "number" ? p.citationCount : 0;
       }));
-
-      var cited = papers.filter(function (p) {
-        return p.paperId && p.citationCount > 0;
-      });
-
+      var cited = papers.filter(function (p) { return p.paperId && p.citationCount > 0; });
       if (!cited.length) return { byYear: {}, total: 0, hIndex: hIndex };
-
-      container.innerHTML = "<div class=\"hal-charts-loading\">Citations : 0 / "
-        + cited.length + " papiers…</div>";
-
+      halChartsProgress(container, "Chargement des citations", 0, cited.length);
       var tasks = cited.map(function (paper) {
         return function () { return fetchCitingYears(paper.paperId); };
       });
-
       return runBatched(tasks, function (done, total) {
-        container.innerHTML = "<div class=\"hal-charts-loading\">Citations : "
-          + done + " / " + total + " papiers…</div>";
+        halChartsProgress(container, "Chargement des citations", done, total);
       }).then(function (results) {
-        var allYears = results.filter(function (r) { return r.ok; }).map(function (r) { return r.value; });
+        var ok = results.filter(function (r) { return r.ok; });
+        if (ok.length === 0 && results.length > 0) {
+          // Toutes les requêtes ont échoué → probablement 429 persistant
+          console.warn("[hal-charts][S2] Toutes les requêtes /citations ont échoué — citations partielles (0)");
+        }
+        var allYears = ok.map(function (r) { return r.value; });
         var agg = yearsToByYear(allYears);
         return { byYear: agg.byYear, total: agg.total, hIndex: hIndex };
       });
     });
   }
 
-  // ── Stratégie B : recherche auteur par nom ────────────────────────────────
+  // Stratégie B : recherche auteur par nom
   function searchAuthorByName(halId) {
     var name = String(halId).replace(/-/g, " ").replace(/_/g, " ");
     if (debug) console.log("[hal-charts][S2] Recherche nom :", name);
@@ -299,59 +287,39 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     });
   }
 
-  // ── Stratégie C : fallback DOI batch ─────────────────────────────────────
-  // Utilise POST /paper/batch pour résoudre tous les DOI en 1 requête,
-  // puis lance les /citations en parallèle par lots.
+  // Stratégie C : fallback DOI batch
   function fetchByDois(halDocs) {
     var dois = halDocs
       .map(function (p) { return p.doi_s || p.doiId_s; })
       .filter(Boolean)
-      .filter(function (d, i, a) { return a.indexOf(d) === i });
-
+      .filter(function (d, i, a) { return a.indexOf(d) === i; });
     if (!dois.length) {
       if (debug) console.log("[hal-charts][S2] Aucun DOI.");
       return Promise.resolve({ byYear: {}, total: 0, hIndex: 0 });
     }
-
     if (debug) console.log("[hal-charts][S2] Batch DOI ×", dois.length);
-    container.innerHTML = "<div class=\"hal-charts-loading\">Résolution des DOI (S2 batch)…</div>";
-
-    // POST /paper/batch : jusqu'à 500 IDs en une requête
+    halChartsProgress(container, "Résolution des DOI…", 0, 1);
     var chunks = [];
-    for (var i = 0; i < dois.length; i += 500) {
-      chunks.push(dois.slice(i, i + 500));
-    }
-
-    var paperPromises = chunks.map(function (chunk) {
+    for (var i = 0; i < dois.length; i += 500) chunks.push(dois.slice(i, i + 500));
+    return Promise.all(chunks.map(function (chunk) {
       return s2Post(
         "https://api.semanticscholar.org/graph/v1/paper/batch",
         { ids: chunk.map(function (d) { return "DOI:" + d; }), fields: "paperId,citationCount" }
       );
-    });
-
-    return Promise.all(paperPromises).then(function (responses) {
+    })).then(function (responses) {
       var papers = [];
-      responses.forEach(function (r) {
-        if (Array.isArray(r)) papers = papers.concat(r);
-      });
-
+      responses.forEach(function (r) { if (Array.isArray(r)) papers = papers.concat(r); });
       var hIndex = calcHIndex(papers.map(function (p) {
         return (p && typeof p.citationCount === "number") ? p.citationCount : 0;
       }));
-
       var cited = papers.filter(function (p) { return p && p.paperId && p.citationCount > 0; });
       if (!cited.length) return { byYear: {}, total: 0, hIndex: hIndex };
-
-      container.innerHTML = "<div class=\"hal-charts-loading\">Citations DOI : 0 / "
-        + cited.length + "…</div>";
-
+      halChartsProgress(container, "Chargement des citations", 0, cited.length);
       var tasks = cited.map(function (p) {
         return function () { return fetchCitingYears(p.paperId); };
       });
-
       return runBatched(tasks, function (done, total) {
-        container.innerHTML = "<div class=\"hal-charts-loading\">Citations DOI : "
-          + done + " / " + total + "…</div>";
+        halChartsProgress(container, "Chargement des citations", done, total);
       }).then(function (results) {
         var allYears = results.filter(function (r) { return r.ok; }).map(function (r) { return r.value; });
         var agg = yearsToByYear(allYears);
@@ -360,7 +328,7 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     });
   }
 
-  // ── Orchestration ──────────────────────────────────────────────────────────
+  // Orchestration
   function runS2() {
     var authorId = s2Cfg && s2Cfg.authorId;
     var promise  = authorId
@@ -370,7 +338,6 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
             if (debug) console.warn("[hal-charts][S2] Nom échoué :", e.message, "— fallback DOI");
             return fetchByDois(docs);
           });
-
     promise
       .then(function (agg) {
         if (debug) console.log("[hal-charts][S2] byYear:", agg.byYear, "total:", agg.total, "h:", agg.hIndex);
@@ -387,43 +354,19 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
       });
   }
 
-  // ── Résumé config S2 (toujours affiché, indépendamment de debug) ─────────
+  // Diagnostic config S2
   if (s2Cfg) {
     if (s2Cfg.authorId && s2Cfg.apiKey) {
-      console.log(
-        "[hal-charts][S2] ✓ authorId présent (" + s2Cfg.authorId + ")"
-        + " · ✓ apiKey présente → lots de " + BATCH_SIZE + " req, délai " + BATCH_DELAY + "ms"
-      );
+      console.log("[hal-charts][S2] ✓ authorId (" + s2Cfg.authorId + ") · ✓ apiKey → lots de " + BATCH_SIZE + " req, délai " + BATCH_DELAY + "ms");
     } else if (s2Cfg.authorId) {
-      console.log(
-        "[hal-charts][S2] ✓ authorId présent (" + s2Cfg.authorId + ")"
-        + " · ✗ apiKey absente → lots de " + BATCH_SIZE + " req, délai " + BATCH_DELAY + "ms"
-        + " (ajouter plugins.charts.semanticScholar.apiKey pour x8 plus rapide)"
-      );
+      console.log("[hal-charts][S2] ✓ authorId (" + s2Cfg.authorId + ") · ✗ apiKey absente → lots de " + BATCH_SIZE + " req, délai " + BATCH_DELAY + "ms (apiKey = x3 plus rapide)");
     } else if (s2Cfg.apiKey) {
-      console.log(
-        "[hal-charts][S2] ✗ authorId absent → recherche par nom HAL"
-        + " · ✓ apiKey présente → lots de " + BATCH_SIZE + " req, délai " + BATCH_DELAY + "ms"
-        + " (ajouter plugins.charts.semanticScholar.authorId pour des résultats plus fiables)"
-      );
+      console.log("[hal-charts][S2] ✗ authorId absent → recherche par nom HAL · ✓ apiKey → lots de " + BATCH_SIZE + " req, délai " + BATCH_DELAY + "ms");
     } else {
-      console.warn(
-        "[hal-charts][S2] ✗ authorId absent · ✗ apiKey absente"
-        + " → recherche par nom HAL, rate-limit 1 req/s"
-        + "\nAjouter dans hal_integrator_config :"
-        + "\n  plugins.charts.semanticScholar.authorId = \"<id>\"  // semanticscholar.org/author/…/<id>"
-        + "\n  plugins.charts.semanticScholar.apiKey   = \"<clé>\" // optionnel, x8 plus rapide"
-      );
+      console.warn("[hal-charts][S2] ✗ semanticScholar sans authorId ni apiKey → recherche par nom, 1 req/s");
     }
   } else {
-    console.warn(
-      "[hal-charts][S2] ✗ semanticScholar non configuré → recherche par nom HAL, rate-limit 1 req/s"
-      + "\nAjouter dans hal_integrator_config :"
-      + "\n  plugins: { charts: { semanticScholar: {"
-      + "\n    authorId: \"<id>\",  // semanticscholar.org/author/…/<id>"
-      + "\n    apiKey:   \"<clé>\"  // optionnel, x8 plus rapide"
-      + "\n  }}}"
-    );
+    console.warn("[hal-charts][S2] ✗ semanticScholar non configuré → recherche par nom HAL, 1 req/s");
   }
 
   if (window.location.protocol === "file:") {
@@ -434,11 +377,13 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     return;
   }
 
-  runS2();
+  // Délai initial : laisse hal-artscore finir ses appels S2 en parallèle
+  // avant de démarrer les requêtes hal-charts (évite les 429 en burst)
+  setTimeout(runS2, s2ApiKey ? 3000 : 0);
 }
 
 
-// ── Citations via Scopus API (fallback) ───────────────────────────────────────
+// ── Citations via Scopus API (fallback) ────────────────────────────────────────
 function fetchScopusCitations(docs, container, debug, callback) {
   if (!hal_integrator_config ||
       !hal_integrator_config.plugins ||
@@ -449,9 +394,7 @@ function fetchScopusCitations(docs, container, debug, callback) {
   }
   var cfg = hal_integrator_config.plugins.charts.scopus;
   if (!cfg.apiKey || !cfg.authorId) { callback(docs); return; }
-
   var apiKey = cfg.apiKey, authorId = cfg.authorId, start = 0, allEntries = [];
-
   function fetchPage() {
     var url = "https://api.elsevier.com/content/search/scopus"
       + "?query=AU-ID(" + encodeURIComponent(authorId) + ")"
@@ -469,7 +412,6 @@ function fetchScopusCitations(docs, container, debug, callback) {
       })
       .catch(function (e) { console.error("[hal-charts][Scopus]", e.message); callback(docs); });
   }
-
   function process() {
     var byYear = {};
     allEntries.forEach(function (p) {
@@ -481,7 +423,6 @@ function fetchScopusCitations(docs, container, debug, callback) {
     docs._scopusTotal  = Object.values(byYear).reduce(function (a, b) { return a + b; }, 0);
     callback(docs);
   }
-
   fetchPage();
 }
 
@@ -489,6 +430,8 @@ function fetchScopusCitations(docs, container, debug, callback) {
 // ── Traitement principal ──────────────────────────────────────────────────────
 function processPublications(publications, container, maxN, renameThematiques, renameDomaines, showSet, debug) {
   if (!publications || !publications.length) {
+    halChartsProgressDone(container);
+    halChartsProgressDone(container);
     container.innerHTML = "<div class=\"hal-charts-error\">Aucune publication trouvée.</div>";
     return;
   }
@@ -498,21 +441,18 @@ function processPublications(publications, container, maxN, renameThematiques, r
     if (y) yearsSet[y] = true;
   });
   var years = Object.keys(yearsSet).map(Number).sort();
-
   var domMapping = showSet.domaines ? halChartsAutoDomaines(publications, maxN, renameDomaines, debug) : null;
   var domData = null, domCats = null;
   if (domMapping) {
     domData = halChartsBuildCategoryData(publications, "domain_s", domMapping, years, true);
     domCats = halChartsTopN(domData.total, maxN);
   }
-
   var kwMapping = showSet.thematiques ? halChartsAutoThematiques(publications, Math.max(maxN * 5, 40), renameThematiques, debug) : null;
   var aiApiKey  = (hal_integrator_config &&
                    hal_integrator_config.plugins &&
                    hal_integrator_config.plugins.charts &&
                    hal_integrator_config.plugins.charts.ai &&
                    hal_integrator_config.plugins.charts.ai.apiKey) || "";
-
   if (aiApiKey && kwMapping) {
     halChartsAiThematiques(kwMapping, maxN, aiApiKey, debug, function (aiMapping) {
       var thData = aiMapping ? halChartsMergeKwData(publications, aiMapping, years)
@@ -670,14 +610,188 @@ function halChartsBuildCategoryData(publications, field, mapping, years, multiVa
   return { byYear: byYear, total: total };
 }
 
+// ── Barre de progression progressbar.js ─────────────────────────────────────
+// Une seule instance, un seul div overlay inséré avant le container.
+// Phases :
+//   "Chargement des données…"   0 → 0.20  (animé lentement)
+//   "Récupération des papiers…" 0.20 → 0.50 (animé lentement)
+//   "Résolution des DOI…"       0.20 → 0.50 (animé lentement)
+//   "Chargement des citations"  0.50 → 1.00 (proportionnel done/total)
+//   progressDone                → 1.00 puis masqué
+
+var _hcBar      = null;   // instance ProgressBar.Line
+var _hcBarEl    = null;   // div overlay
+var _hcBarLabel = null;   // div texte
+
+var _HC_STEPS = {
+  "Chargement des donn\u00e9es\u2026":    { start: 0.00, end: 0.20 },
+  "R\u00e9cup\u00e9ration des papiers\u2026": { start: 0.20, end: 0.50 },
+  "R\u00e9solution des DOI\u2026":          { start: 0.20, end: 0.50 },
+  "Chargement des citations":         { start: 0.50, end: 1.00 },
+};
+
+function _hcEnsureOverlay(container) {
+  // Réutiliser si déjà dans le DOM
+  if (!_hcBarEl || !document.body.contains(_hcBarEl)) {
+    _hcBarEl = document.getElementById("hal-charts-progress-overlay");
+    if (!_hcBarEl) {
+      _hcBarEl = document.createElement("div");
+      _hcBarEl.id = "hal-charts-progress-overlay";
+      _hcBarEl.style.cssText = "padding:0.75rem 0 0.25rem;";
+      _hcBarLabel = document.createElement("div");
+      _hcBarLabel.className = "hal-charts-progress-label";
+      _hcBarEl.appendChild(_hcBarLabel);
+      var barWrap = document.createElement("div");
+      barWrap.id = "hc-bar-wrap";
+      barWrap.style.cssText = "height:6px;";
+      _hcBarEl.appendChild(barWrap);
+      if (container && container.parentNode) {
+        container.parentNode.insertBefore(_hcBarEl, container);
+      }
+    } else {
+      _hcBarLabel = _hcBarEl.querySelector(".hal-charts-progress-label");
+    }
+    // (Re)créer l'instance ProgressBar si disponible
+    if (typeof ProgressBar !== "undefined") {
+      var wrap = document.getElementById("hc-bar-wrap");
+      if (wrap) {
+        if (_hcBar) { try { _hcBar.destroy(); } catch(e) {} }
+        wrap.innerHTML = "";
+        _hcBar = new ProgressBar.Line(wrap, {
+          strokeWidth: 3,
+          easing:      "easeInOut",
+          duration:    250,
+          color:       "#1a56a4",
+          trailColor:  "#e2e6ec",
+          trailWidth:  3,
+          svgStyle:    { width: "100%", height: "100%" },
+        });
+      }
+    }
+  }
+}
+
+function halChartsProgressCSS(container, label) {
+  // Affichage immédiat avant chargement de progressbar.js
+  _hcEnsureOverlay(container);
+  if (!_hcBarEl) return;
+  _hcBarEl.style.display = "";
+  if (_hcBarLabel) _hcBarLabel.textContent = label;
+  // Barre CSS basique si progressbar.js pas encore là
+  if (!_hcBar) {
+    var wrap = document.getElementById("hc-bar-wrap");
+    if (wrap && !wrap.querySelector("div")) {
+      wrap.style.cssText = "height:6px;background:#e2e6ec;border-radius:99px;overflow:hidden;";
+      var fill = document.createElement("div");
+      fill.id = "hc-bar-fill";
+      fill.style.cssText = "height:100%;width:0%;background:#1a56a4;border-radius:99px;transition:width 1.2s ease;";
+      wrap.appendChild(fill);
+      setTimeout(function () { fill.style.width = "15%"; }, 50);
+    }
+  }
+}
+
+function halChartsProgress(container, label, done, total) {
+  _hcEnsureOverlay(container);
+  if (!_hcBarEl) return;
+  _hcBarEl.style.display = "";
+
+  // Label
+  if (_hcBarLabel) {
+    _hcBarLabel.innerHTML = label
+      + (total > 1
+        ? " <span class=\"hal-charts-progress-count\">" + done + "\u00a0/\u00a0" + total + "</span>"
+        : "");
+  }
+
+  // Calcul du ratio
+  var step  = _HC_STEPS[label];
+  var ratio = step ? step.start : 0.5;
+  if (step) {
+    if (total > 1 && done >= 0) {
+      ratio = step.start + (done / total) * (step.end - step.start);
+    } else {
+      ratio = step.end; // animer jusqu'à la fin de la phase
+    }
+  }
+
+  if (_hcBar) {
+    var dur = (total > 1) ? 220 : 1200;
+    _hcBar.animate(ratio, { duration: dur });
+  } else {
+    var fill = document.getElementById("hc-bar-fill");
+    if (fill) fill.style.width = Math.round(ratio * 100) + "%";
+  }
+}
+
+function halChartsProgressDone(container) {
+  if (_hcBar) {
+    _hcBar.animate(1.0, { duration: 300 });
+  } else {
+    var fill = document.getElementById("hc-bar-fill");
+    if (fill) fill.style.width = "100%";
+  }
+  setTimeout(function () {
+    if (_hcBarEl) _hcBarEl.style.display = "none";
+  }, 500);
+}
+
+// Chargement de progressbar.js
+// Priorité : déjà chargé → local assets/js → jsDelivr CDN → fallback CSS
+function halChartsLoadProgressBar(callback) {
+  if (typeof ProgressBar !== "undefined") { callback(); return; }
+
+  function tryLoad(src, onFail) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function () {
+      if (typeof ProgressBar !== "undefined") callback();
+      else onFail();
+    };
+    s.onerror = onFail;
+    document.head.appendChild(s);
+  }
+
+  var localSrc = (function () {
+    var scripts = document.querySelectorAll("script[src]");
+    for (var i = 0; i < scripts.length; i++) {
+      if (scripts[i].src.indexOf("hal-charts") !== -1) {
+        return scripts[i].src.replace(/hal-charts[^/]*$/, "progressbar.min.js");
+      }
+    }
+    return null;
+  })();
+
+  if (localSrc) {
+    tryLoad(localSrc, function () {
+      tryLoad("https://cdn.jsdelivr.net/npm/progressbar.js@1.1.0/dist/progressbar.min.js", function () {
+        console.warn("[hal-charts] progressbar.js indisponible — fallback CSS");
+        callback();
+      });
+    });
+  } else {
+    tryLoad("https://cdn.jsdelivr.net/npm/progressbar.js@1.1.0/dist/progressbar.min.js", function () {
+      console.warn("[hal-charts] progressbar.js indisponible — fallback CSS");
+      callback();
+    });
+  }
+}
+
+// ── Chargement CDN Chart.js ───────────────────────────────────────────────────
+// ── Chargement CDN Chart.js ───────────────────────────────────────────────────
 function halChartsLoadChartJs(callback) {
-  if (typeof Chart !== "undefined") { callback(); return; }
+  function applyDefaults() {
+    var c = getComputedStyle(document.documentElement).getPropertyValue("--main-text-color").trim();
+    Chart.defaults.color = c || "#1a1a2e";
+    callback();
+  }
+  if (typeof Chart !== "undefined") { applyDefaults(); return; }
   var CDNJS    = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js";
   var JSDELIVR = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
   function load(url, onFail) {
     var s = document.createElement("script");
     s.src = url;
-    s.onload = callback;
+    s.onload = applyDefaults;
     s.onerror = function () {
       console.warn("[hal-charts] Chart.js indisponible depuis", url);
       if (onFail) onFail(); else console.error("[hal-charts] Tous les CDN ont échoué.");
@@ -687,6 +801,7 @@ function halChartsLoadChartJs(callback) {
   load(CDNJS, function () { load(JSDELIVR, null); });
 }
 
+// ── Rendu métriques ───────────────────────────────────────────────────────────
 function halChartsRenderMetrics(publications, years) {
   var total = publications.length, totalCit = 0, hIdx = 0, citSource = "—";
   if (publications._s2Total !== undefined) {
@@ -734,9 +849,16 @@ function halChartsBuildLegend(containerId, labels, colors, lineStyle) {
   }).join("");
 }
 
+// ── Graphiques ────────────────────────────────────────────────────────────────
+function halChartsTextColor() {
+  var c = getComputedStyle(document.documentElement).getPropertyValue("--main-text-color").trim();
+  return c || "#1a1a2e";
+}
+
 function halChartsRenderBar(canvasId, years, categories, byYear, colors) {
   var ctx = document.getElementById(canvasId);
   if (!ctx) return;
+  var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--main-timeline-color").trim() || "#f0f0f0";
   new Chart(ctx, {
     type: "bar",
     data: { labels: years.map(String), datasets: categories.map(function (cat, i) {
@@ -746,9 +868,10 @@ function halChartsRenderBar(canvasId, years, categories, byYear, colors) {
     options: { responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false },
         tooltip: { callbacks: { title: function (it) { return "Année "+it[0].label; }}}},
-      scales: { x: { grid:{display:false}, ticks:{font:{size:11}} },
-        y: { beginAtZero:true, ticks:{stepSize:1,font:{size:11}}, grid:{color:"#f0f0f0"},
-             title:{display:true,text:"Nombre de publications",font:{size:11},color:"#888"}}}}
+      scales: { x: { grid:{display:false}, ticks:{font:{size:11},color:halChartsTextColor()} },
+        y: { beginAtZero:true, ticks:{stepSize:1,font:{size:11},color:halChartsTextColor()},
+             grid:{color:gridColor},
+             title:{display:true,text:"Nombre de publications",font:{size:11},color:halChartsTextColor()}}}}
   });
 }
 
@@ -787,6 +910,7 @@ function halChartsRenderCitations(canvasId, publications, years) {
   if (el) el.innerHTML = "<strong>"+tot+"</strong>\u00a0citations totales"
     + "\u2002·\u2002<strong>"+(allYears.length>0?(tot/allYears.length).toFixed(1):"0")+"</strong>\u00a0cites/an"
     + "\u2002·\u2002<em>source\u00a0: "+src+"</em>";
+  var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--timeline-background-color").trim() || "#f0f0f0";
   new Chart(ctx, {
     type: "bar",
     data: { labels: allYears.map(String), datasets: [{ label:"Citations", data: citData,
@@ -796,19 +920,17 @@ function halChartsRenderCitations(canvasId, publications, years) {
       borderRadius:3, borderSkipped:false }]},
     options: { responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{ x:{grid:{display:false}},
-               y:{beginAtZero:true, title:{display:true,text:"Citations reçues / an"}}}}
+      scales:{ x:{grid:{display:false},ticks:{color:halChartsTextColor()}},
+               y:{beginAtZero:true, ticks:{color:halChartsTextColor()}, grid:{color:gridColor},
+                  title:{display:true,text:"Citations reçues / an",color:halChartsTextColor()}}}}
   });
 }
 
 function halChartsRenderAll(container, publications, years, thData, thCats, domData, domCats, showSet) {
-  // showSet par défaut : tout afficher si absent (compatibilité)
   if (!showSet) { showSet = { metrics:true, thematiques:true, domaines:true, citations:true }; }
-
   var thColors  = HAL_CHARTS_PALETTE.slice(0, (thCats||[]).length);
   var domColors = HAL_CHARTS_PALETTE.slice(0, (domCats||[]).length);
   var html = "";
-
   if (showSet.metrics) {
     html += "<div class=\"hal-charts-section-title\">Indicateurs bibliométriques</div>"
       + halChartsRenderMetrics(publications, years);
@@ -828,13 +950,15 @@ function halChartsRenderAll(container, publications, years, thData, thCats, domD
       + halChartsCreateCard("hc-cit","Citations reçues / an","hal-charts-card--full")
       + "</div><div class=\"hal-charts-cites-year\" id=\"hc-cit-metric\"></div>";
   }
-
   if (!html) {
+    halChartsProgressDone(container);
+    halChartsProgressDone(container);
     container.innerHTML = "<div class=\"hal-charts-loading\">Aucun graphique sélectionné.</div>";
     return;
   }
+  halChartsProgressDone(container);
+  halChartsProgressDone(container);
   container.innerHTML = html;
-
   if (showSet.thematiques && thCats && thCats.length) {
     halChartsRenderBar("hc-th-bar",years,thCats,thData.byYear,thColors);
     halChartsBuildLegend("hc-th-bar-legend",thCats,thColors);
@@ -852,6 +976,7 @@ function halChartsRenderAll(container, publications, years, thData, thCats, domD
   }
 }
 
+// ── Palette & constantes ──────────────────────────────────────────────────────
 var HAL_CHARTS_PALETTE = ["#1a56a4","#e05c2a","#2e9e6b","#8b3ab8","#c0392b","#16a085","#d4ac0d","#2980b9","#7f8c8d"];
 
 var HAL_DOMAIN_LABELS = {
@@ -879,6 +1004,7 @@ var HAL_CHARTS_STOPWORDS = {
   "based":1,"using":1,"via":1,"new":1,"novel":1,"approach":1,"method":1,"system":1,
 };
 
+// ── Utilitaires ───────────────────────────────────────────────────────────────
 function halChartsExtractYear(d) {
   if (!d) return null;
   var m = String(d).match(/(\d{4})/);

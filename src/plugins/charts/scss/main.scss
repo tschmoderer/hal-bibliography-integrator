@@ -61,7 +61,44 @@
   /* color: #999; */
   margin-top: 0.2rem;
 }
-
+/* ── États chargement / erreur ───────────────────────────────────────────────*/
+.hal-charts-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+  font-size: 0.875rem;
+}
+ 
+.hal-charts-error {
+  text-align: center;
+  padding: 2rem;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+ 
+/* ── Barre de progression — progressbar.js ───────────────────────────────────*/
+/* Overlay inséré avant #hal-charts-integrator, indépendant du container.     */
+/* La barre SVG est gérée par ProgressBar.Line, seul le label est en CSS.     */
+#hal-charts-progress-overlay {
+  padding: 0.75rem 0 0.5rem;
+}
+ 
+.hal-charts-progress-label {
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+ 
+.hal-charts-progress-count {
+  font-weight: 600;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+ 
+/* #hal-charts-bar-container : height fixée en JS (6px), SVG géré par progressbar.js */
+ 
 /* ── Grille de graphiques ────────────────────────────────────────────────────
    Deux colonnes sur desktop, une sur mobile                                   */
 .hal-charts-grid {
