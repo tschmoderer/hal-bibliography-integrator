@@ -915,11 +915,17 @@ function halChartsRenderCitations(canvasId, publications, years) {
     + "\u2002·\u2002<strong>"+(allYears.length>0?(tot/allYears.length).toFixed(1):"0")+"</strong>\u00a0cites/an"
     + "\u2002·\u2002<em>source\u00a0: "+src+"</em>";
   var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--timeline-background-color").trim() || "#f0f0f0";
+  const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--link-color').trim() || "#1A56A4";
+  function hexToRgb(hex) {
+	  const bigint = parseInt(hex.replace('#',''), 16);
+	  return `${(bigint>>16)&255}, ${(bigint>>8)&255}, ${bigint&255}`;
+	}
+  const rgb = hexToRgb(linkColor);
   new Chart(ctx, {
     type: "bar",
     data: { labels: allYears.map(String), datasets: [{ label:"Citations", data: citData,
-      backgroundColor: allYears.map(function(y){return y===thisYear?"rgba(26,86,164,0.35)":"rgba(26,86,164,0.82)";}),
-      borderColor: allYears.map(function(y){return y===thisYear?"#1a56a4":"transparent";}),
+      backgroundColor: allYears.map(function(y){return y===thisYear?`rgba(${rgb},0.35)`:`rgba(${rgb},0.82)`;}),
+      borderColor: allYears.map(function(y){return y===thisYear?`{linkColor}`:"transparent";}),
       borderWidth: allYears.map(function(y){return y===thisYear?1.5:0;}),
       borderRadius:3, borderSkipped:false }]},
     options: { responsive:true, maintainAspectRatio:false,
@@ -928,6 +934,7 @@ function halChartsRenderCitations(canvasId, publications, years) {
                y:{beginAtZero:true, ticks:{color:halChartsTextColor()}, grid:{color:gridColor},
                   title:{display:true,text:"Citations reçues / an",color:halChartsTextColor()}}}}
   });
+}
 }
 
 function halChartsRenderAll(container, publications, years, thData, thCats, domData, domCats, showSet) {
