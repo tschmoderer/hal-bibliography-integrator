@@ -1,29 +1,39 @@
 {
-  "name": "hal-publication-list",
+  "name": "hal-publication-integrator",
   "version": "3.4.0",
-  "description": "Package to get a researcher publication list from the HAL archive.",
+  "description": "JavaScript module to integrate a researcher's HAL publication list into a website.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tschmoderer/hal-publication-list.git"
+    "url": "git+https://github.com/tschmoderer/hal-bibliography-integrator.git"
   },
   "author": "Timothée Schmoderer",
-  "license": "GPL3.0",
+  "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/tschmoderer/hal-publication-list/issues"
+    "url": "https://github.com/tschmoderer/hal-bibliography-integrator/issues"
   },
-  "homepage": "https://github.com/tschmoderer/hal-publication-list#readme",
+  "homepage": "https://github.com/tschmoderer/hal-bibliography-integrator#readme",
+  "keywords": [
+    "hal",
+    "bibliography",
+    "research",
+    "academic",
+    "personal website"
+  ],
   "scripts": {
     "build": "rollup --bundleConfigAsCjs -c config/rollup.config.js",
     "watch": "rollup --bundleConfigAsCjs -c config/rollup.config.js -w",
-    "push": "npm version patch && git push --follow-tags",
-    "push-minor": "npm version minor && git push --follow-tags",
-    "push-major": "npm version major && git push --follow-tags"
+    "prepublishOnly": "npm run build",
+    "version:patch": "npm version patch && git push --follow-tags",
+    "version:minor": "npm version minor && git push --follow-tags",
+    "version:major": "npm version major && git push --follow-tags"
   },
   "dependencies": {
-    "@rollup/plugin-terser": "^1.0.0",
     "markdown-it": "^14.1.1",
     "markdown-it-emoji": "^2.0.2",
-    "markdown-it-highlightjs": "^4.0.1",
+    "markdown-it-highlightjs": "^4.0.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^1.0.0",
     "rollup": "^3.25.1",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-scss": "^4.0.0",
