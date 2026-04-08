@@ -1,43 +1,52 @@
-name: release
+name: release2
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: 
-      CI_COMMIT_AUTHOR: github-actions[bot]
-      CI_COMMIT_EMAIL: github-actions[bot]@users.noreply.github.com
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Dependencies
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
         run: npm install
-      
-      - name: Build JS
+
+      - name: Build project
         run: npm run build
-      
-      - name: Zip dist folder
+
+      - name: Create dist archive
         run: zip -r dist.zip dist
 
-      - name: Calculate checksums
-        id: checksums
+      - name: Generate checksums
         run: |
-          shasum dist.zip > dist.zip.sha256
+          sha256sum dist.zip > dist.zip.sha256
           md5sum dist.zip > dist.zip.md5
 
-      - name: Retrieve version
-        run: |
-            echo "TAG_NAME=$(git describe --abbrev=0)" >> $GITHUB_OUTPUT
-        id: version
-      
-      - uses: ncipollo/release-action@v1
+      - name: Get tag name
+        id: tag
+        run: echo "TAG_NAME=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist.zip, dist.zip.sha256, dist.zip.md5"
+          tag: ${{ steps.tag.outputs.TAG_NAME }}
+          artifacts: |
+            dist.zip
+            dist.zip.sha256
+            dist.zip.md5
           generateReleaseNotes: true
-          commit: "main"
-          tag: ${{ steps.version.outputs.TAG_NAME }}
           skipIfReleaseExists: true
