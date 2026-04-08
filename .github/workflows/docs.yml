@@ -36,7 +36,7 @@ jobs:
         run: tar --dereference --hard-dereference --directory docs/ -cvf "$RUNNER_TEMP/artifact.tar" --exclude=.git .
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: 'github-pages'
           path: ${{ runner.temp }}/artifact.tar
