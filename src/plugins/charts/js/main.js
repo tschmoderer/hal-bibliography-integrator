@@ -11,23 +11,23 @@ document.addEventListener("halMainDone", function () {
     return false;
   }
   var hal_plugins = hal_integrator_config["plugins"];
-  var plugin_cfg  = (hal_plugins && hal_plugins["charts"]) ? hal_plugins["charts"] : {};
+  var plugin_cfg = (hal_plugins && hal_plugins["charts"]) ? hal_plugins["charts"] : {};
   var doit = ("doit" in plugin_cfg) ? plugin_cfg["doit"] : true;
   if (!doit) { if (debug) console.log("[hal-charts] Désactivé."); return false; }
   initHALCharts(hal_charts_div, plugin_cfg, debug);
 });
 
 var HAL_CHARTS_SHOW_OPTIONS = [
-  { key: "metrics",     label: "Indicateurs bibliométriques" },
-  { key: "thematiques", label: "Thématiques scientifiques"   },
-  { key: "domaines",    label: "Domaines d'application"      },
-  { key: "citations",   label: "Citations par année"         },
+  { key: "metrics", label: "Indicateurs bibliométriques" },
+  { key: "thematiques", label: "Thématiques scientifiques" },
+  { key: "domaines", label: "Domaines d'application" },
+  { key: "citations", label: "Citations par année" },
 ];
 
 function initHALCharts(container, cfg, debug) {
-  var maxN              = cfg["maxCategories"]     || 8;
+  var maxN = cfg["maxCategories"] || 8;
   var renameThematiques = cfg["renameThematiques"] || {};
-  var renameDomaines    = cfg["renameDomaines"]    || {};
+  var renameDomaines = cfg["renameDomaines"] || {};
   var showAll = !cfg["show"] || !cfg["show"].length;
   var showSet = {};
   HAL_CHARTS_SHOW_OPTIONS.forEach(function (o) {
@@ -54,10 +54,10 @@ function initHALCharts(container, cfg, debug) {
 
 function fetchHalData(idHal, typeList) {
   var fields = [
-    "docid","halId_s","title_s",
-    "producedDateY_i","publicationDateY_i","docType_s",
-    "keyword_s","fr_keyword_s","en_keyword_s","domain_s",
-    "doi_s","doiId_s",
+    "docid", "halId_s", "title_s",
+    "producedDateY_i", "publicationDateY_i", "docType_s",
+    "keyword_s", "fr_keyword_s", "en_keyword_s", "domain_s",
+    "doi_s", "doiId_s",
   ].join(",");
   var typeFilter = (typeList && typeList.length)
     ? "&fq=docType_s:(" + typeList.join(" OR ") + ")" : "";
@@ -74,22 +74,22 @@ function fetchHalData(idHal, typeList) {
 function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, renameDomaines, showSet, debug) {
 
   var s2Cfg = (hal_integrator_config &&
-               hal_integrator_config.plugins &&
-               hal_integrator_config.plugins.charts &&
-               hal_integrator_config.plugins.charts.semanticScholar)
-               ? hal_integrator_config.plugins.charts.semanticScholar : null;
+    hal_integrator_config.plugins &&
+    hal_integrator_config.plugins.charts &&
+    hal_integrator_config.plugins.charts.semanticScholar)
+    ? hal_integrator_config.plugins.charts.semanticScholar : null;
 
   var s2ApiKey = (s2Cfg && s2Cfg.apiKey) ? s2Cfg.apiKey : "";
 
   // Taille de lot et délai
   // Sans clé : 1 req/s  → lot=1,  délai=1050ms
   // Avec clé  : ~10 req/s → lot=3,  délai=350ms (conservateur vs 429)
-  var BATCH_SIZE  = 1;                          // séquentiel — évite les bursts 429
+  var BATCH_SIZE = 1;                          // séquentiel — évite les bursts 429
   var BATCH_DELAY = s2ApiKey ? 200 : 1100;      // avec clé : 200ms = 5 req/s (sous la limite 10)
 
   // Retry exponentiel sur 429
   var MAX_RETRIES = 4;     // 4 tentatives : 3s, 6s, 12s, 24s
-  var RETRY_BASE  = 3000;
+  var RETRY_BASE = 3000;
 
   function s2Headers() {
     var h = { "Accept": "application/json" };
@@ -141,7 +141,7 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     return s2PostOnce(url, body).catch(function (err) {
       if (isRateLimitError(err) && attempt < MAX_RETRIES) {
         var wait = RETRY_BASE * Math.pow(2, attempt);
-        console.warn("[hal-charts][S2] POST 429/NetworkError — retry dans " + wait + "ms (" + (attempt+1) + "/" + MAX_RETRIES + ")");
+        console.warn("[hal-charts][S2] POST 429/NetworkError — retry dans " + wait + "ms (" + (attempt + 1) + "/" + MAX_RETRIES + ")");
         return new Promise(function (res) {
           setTimeout(function () { res(s2Post(url, body, attempt + 1)); }, wait);
         });
@@ -154,20 +154,20 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
   function runBatched(tasks, onProgress) {
     if (!tasks.length) return Promise.resolve([]);
     var results = new Array(tasks.length);
-    var done    = 0;
+    var done = 0;
     return new Promise(function (resolve) {
       var batchStart = 0;
       function launchBatch() {
         if (batchStart >= tasks.length) return;
-        var end    = Math.min(batchStart + BATCH_SIZE, tasks.length);
-        var slice  = tasks.slice(batchStart, end);
+        var end = Math.min(batchStart + BATCH_SIZE, tasks.length);
+        var slice = tasks.slice(batchStart, end);
         var offset = batchStart;
         batchStart = end;
         var pending = slice.length;
         slice.forEach(function (task, i) {
           var idx = offset + i;
           task()
-            .then(function (r)  { results[idx] = { ok: true,  value: r }; })
+            .then(function (r) { results[idx] = { ok: true, value: r }; })
             .catch(function (e) { results[idx] = { ok: false, error: e }; })
             .finally(function () {
               done++;
@@ -204,7 +204,7 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
       + encodeURIComponent(paperId) + "/citations?fields=year&limit=1000";
     return s2Get(BASE + "&offset=0").then(function (data) {
       var entries = data.data || [];
-      var years   = extractYears(entries);
+      var years = extractYears(entries);
       if (entries.length < 1000) return years;
       var total = data.total || entries.length;
       var pages = [];
@@ -329,18 +329,18 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
   // Orchestration
   function runS2() {
     var authorId = s2Cfg && s2Cfg.authorId;
-    var promise  = authorId
+    var promise = authorId
       ? fetchByAuthorId(authorId)
       : searchAuthorByName(hal_integrator_config["id"])
-          .catch(function (e) {
-            if (debug) console.warn("[hal-charts][S2] Nom échoué :", e.message, "— fallback DOI");
-            return fetchByDois(docs);
-          });
+        .catch(function (e) {
+          if (debug) console.warn("[hal-charts][S2] Nom échoué :", e.message, "— fallback DOI");
+          return fetchByDois(docs);
+        });
     promise
       .then(function (agg) {
         if (debug) console.log("[hal-charts][S2] byYear:", agg.byYear, "total:", agg.total, "h:", agg.hIndex);
         docs._s2ByYear = agg.byYear;
-        docs._s2Total  = agg.total;
+        docs._s2Total = agg.total;
         docs._s2HIndex = agg.hIndex;
         processPublications(docs, container, maxN, renameThematiques, renameDomaines, showSet, debug);
       })
@@ -384,9 +384,9 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
 // ── Citations via Scopus API (fallback) ────────────────────────────────────────
 function fetchScopusCitations(docs, container, debug, callback) {
   if (!hal_integrator_config ||
-      !hal_integrator_config.plugins ||
-      !hal_integrator_config.plugins.charts ||
-      !hal_integrator_config.plugins.charts.scopus) {
+    !hal_integrator_config.plugins ||
+    !hal_integrator_config.plugins.charts ||
+    !hal_integrator_config.plugins.charts.scopus) {
     if (debug) console.log("[hal-charts][Scopus] Non configuré");
     callback(docs); return;
   }
@@ -403,9 +403,9 @@ function fetchScopusCitations(docs, container, debug, callback) {
       .then(function (r) { if (!r.ok) throw new Error("Scopus HTTP " + r.status); return r.json(); })
       .then(function (data) {
         var entries = data["search-results"].entry || [];
-        allEntries  = allEntries.concat(entries);
-        var total   = parseInt(data["search-results"]["opensearch:totalResults"] || 0, 10);
-        start      += 25;
+        allEntries = allEntries.concat(entries);
+        var total = parseInt(data["search-results"]["opensearch:totalResults"] || 0, 10);
+        start += 25;
         if (start < total) fetchPage(); else process();
       })
       .catch(function (e) { console.error("[hal-charts][Scopus]", e.message); callback(docs); });
@@ -413,12 +413,12 @@ function fetchScopusCitations(docs, container, debug, callback) {
   function process() {
     var byYear = {};
     allEntries.forEach(function (p) {
-      var y  = p.coverDate ? parseInt(p.coverDate.split("-")[0], 10) : null;
+      var y = p.coverDate ? parseInt(p.coverDate.split("-")[0], 10) : null;
       var tc = parseInt(p["citedby-count"] || 0);
       if (y) byYear[y] = (byYear[y] || 0) + tc;
     });
     docs._scopusByYear = byYear;
-    docs._scopusTotal  = Object.values(byYear).reduce(function (a, b) { return a + b; }, 0);
+    docs._scopusTotal = Object.values(byYear).reduce(function (a, b) { return a + b; }, 0);
     callback(docs);
   }
   fetchPage();
@@ -446,15 +446,15 @@ function processPublications(publications, container, maxN, renameThematiques, r
     domCats = halChartsTopN(domData.total, maxN);
   }
   var kwMapping = showSet.thematiques ? halChartsAutoThematiques(publications, Math.max(maxN * 5, 40), renameThematiques, debug) : null;
-  var aiApiKey  = (hal_integrator_config &&
-                   hal_integrator_config.plugins &&
-                   hal_integrator_config.plugins.charts &&
-                   hal_integrator_config.plugins.charts.ai &&
-                   hal_integrator_config.plugins.charts.ai.apiKey) || "";
+  var aiApiKey = (hal_integrator_config &&
+    hal_integrator_config.plugins &&
+    hal_integrator_config.plugins.charts &&
+    hal_integrator_config.plugins.charts.ai &&
+    hal_integrator_config.plugins.charts.ai.apiKey) || "";
   if (aiApiKey && kwMapping) {
     halChartsAiThematiques(kwMapping, maxN, aiApiKey, debug, function (aiMapping) {
       var thData = aiMapping ? halChartsMergeKwData(publications, aiMapping, years)
-                             : (kwMapping ? halChartsBuildThFromKw(publications, kwMapping, maxN, years) : null);
+        : (kwMapping ? halChartsBuildThFromKw(publications, kwMapping, maxN, years) : null);
       var thCats = thData ? halChartsTopN(thData.total, maxN) : null;
       halChartsLoadChartJs(function () {
         halChartsRenderAll(container, publications, years, thData, thCats, domData, domCats, showSet);
@@ -502,35 +502,39 @@ function halChartsAiThematiques(kwMapping, maxN, apiKey, debug, callback) {
     + "{\"themes\":[...],\"mapping\":{\"mot-clé exact\":\"Thématique\",...}}";
   fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": apiKey,
-               "anthropic-version": "2023-06-01",
-               "anthropic-dangerous-direct-browser-access": "true" },
-    body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000,
-                           messages: [{ role: "user", content: prompt }] })
+    headers: {
+      "Content-Type": "application/json", "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514", max_tokens: 1000,
+      messages: [{ role: "user", content: prompt }]
+    })
   })
-  .then(function (r) { return r.json(); })
-  .then(function (data) {
-    var text = (data.content || []).filter(function (b) { return b.type === "text"; })
-               .map(function (b) { return b.text; }).join("");
-    var parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
-    if (!parsed.mapping) throw new Error("mapping absent");
-    var result = {};
-    Object.keys(parsed.mapping).forEach(function (label) {
-      var theme = parsed.mapping[label], normL = halChartsNormalize(label), matched = false;
-      Object.keys(kwMapping).forEach(function (k) {
-        if (halChartsNormalize(kwMapping[k]) === normL) { result[k] = theme; matched = true; }
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var text = (data.content || []).filter(function (b) { return b.type === "text"; })
+        .map(function (b) { return b.text; }).join("");
+      var parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      if (!parsed.mapping) throw new Error("mapping absent");
+      var result = {};
+      Object.keys(parsed.mapping).forEach(function (label) {
+        var theme = parsed.mapping[label], normL = halChartsNormalize(label), matched = false;
+        Object.keys(kwMapping).forEach(function (k) {
+          if (halChartsNormalize(kwMapping[k]) === normL) { result[k] = theme; matched = true; }
+        });
+        if (!matched) result[normL] = theme;
       });
-      if (!matched) result[normL] = theme;
-    });
-    callback(Object.keys(result).length ? result : null);
-  })
-  .catch(function (err) { console.warn("[hal-charts] IA échec :", err.message); callback(null); });
+      callback(Object.keys(result).length ? result : null);
+    })
+    .catch(function (err) { console.warn("[hal-charts] IA échec :", err.message); callback(null); });
 }
 
 function halChartsAutoThematiques(publications, maxN, renameMap, debug) {
   var kwCount = {};
   publications.forEach(function (pub) {
-    var allKws = [].concat(pub.keyword_s||[]).concat(pub.en_keyword_s||[]).concat(pub.fr_keyword_s||[]);
+    var allKws = [].concat(pub.keyword_s || []).concat(pub.en_keyword_s || []).concat(pub.fr_keyword_s || []);
     if (!allKws.length) return;
     var seen = {};
     allKws.forEach(function (kwRaw) {
@@ -560,7 +564,7 @@ function halChartsAutoDomaines(publications, maxN, renameMap, debug) {
   publications.forEach(function (pub) {
     var domains = [].concat(pub.domain_s || []), seen = {};
     domains.forEach(function (rawCode) {
-      var code  = String(rawCode).toLowerCase().trim();
+      var code = String(rawCode).toLowerCase().trim();
       var label = (renameMap && renameMap[code]) ? renameMap[code] : halChartsTranslateDomain(code);
       if (seen[label]) return;
       seen[label] = true;
@@ -590,14 +594,12 @@ function halChartsBuildCategoryData(publications, field, mapping, years, multiVa
     if (multiValue) {
       for (var i = 0; i < keys.length; i++) {
         var tl = mapping[keys[i]];
-        if (values.some(function (v) { return halChartsTranslateDomain(String(v).toLowerCase().trim()) === tl; }))
-          { cat = tl; break; }
+        if (values.some(function (v) { return halChartsTranslateDomain(String(v).toLowerCase().trim()) === tl; })) { cat = tl; break; }
       }
     } else {
       for (var i = 0; i < keys.length; i++) {
         var fn = halChartsNormalize(keys[i]);
-        if (values.some(function (v) { return halChartsNormalize(String(v)).indexOf(fn) !== -1; }))
-          { cat = mapping[keys[i]]; break; }
+        if (values.some(function (v) { return halChartsNormalize(String(v)).indexOf(fn) !== -1; })) { cat = mapping[keys[i]]; break; }
       }
     }
     if (!cat) return;
@@ -617,16 +619,16 @@ function halChartsBuildCategoryData(publications, field, mapping, years, multiVa
 //   "Chargement des citations"  0.50 → 1.00 (proportionnel done/total)
 //   progressDone                → 1.00 puis masqué
 
-var _hcBar      = null;   // instance ProgressBar.Line
-var _hcBarEl    = null;   // div overlay
+var _hcBar = null;   // instance ProgressBar.Line
+var _hcBarEl = null;   // div overlay
 var _hcBarLabel = null;   // div texte
 var _hcBuilding = false;  // flag anti-réentrance (évite double création)
 
 var _HC_STEPS = {
-  "Chargement des données…":    { start: 0.00, end: 0.20 },
+  "Chargement des données…": { start: 0.00, end: 0.20 },
   "Récupération des papiers…": { start: 0.20, end: 0.50 },
-  "Résolution des DOI…":          { start: 0.20, end: 0.50 },
-  "Chargement des citations":         { start: 0.50, end: 1.00 },
+  "Résolution des DOI…": { start: 0.20, end: 0.50 },
+  "Chargement des citations": { start: 0.50, end: 1.00 },
 };
 
 function _hcEnsureOverlay(container) {
@@ -635,7 +637,7 @@ function _hcEnsureOverlay(container) {
   // Construction déjà en cours (appel réentrant depuis halChartsProgressCSS
   // suivi du callback halChartsLoadProgressBar) → récupérer le div existant
   if (_hcBuilding) {
-    _hcBarEl    = document.getElementById("hal-charts-progress-overlay") || _hcBarEl;
+    _hcBarEl = document.getElementById("hal-charts-progress-overlay") || _hcBarEl;
     _hcBarLabel = _hcBarEl && _hcBarEl.querySelector(".hal-charts-progress-label");
     return;
   }
@@ -663,7 +665,7 @@ function _hcEnsureOverlay(container) {
   if (typeof ProgressBar !== "undefined") {
     var wrap = document.getElementById("hc-bar-wrap");
     if (wrap) {
-      if (_hcBar) { try { _hcBar.destroy(); } catch(e) {} }
+      if (_hcBar) { try { _hcBar.destroy(); } catch (e) { } }
       wrap.innerHTML = "";
       _hcBar = new ProgressBar.Line(wrap, {
         strokeWidth: 3, easing: "easeInOut", duration: 250,
@@ -709,7 +711,7 @@ function halChartsProgress(container, label, done, total) {
   }
 
   // Calcul du ratio
-  var step  = _HC_STEPS[label];
+  var step = _HC_STEPS[label];
   var ratio = step ? step.start : 0.5;
   if (step) {
     if (total > 1 && done >= 0) {
@@ -790,7 +792,7 @@ function halChartsLoadChartJs(callback) {
     callback();
   }
   if (typeof Chart !== "undefined") { applyDefaults(); return; }
-  var CDNJS    = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js";
+  var CDNJS = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js";
   var JSDELIVR = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
   function load(url, onFail) {
     var s = document.createElement("script");
@@ -812,30 +814,32 @@ function halChartsRenderMetrics(publications, years) {
     totalCit = publications._s2Total; hIdx = publications._s2HIndex || 0; citSource = "Semantic Scholar";
   } else if (publications._scopusTotal !== undefined) {
     totalCit = publications._scopusTotal; citSource = "Scopus";
-    var cc = publications.map(function (p) { return p._citCount || 0; }).sort(function (a,b){return b-a;});
+    var cc = publications.map(function (p) { return p._citCount || 0; }).sort(function (a, b) { return b - a; });
     cc.forEach(function (c, i) { if (c >= i + 1) hIdx = i + 1; });
   }
-  var TYPE_LABELS = { ART:"article",COMM:"congrès",COUV:"chapitre",POSTER:"poster",
-                      THESE:"thèse",OUV:"ouvrage",PROCEEDINGS:"actes",UNDEFINED:"preprint" };
+  var TYPE_LABELS = {
+    ART: "article", COMM: "congrès", COUV: "chapitre", POSTER: "poster",
+    THESE: "thèse", OUV: "ouvrage", PROCEEDINGS: "actes", UNDEFINED: "preprint"
+  };
   var types = [];
-  publications.forEach(function (p) { if (p.docType_s && types.indexOf(p.docType_s)===-1) types.push(p.docType_s); });
+  publications.forEach(function (p) { if (p.docType_s && types.indexOf(p.docType_s) === -1) types.push(p.docType_s); });
   var typeSummary = types.map(function (t) {
-    return publications.filter(function (p) { return p.docType_s===t; }).length + "\u00a0" + (TYPE_LABELS[t]||t);
+    return publications.filter(function (p) { return p.docType_s === t; }).length + "\u00a0" + (TYPE_LABELS[t] || t);
   }).join(" · ");
   return "<div class=\"hal-charts-metrics\">"
     + "<div class=\"hal-charts-metric-card\"><div class=\"hal-charts-metric-value\">" + total + "</div>"
     + "<div class=\"hal-charts-metric-label\">Publications</div>"
-    + "<div class=\"hal-charts-metric-sub\">" + Math.min.apply(null,years) + "–" + Math.max.apply(null,years) + "</div></div>"
+    + "<div class=\"hal-charts-metric-sub\">" + Math.min.apply(null, years) + "–" + Math.max.apply(null, years) + "</div></div>"
     + "<div class=\"hal-charts-metric-card\"><div class=\"hal-charts-metric-value\">" + totalCit + "</div>"
     + "<div class=\"hal-charts-metric-label\">Citations</div><div class=\"hal-charts-metric-sub\">" + citSource + "</div></div>"
-    + "<div class=\"hal-charts-metric-card\"><div class=\"hal-charts-metric-value\">" + (hIdx||"–") + "</div>"
+    + "<div class=\"hal-charts-metric-card\"><div class=\"hal-charts-metric-value\">" + (hIdx || "–") + "</div>"
     + "<div class=\"hal-charts-metric-label\">Indice h</div><div class=\"hal-charts-metric-sub\">" + citSource + "</div></div>"
     + (typeSummary ? "<div class=\"hal-charts-metric-card hal-charts-metric-card--wide\"><div class=\"hal-charts-metric-type\">" + typeSummary + "</div><div class=\"hal-charts-metric-label\">Répartition par type</div></div>" : "")
     + "</div>";
 }
 
 function halChartsCreateCard(id, title, extraClass) {
-  return "<div class=\"hal-charts-card " + (extraClass||"") + "\">"
+  return "<div class=\"hal-charts-card " + (extraClass || "") + "\">"
     + "<div class=\"hal-charts-card-title\">" + title + "</div>"
     + "<div class=\"hal-charts-canvas-wrapper\"><canvas id=\"" + id + "\"></canvas></div>"
     + "<div class=\"hal-charts-legend\" id=\"" + id + "-legend\"></div></div>";
@@ -865,82 +869,114 @@ function halChartsRenderBar(canvasId, years, categories, byYear, colors) {
   var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--main-timeline-color").trim() || "#f0f0f0";
   new Chart(ctx, {
     type: "bar",
-    data: { labels: years.map(String), datasets: categories.map(function (cat, i) {
-      return { label: cat, data: years.map(function (y) { return (byYear[cat]&&byYear[cat][y])||0; }),
-               backgroundColor: colors[i%colors.length], borderRadius: 3, borderSkipped: false };
-    })},
-    options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false },
-        tooltip: { callbacks: { title: function (it) { return "Année "+it[0].label; }}}},
-      scales: { x: { grid:{display:false}, ticks:{font:{size:11},color:halChartsTextColor()} },
-        y: { beginAtZero:true, ticks:{stepSize:1,font:{size:11},color:halChartsTextColor()},
-             grid:{color:gridColor},
-             title:{display:true,text:"Nombre de publications",font:{size:11},color:halChartsTextColor()}}}}
+    data: {
+      labels: years.map(String), datasets: categories.map(function (cat, i) {
+        return {
+          label: cat, data: years.map(function (y) { return (byYear[cat] && byYear[cat][y]) || 0; }),
+          backgroundColor: colors[i % colors.length], borderRadius: 3, borderSkipped: false
+        };
+      })
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { title: function (it) { return "Année " + it[0].label; } } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: halChartsTextColor() } },
+        y: {
+          beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: halChartsTextColor() },
+          grid: { color: gridColor },
+          title: { display: true, text: "Nombre de publications", font: { size: 11 }, color: halChartsTextColor() }
+        }
+      }
+    }
   });
 }
 
 function halChartsRenderPie(canvasId, categories, total, colors) {
   var ctx = document.getElementById(canvasId);
   if (!ctx) return;
-  var data = categories.map(function (c) { return total[c]||0; });
-  var sum  = data.reduce(function (a,b){return a+b;},0);
+  var data = categories.map(function (c) { return total[c] || 0; });
+  var sum = data.reduce(function (a, b) { return a + b; }, 0);
   new Chart(ctx, {
     type: "pie",
-    data: { labels: categories.map(function (_,i){return String.fromCharCode(65+i);}),
-            datasets: [{ data: data, backgroundColor: colors.slice(0,categories.length), borderWidth:2, borderColor:"#fff" }]},
-    options: { responsive:true, maintainAspectRatio:false,
-      plugins: { legend:{display:false},
-        tooltip: { callbacks: { label: function (item) {
-          return " "+categories[item.dataIndex]+" — "+item.raw+" pub. ("+
-            (sum>0?((item.raw/sum)*100).toFixed(1):0)+"%)"; }}}}}
+    data: {
+      labels: categories.map(function (_, i) { return String.fromCharCode(65 + i); }),
+      datasets: [{ data: data, backgroundColor: colors.slice(0, categories.length), borderWidth: 2, borderColor: "#fff" }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (item) {
+              return " " + categories[item.dataIndex] + " — " + item.raw + " pub. (" +
+                (sum > 0 ? ((item.raw / sum) * 100).toFixed(1) : 0) + "%)";
+            }
+          }
+        }
+      }
+    }
   });
 }
 
 function halChartsRenderCitations(canvasId, publications, years) {
   var ctx = document.getElementById(canvasId);
   if (!ctx) return;
-  var thisYear = new Date().getFullYear(), firstYear = years[0]||thisYear, allYears = [];
+  var thisYear = new Date().getFullYear(), firstYear = years[0] || thisYear, allYears = [];
   for (var y = firstYear; y <= thisYear; y++) allYears.push(y);
   var citByYear = {};
   allYears.forEach(function (y) { citByYear[y] = 0; });
   var graph = publications._s2ByYear || publications._scopusByYear || publications._scholarByYear || null;
-  var src   = publications._s2ByYear ? "Semantic Scholar"
-            : publications._scopusByYear ? "Scopus"
-            : publications._scholarByYear ? "Google Scholar" : "Aucune source";
+  var src = publications._s2ByYear ? "Semantic Scholar"
+    : publications._scopusByYear ? "Scopus"
+      : publications._scholarByYear ? "Google Scholar" : "Aucune source";
   if (graph) Object.keys(graph).forEach(function (y) { citByYear[y] = graph[y]; });
-  var citData = allYears.map(function (y) { return citByYear[y]||0; });
-  var tot = citData.reduce(function (s,v){return s+v;},0);
+  var citData = allYears.map(function (y) { return citByYear[y] || 0; });
+  var tot = citData.reduce(function (s, v) { return s + v; }, 0);
   var el = document.getElementById("hc-cit-metric");
-  if (el) el.innerHTML = "<strong>"+tot+"</strong>\u00a0citations totales"
-    + "\u2002·\u2002<strong>"+(allYears.length>0?(tot/allYears.length).toFixed(1):"0")+"</strong>\u00a0cites/an"
-    + "\u2002·\u2002<em>source\u00a0: "+src+"</em>";
+  if (el) el.innerHTML = "<strong>" + tot + "</strong>\u00a0citations totales"
+    + "\u2002·\u2002<strong>" + (allYears.length > 0 ? (tot / allYears.length).toFixed(1) : "0") + "</strong>\u00a0cites/an"
+    + "\u2002·\u2002<em>source\u00a0: " + src + "</em>";
   var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--timeline-background-color").trim() || "#f0f0f0";
   const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--link-color').trim() || "#1A56A4";
   function hexToRgb(hex) {
-	  const bigint = parseInt(hex.replace('#',''), 16);
-	  return `${(bigint>>16)&255}, ${(bigint>>8)&255}, ${bigint&255}`;
-	}
+    const bigint = parseInt(hex.replace('#', ''), 16);
+    return `${(bigint >> 16) & 255}, ${(bigint >> 8) & 255}, ${bigint & 255}`;
+  }
   const rgb = hexToRgb(linkColor);
   new Chart(ctx, {
     type: "bar",
-    data: { labels: allYears.map(String), datasets: [{ label:"Citations", data: citData,
-      backgroundColor: allYears.map(function(y){return y===thisYear?`rgba(${rgb},0.35)`:`rgba(${rgb},0.82)`;}),
-      borderColor: allYears.map(function(y){return y===thisYear?`{linkColor}`:"transparent";}),
-      borderWidth: allYears.map(function(y){return y===thisYear?1.5:0;}),
-      borderRadius:3, borderSkipped:false }]},
-    options: { responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{ x:{grid:{display:false},ticks:{color:halChartsTextColor()}},
-               y:{beginAtZero:true, ticks:{color:halChartsTextColor()}, grid:{color:gridColor},
-                  title:{display:true,text:"Citations reçues / an",color:halChartsTextColor()}}}}
+    data: {
+      labels: allYears.map(String), datasets: [{
+        label: "Citations", data: citData,
+        backgroundColor: allYears.map(function (y) { return y === thisYear ? `rgba(${rgb},0.35)` : `rgba(${rgb},0.82)`; }),
+        borderColor: allYears.map(function (y) { return y === thisYear ? `{linkColor}` : "transparent"; }),
+        borderWidth: allYears.map(function (y) { return y === thisYear ? 1.5 : 0; }),
+        borderRadius: 3, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: halChartsTextColor() } },
+        y: {
+          beginAtZero: true, ticks: { color: halChartsTextColor() }, grid: { color: gridColor },
+          title: { display: true, text: "Citations reçues / an", color: halChartsTextColor() }
+        }
+      }
+    }
   });
-}
 }
 
 function halChartsRenderAll(container, publications, years, thData, thCats, domData, domCats, showSet) {
-  if (!showSet) { showSet = { metrics:true, thematiques:true, domaines:true, citations:true }; }
-  var thColors  = HAL_CHARTS_PALETTE.slice(0, (thCats||[]).length);
-  var domColors = HAL_CHARTS_PALETTE.slice(0, (domCats||[]).length);
+  if (!showSet) { showSet = { metrics: true, thematiques: true, domaines: true, citations: true }; }
+  var thColors = HAL_CHARTS_PALETTE.slice(0, (thCats || []).length);
+  var domColors = HAL_CHARTS_PALETTE.slice(0, (domCats || []).length);
   var html = "";
   if (showSet.metrics) {
     html += "<div class=\"hal-charts-section-title\">Indicateurs bibliométriques</div>"
@@ -948,17 +984,17 @@ function halChartsRenderAll(container, publications, years, thData, thCats, domD
   }
   if (showSet.thematiques && thCats && thCats.length) {
     html += "<div class=\"hal-charts-section-title\">Thématiques scientifiques</div><div class=\"hal-charts-grid\">"
-      + halChartsCreateCard("hc-th-bar","Publications / an par thématique")
-      + halChartsCreateCard("hc-th-pie","Répartition globale") + "</div>";
+      + halChartsCreateCard("hc-th-bar", "Publications / an par thématique")
+      + halChartsCreateCard("hc-th-pie", "Répartition globale") + "</div>";
   }
   if (showSet.domaines && domCats && domCats.length) {
     html += "<div class=\"hal-charts-section-title\">Domaines d'application</div><div class=\"hal-charts-grid\">"
-      + halChartsCreateCard("hc-dom-bar","Publications / an par domaine")
-      + halChartsCreateCard("hc-dom-pie","Répartition globale") + "</div>";
+      + halChartsCreateCard("hc-dom-bar", "Publications / an par domaine")
+      + halChartsCreateCard("hc-dom-pie", "Répartition globale") + "</div>";
   }
   if (showSet.citations) {
     html += "<div class=\"hal-charts-section-title\">Citations par année</div><div class=\"hal-charts-grid\">"
-      + halChartsCreateCard("hc-cit","Citations reçues / an","hal-charts-card--full")
+      + halChartsCreateCard("hc-cit", "Citations reçues / an", "hal-charts-card--full")
       + "</div><div class=\"hal-charts-cites-year\" id=\"hc-cit-metric\"></div>";
   }
   if (!html) {
@@ -971,71 +1007,71 @@ function halChartsRenderAll(container, publications, years, thData, thCats, domD
   halChartsProgressDone(container);
   container.innerHTML = html;
   if (showSet.thematiques && thCats && thCats.length) {
-    halChartsRenderBar("hc-th-bar",years,thCats,thData.byYear,thColors);
-    halChartsBuildLegend("hc-th-bar-legend",thCats,thColors);
-    halChartsRenderPie("hc-th-pie",thCats,thData.total,thColors);
-    halChartsBuildLegend("hc-th-pie-legend",thCats.map(function(c,i){return String.fromCharCode(65+i)+" – "+c;}),thColors);
+    halChartsRenderBar("hc-th-bar", years, thCats, thData.byYear, thColors);
+    halChartsBuildLegend("hc-th-bar-legend", thCats, thColors);
+    halChartsRenderPie("hc-th-pie", thCats, thData.total, thColors);
+    halChartsBuildLegend("hc-th-pie-legend", thCats.map(function (c, i) { return String.fromCharCode(65 + i) + " – " + c; }), thColors);
   }
   if (showSet.domaines && domCats && domCats.length) {
-    halChartsRenderBar("hc-dom-bar",years,domCats,domData.byYear,domColors);
-    halChartsBuildLegend("hc-dom-bar-legend",domCats,domColors);
-    halChartsRenderPie("hc-dom-pie",domCats,domData.total,domColors);
-    halChartsBuildLegend("hc-dom-pie-legend",domCats.map(function(c,i){return String.fromCharCode(65+i)+" – "+c;}),domColors);
+    halChartsRenderBar("hc-dom-bar", years, domCats, domData.byYear, domColors);
+    halChartsBuildLegend("hc-dom-bar-legend", domCats, domColors);
+    halChartsRenderPie("hc-dom-pie", domCats, domData.total, domColors);
+    halChartsBuildLegend("hc-dom-pie-legend", domCats.map(function (c, i) { return String.fromCharCode(65 + i) + " – " + c; }), domColors);
   }
   if (showSet.citations) {
-    halChartsRenderCitations("hc-cit",publications,years);
+    halChartsRenderCitations("hc-cit", publications, years);
   }
 }
 
 // ── Palette & constantes ──────────────────────────────────────────────────────
-var HAL_CHARTS_PALETTE = ["#1a56a4","#e05c2a","#2e9e6b","#8b3ab8","#c0392b","#16a085","#d4ac0d","#2980b9","#7f8c8d"];
+var HAL_CHARTS_PALETTE = ["#1a56a4", "#e05c2a", "#2e9e6b", "#8b3ab8", "#c0392b", "#16a085", "#d4ac0d", "#2980b9", "#7f8c8d"];
 
 var HAL_DOMAIN_LABELS = {
-  "info":"Informatique","info.info-ai":"IA & Apprentissage","info.info-bi":"Bioinformatique",
-  "info.info-cv":"Vision par ordinateur","info.info-lg":"Traitement du langage",
-  "info.info-lo":"Logique & Vérification","info.info-mo":"Modélisation & Simulation",
-  "info.info-ni":"Réseaux & Télécoms","info.info-ro":"Robotique","info.info-se":"Génie logiciel",
-  "math":"Mathématiques","math.math-ap":"Mathématiques appliquées","math.math-na":"Analyse numérique",
-  "math.math-oc":"Optimisation & Contrôle","math.math-pr":"Probabilités","math.math-st":"Statistiques",
-  "phys":"Physique","phys.phys-opti":"Optique & Photonique","phys.phys-mphy":"Physique médicale",
-  "spi":"Sciences de l'ingénieur","spi.signal":"Traitement du signal","spi.img":"Imagerie",
-  "spi.med":"Ingénierie biomédicale","spi.opti":"Optique / Photonique","spi.nano":"Nanosciences",
-  "sdv":"Sciences du vivant","sdv.bc":"Biochimie","sdv.can":"Cancérologie","sdv.neu":"Neurosciences",
-  "sdv.ima":"Imagerie médicale","sdv.mhep":"Médecine humaine","sdv.mhep.neu":"Neurologie",
-  "sdv.mhep.chir":"Chirurgie","sdv.mhep.dent":"Dentisterie","sdv.mhep.hep":"Hépatologie / Gastro",
-  "sdv.mhep.onco":"Oncologie","chim":"Chimie","shs":"Sciences humaines & sociales",
-  "shs.edu":"Sciences de l'éducation","shs.info":"Sciences de l'information",
-  "stat":"Statistiques","stat.ml":"Apprentissage automatique",
+  "info": "Informatique", "info.info-ai": "IA & Apprentissage", "info.info-bi": "Bioinformatique",
+  "info.info-cv": "Vision par ordinateur", "info.info-lg": "Traitement du langage",
+  "info.info-lo": "Logique & Vérification", "info.info-mo": "Modélisation & Simulation",
+  "info.info-ni": "Réseaux & Télécoms", "info.info-ro": "Robotique", "info.info-se": "Génie logiciel",
+  "math": "Mathématiques", "math.math-ap": "Mathématiques appliquées", "math.math-na": "Analyse numérique",
+  "math.math-oc": "Optimisation & Contrôle", "math.math-pr": "Probabilités", "math.math-st": "Statistiques",
+  "phys": "Physique", "phys.phys-opti": "Optique & Photonique", "phys.phys-mphy": "Physique médicale",
+  "spi": "Sciences de l'ingénieur", "spi.signal": "Traitement du signal", "spi.img": "Imagerie",
+  "spi.med": "Ingénierie biomédicale", "spi.opti": "Optique / Photonique", "spi.nano": "Nanosciences",
+  "sdv": "Sciences du vivant", "sdv.bc": "Biochimie", "sdv.can": "Cancérologie", "sdv.neu": "Neurosciences",
+  "sdv.ima": "Imagerie médicale", "sdv.mhep": "Médecine humaine", "sdv.mhep.neu": "Neurologie",
+  "sdv.mhep.chir": "Chirurgie", "sdv.mhep.dent": "Dentisterie", "sdv.mhep.hep": "Hépatologie / Gastro",
+  "sdv.mhep.onco": "Oncologie", "chim": "Chimie", "shs": "Sciences humaines & sociales",
+  "shs.edu": "Sciences de l'éducation", "shs.info": "Sciences de l'information",
+  "stat": "Statistiques", "stat.ml": "Apprentissage automatique",
 };
 
 var HAL_CHARTS_STOPWORDS = {
-  "the":1,"a":1,"an":1,"of":1,"in":1,"for":1,"on":1,"and":1,"or":1,"to":1,"with":1,"by":1,"at":1,
-  "de":1,"du":1,"des":1,"la":1,"le":1,"les":1,"un":1,"une":1,"et":1,"en":1,"sur":1,"par":1,"pour":1,
-  "dans":1,"au":1,"aux":1,"est":1,"se":1,"ce":1,"qui":1,"que":1,"d":1,"l":1,"s":1,"j":1,"n":1,"m":1,
-  "based":1,"using":1,"via":1,"new":1,"novel":1,"approach":1,"method":1,"system":1,
+  "the": 1, "a": 1, "an": 1, "of": 1, "in": 1, "for": 1, "on": 1, "and": 1, "or": 1, "to": 1, "with": 1, "by": 1, "at": 1,
+  "de": 1, "du": 1, "des": 1, "la": 1, "le": 1, "les": 1, "un": 1, "une": 1, "et": 1, "en": 1, "sur": 1, "par": 1, "pour": 1,
+  "dans": 1, "au": 1, "aux": 1, "est": 1, "se": 1, "ce": 1, "qui": 1, "que": 1, "d": 1, "l": 1, "s": 1, "j": 1, "n": 1, "m": 1,
+  "based": 1, "using": 1, "via": 1, "new": 1, "novel": 1, "approach": 1, "method": 1, "system": 1,
 };
 
 // ── Utilitaires ───────────────────────────────────────────────────────────────
 function halChartsExtractYear(d) {
   if (!d) return null;
   var m = String(d).match(/(\d{4})/);
-  return m ? parseInt(m[1],10) : null;
+  return m ? parseInt(m[1], 10) : null;
 }
 function halChartsNormalize(s) {
-  return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9\s/-]/g," ").replace(/\s+/g," ").trim();
+  return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s/-]/g, " ").replace(/\s+/g, " ").trim();
 }
-function halChartsCapitalize(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+function halChartsCapitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 function halChartsTranslateDomain(code) {
-  var c = String(code).toLowerCase().trim().replace(/^\d+\./,"");
+  var c = String(code).toLowerCase().trim().replace(/^\d+\./, "");
   if (HAL_DOMAIN_LABELS[c]) return HAL_DOMAIN_LABELS[c];
   var parts = c.split(".");
-  for (var i = parts.length-1; i > 0; i--) {
-    var p = parts.slice(0,i).join(".");
+  for (var i = parts.length - 1; i > 0; i--) {
+    var p = parts.slice(0, i).join(".");
     if (HAL_DOMAIN_LABELS[p]) return HAL_DOMAIN_LABELS[p];
   }
-  return halChartsCapitalize(c.replace(/[._-]/g," "));
+  return halChartsCapitalize(c.replace(/[._-]/g, " "));
 }
 function halChartsTopN(total, maxN) {
-  return Object.keys(total).sort(function(a,b){return total[b]-total[a];}).slice(0,maxN);
+  return Object.keys(total).sort(function (a, b) { return total[b] - total[a]; }).slice(0, maxN);
 }
