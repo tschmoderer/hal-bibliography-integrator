@@ -1,6 +1,6 @@
 # HAL Bibliography Integrator <a name="top"></a>
 [![release](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml/badge.svg)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/build.yml)
-[![docs](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml)
+[![docs](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml/badge.svg)](https://github.com/tschmoderer/hal-bibliography-integrator/actions/workflows/docs.yml)
 [![tag](https://img.shields.io/github/v/tag/tschmoderer/hal-bibliography-integrator?label=download)](https://github.com/tschmoderer/hal-bibliography-integrator/releases)
 [![license](https://img.shields.io/github/license/tschmoderer/hal-bibliography-integrator?color=blue)](https://github.com/tschmoderer/hal-bibliography-integrator/blob/main/LICENSE)
 [![docs](https://img.shields.io/badge/documentation-blue)](https://github.com/tschmoderer/hal-bibliography-integrator/wiki)
@@ -73,4 +73,6 @@ To integrate a HAL bibliography into a website, you will need the researcher's H
 
 ![result](./.github/img//result.png)
 
-## Copyright
+## Copyright (C) 2026 T. Schmoderer
+
+This module is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License v3.0 or later.
