@@ -1,30 +1,34 @@
 import '../scss/main.scss'
+import { validate_hbi_wordcloud_config } from './hbi_wordcloud_utils';
+import { create_spinner, globalHbiData } from '../../../js/hbi_utils';
 
-const hal_plugin_name = "hal-wordcloud-integrator";
+const hbi_plugin_name = "hbi-wordcloud-integrator";
 
 function init_wordcloud(container, debug) {
-    var spinner = create_spinner("hal-wordcloud-spinner");
+    var spinner = create_spinner("hbi-wordcloud-spinner");
     container.appendChild(spinner);
 }
 
-function HALwordcloud(hal_wordcloud_div, idhal,  debug) {
+function HALwordcloud(hbi_wordcloud_div, idhal, debug) {
     if (debug) {
-        console.log(globalHalData);
+        console.log("INFO HBI WORDCLOUD: Raw data to be treated: ")
+        console.log(globalHbiData);
     }
 
     var data = [];
-    for (const k in globalHalData) {
-        for (const w in globalHalData[k]) {
-            if (globalHalData[k][w]["en_keyword_s"] != undefined) {
-                data.push({ "en_keyword_s": globalHalData[k][w]["en_keyword_s"] });
+    for (const k in globalHbiData) {
+        for (const w in globalHbiData[k]) {
+            if (globalHbiData[k][w]["en_keyword_s"] != undefined) {
+                data.push({ "en_keyword_s": globalHbiData[k][w]["en_keyword_s"] });
             }
         }
     }
 
     var wordcloud_container = document.createElement("div");
-    wordcloud_container.classList = "hal-cloud-word";
+    wordcloud_container.classList = "hbi-cloud-word";
 
     if (debug) {
+        console.log("INFO HBI WORDCLOUD: Preprocessed data to be treated: ")
         console.log(data);
     }
 
@@ -39,7 +43,6 @@ function HALwordcloud(hal_wordcloud_div, idhal,  debug) {
     var max = Object.entries(wordFreq).reduce((a, b) => a[1] > b[1] ? a : b)[1]
     var min = Object.entries(wordFreq).reduce((a, b) => a[1] < b[1] ? a : b)[1]
 
-
     // Shuffle wordlist
     var len = Object.keys(wordFreq).length;
     var suffle = Array.from(Array(len).keys())
@@ -53,8 +56,8 @@ function HALwordcloud(hal_wordcloud_div, idhal,  debug) {
         wordcloud_container.appendChild(keywordElement(word, new_freq, idhal));
     };
 
-    hal_wordcloud_div.appendChild(wordcloud_container);
-    document.getElementById("hal-wordcloud-spinner").style.display = "none";
+    hbi_wordcloud_div.appendChild(wordcloud_container);
+    document.getElementById("hbi-wordcloud-spinner").style.display = "none";
 }
 
 function keywordElement(keyw, freq, id) {
@@ -66,39 +69,31 @@ function keywordElement(keyw, freq, id) {
     return container;
 }
 
+export function hbi_plugin_wordcloud_start(hbi_config) {
+    if (validate_hbi_wordcloud_config(hbi_config)) {
+        const debug = hbi_config["plugins"]["wordcloud"]["debug"];
 
+        // Récupère la div ou placer le nuage de mots
+        var hbi_wordcloud_div = document.getElementById(hbi_plugin_name);
 
-document.addEventListener("halMainDone", () => {
-    // si le configuration n'est pas présente on quite immédiatement
-    if (typeof hal_integrator_config === 'undefined') {
-        return false; 
-    }
-
-    // Récupède la div ou placer le nuage de mots
-    var hal_wordcloud_div = document.getElementById(hal_plugin_name);
-    var debug = hal_integrator_config["debug"];
-    if (typeof debug === "undefined") {
-        debug = false;
-    }
-    
-    // Si elle n'existe pas on ne fait rien 
-    if (hal_wordcloud_div === null) {
-        if (debug) {
-            console.log("No HAL wordcloud div on this page");
-        }
-        return false; 
-    } 
-
-    // Sinon on créé le nuage de mot
-    var hal_plugins = hal_integrator_config["plugins"];
-    if ((typeof hal_plugins === "undefined") || !("wordcloud" in hal_plugins) || !("doit" in hal_plugins["wordcloud"]) || (hal_plugins["wordcloud"]["doit"])) {
-        init_wordcloud(hal_wordcloud_div, debug);
-
-        if (debug) {
-            console.log("Create wordcloud of keywords in ");
-            console.log(hal_wordcloud_div);
+        // Si elle n'existe pas on ne fait rien 
+        if (hbi_wordcloud_div === null) {
+            if (debug) {
+                console.log("ERROR HBI WORDCLOUD: No HAL wordcloud div on this page");
+            }
+            return;
         }
 
-        HALwordcloud(hal_wordcloud_div, hal_integrator_config["id"], debug);
+        if (debug) {
+            console.log(`HBI WORDCLOUD DEBUG: hbi wordcloud <div>`);
+            console.log(hbi_wordcloud_div);
+        }
+
+        // Sinon on créé le nuage de mot
+        init_wordcloud(hbi_wordcloud_div, debug);
+        document.addEventListener("hbiMainDone", () => {
+            // generate the wordcloud when main part is finished to deal with the data
+            HALwordcloud(hbi_wordcloud_div, hbi_config["id"], debug);
+        });
     }
-});
+}
