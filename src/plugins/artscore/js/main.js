@@ -14,7 +14,7 @@ function add_artscore(data, config, debug = false) {
   //var artData = get_artdata(data); 
   get_artdata(data, config, debug).then(artData => {
     // On affiche les données 
-    display_artscore(row, artData, debug );
+    display_artscore(row, artData, debug);
   }).catch(error => {
     console.log(error);
   })
@@ -22,7 +22,7 @@ function add_artscore(data, config, debug = false) {
 
 function HALartscore(config, debug = false) {
   // On récupère les infos des articles 
-  var data = globalHalData["ART"];
+  var data = globalHbiData["ART"];
   // TODO: parallel loop
   for (const d in data) {
     if (debug) {
@@ -34,14 +34,14 @@ function HALartscore(config, debug = false) {
 }
 
 /* 
-  Quand l'évenement halArticleDone est envoyé, on éclenche la création des infos du plugin 
+  Quand l'évenement hbiArticleDone est envoyé, on éclenche la création des infos du plugin 
 */
-document.addEventListener("halArticleDone", () => {
+document.addEventListener("hbiArticleDone", () => {
   var debug = hal_integrator_config["debug"];
   if (typeof debug === "undefined") {
-      debug = false;
+    debug = false;
   }
-  
+
 
   if (debug) {
     console.log("Create ArtScore data");
