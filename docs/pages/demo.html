@@ -137,14 +137,14 @@
         // Peupler les types de graphiques depuis HAL_CHARTS_SHOW_OPTIONS
         const chartTypeToggles = document.getElementById("formChartTypes");
         if (typeof HAL_CHARTS_SHOW_OPTIONS !== "undefined") {
-            HAL_CHARTS_SHOW_OPTIONS.forEach(function(opt) {
+            HAL_CHARTS_SHOW_OPTIONS.forEach(function (opt) {
                 var toggle = document.createElement("div");
-                var input  = document.createElement("input");
-                input.type    = "checkbox";
-                input.id      = "toggle-chart-" + opt.key;
-                input.name    = input.id;
+                var input = document.createElement("input");
+                input.type = "checkbox";
+                input.id = "toggle-chart-" + opt.key;
+                input.name = input.id;
                 var label = document.createElement("label");
-                label.htmlFor   = input.id;
+                label.htmlFor = input.id;
                 label.innerText = opt.label;
                 toggle.appendChild(input);
                 toggle.appendChild(label);
@@ -152,7 +152,7 @@
             });
         }
 
-        for (const t in hal_helpers) {
+        for (const t in hbi_helpers) {
             var toggle = document.createElement('div');
             var input = document.createElement('input');
             input.type = "checkbox";
@@ -160,7 +160,7 @@
             input.name = input.id;
             var label = document.createElement('label');
             label.htmlFor = input.id;
-            label.innerText = hal_helpers[t]["title_en"];
+            label.innerText = hbi_helpers[t]["title_en"];
 
             toggle.appendChild(input);
             toggle.appendChild(label);
@@ -175,7 +175,7 @@
             // Reset variables
             hal_integrator_config = {
                 "id": "",
-				"onLoad":"collapsed",
+                "onLoad": "collapsed",
                 "typeList": [],
                 "doit": true,
                 "debug": false,
@@ -187,18 +187,18 @@
                     },
 
                     "wordcloud": {},
-					"charts": {
-						"show":[],
+                    "charts": {
+                        "show": [],
                         "scopus": {
                             "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
-							"authorId": ""
+                            "authorId": ""
                         },
-						"semanticScholar": {
-						  "authorId": "",   // URL : semanticscholar.org/author/Nom/2109238827
-						  "apiKey":   "Io1PNVnOo49Dl6DHwuQ1E1EfVwB1s76S43ASGgI3"     // optionnel — 10 req/s au lieu de 1
-						},
-						"maxCategories": 6
-					}
+                        "semanticScholar": {
+                            "authorId": "",   // URL : semanticscholar.org/author/Nom/2109238827
+                            "apiKey": "Io1PNVnOo49Dl6DHwuQ1E1EfVwB1s76S43ASGgI3"     // optionnel — 10 req/s au lieu de 1
+                        },
+                        "maxCategories": 6
+                    }
                 }
             }
 
@@ -250,7 +250,7 @@
             // Graphiques sélectionnés
             if (typeof HAL_CHARTS_SHOW_OPTIONS !== "undefined") {
                 var selectedCharts = [];
-                chartTypeToggles.querySelectorAll("input").forEach(function(cb) {
+                chartTypeToggles.querySelectorAll("input").forEach(function (cb) {
                     // id = "toggle-chart-metrics" → clé = "metrics"
                     var key = cb.id.replace("toggle-chart-", "");
                     if (cb.checked) selectedCharts.push(key);
@@ -265,7 +265,7 @@
 
             if (hal_integrator_config["typeList"].length > 0) {
                 console.log(hal_integrator_config);
-                make_hal(hal_integrator_config["id"], hal_integrator_config["typeList"], hal_integrator_config["debug"]);
+                hbi_make(hal_integrator_config["id"], hal_integrator_config["typeList"], hal_integrator_config["debug"]);
             }
         });
 
@@ -292,17 +292,17 @@
             if (event.target.checked) {
                 toggleART.checked = true;
                 toggleART.onclick = "return false;";
-				toggleChart.checked = true;
+                toggleChart.checked = true;
                 toggleChart.onclick = "return false;";
-				toggleCitations.checked = true;
+                toggleCitations.checked = true;
                 toggleCitations.onclick = "return false;";
-				artPluginCheckbox.checked = true;
+                artPluginCheckbox.checked = true;
                 artPluginCheckbox.onclick = "return false;";
             } else {
                 toggleART.onclick = "";
                 toggleChart.onclick = "";
                 toggleCitations.onclick = "";
-				artPluginCheckbox.onclick = "";
+                artPluginCheckbox.onclick = "";
             }
         });
     </script>
