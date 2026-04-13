@@ -1,18 +1,18 @@
 /* ============================================================
-   hal-charts.css — Plugin de visualisation pour hal-bibliography-integrator
-   Style aligné sur hal-indicator (fond blanc, typographie sobre, pas de card)
+   hbi-charts.css — Plugin de visualisation pour hbi-bibliography-integrator
+   Style aligné sur hbi-indicator (fond blanc, typographie sobre, pas de card)
    Intégration : charger après hal.css
    ============================================================ */
 
-#hal-charts-integrator {
+#hbi-charts-integrator {
   font-family: inherit;
   margin: 1.5rem 0;
-  color:inherit;
+  color: inherit;
 }
 
 /* ── En-tête de section ──────────────────────────────────────────────────────
    Aligné sur les titres de section de hal.css (h2 de liste de publications)  */
-.hal-charts-section-title {
+.hbi-charts-section-title {
   font-size: 1.3rem;
   font-weight: 700;
   /* color: #1a1a2e; */
@@ -22,16 +22,16 @@
 }
 
 /* ── Bandeau métriques ───────────────────────────────────────────────────────
-   Inspiré du tableau de bord hal-indicator : chiffres clés en ligne, fond
+   Inspiré du tableau de bord hbi-indicator : chiffres clés en ligne, fond
    neutre très léger, pas de couleur accent saturée                            */
-.hal-charts-metrics {
+.hbi-charts-metrics {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 1.75rem;
 }
 
-.hal-charts-metric-card {
+.hbi-charts-metric-card {
   flex: 1 1 110px;
   background: #f7f8fa;
   border: 1px solid #e2e6ec;
@@ -40,14 +40,14 @@
   text-align: center;
 }
 
-.hal-charts-metric-value {
+.hbi-charts-metric-value {
   font-size: 1.9rem;
   font-weight: 700;
   /* color: #1a1a2e; */
   line-height: 1;
 }
 
-.hal-charts-metric-label {
+.hbi-charts-metric-label {
   font-size: 0.72rem;
   font-weight: 600;
   /* color: #555; */
@@ -56,69 +56,70 @@
   margin-top: 0.35rem;
 }
 
-.hal-charts-metric-sub {
+.hbi-charts-metric-sub {
   font-size: 0.67rem;
   /* color: #999; */
   margin-top: 0.2rem;
 }
+
 /* ── États chargement / erreur ───────────────────────────────────────────────*/
-.hal-charts-loading {
+.hbi-charts-loading {
   text-align: center;
   padding: 2rem;
   color: #888;
   font-size: 0.875rem;
 }
- 
-.hal-charts-error {
+
+.hbi-charts-error {
   text-align: center;
   padding: 2rem;
   color: #b91c1c;
   font-size: 0.875rem;
 }
- 
+
 /* ── Barre de progression — progressbar.js ───────────────────────────────────*/
-/* Overlay inséré avant #hal-charts-integrator, indépendant du container.     */
+/* Overlay inséré avant #hbi-charts-integrator, indépendant du container.     */
 /* La barre SVG est gérée par ProgressBar.Line, seul le label est en CSS.     */
-#hal-charts-progress-overlay {
+#hbi-charts-progress-overlay {
   padding: 0.75rem 0 0.5rem;
 }
- 
-.hal-charts-progress-label {
+
+.hbi-charts-progress-label {
   font-size: 0.8rem;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
- 
-.hal-charts-progress-count {
+
+.hbi-charts-progress-count {
   font-weight: 600;
   margin-left: auto;
   font-variant-numeric: tabular-nums;
 }
- 
-/* #hal-charts-bar-container : height fixée en JS (6px), SVG géré par progressbar.js */
- 
+
+/* #hbi-charts-bar-container : height fixée en JS (6px), SVG géré par progressbar.js */
+
 /* ── Grille de graphiques ────────────────────────────────────────────────────
    Deux colonnes sur desktop, une sur mobile                                   */
-.hal-charts-grid {
+.hbi-charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
-/* ── Carte graphique — style hal-indicator ───────────────────────────────────
+/* ── Carte graphique — style hbi-indicator ───────────────────────────────────
    Fond blanc, pas d'ombre, titre noir en gras, légende centrée en bas.
    Correspond exactement au rendu de la capture d'écran "Times Cited…"         */
-.hal-charts-card {
+.hbi-charts-card {
   background: #fff;
   border: 1px solid #e2e6ec;
   border-radius: 6px;
   padding: 1.25rem 1.5rem 1rem;
 }
 
-.hal-charts-card-title {
+.hbi-charts-card-title {
   font-size: 0.95rem;
   font-weight: 700;
   /* color: #1a1a2e; */
@@ -126,15 +127,15 @@
   text-align: left;
 }
 
-.hal-charts-canvas-wrapper {
+.hbi-charts-canvas-wrapper {
   position: relative;
   height: 240px;
 }
 
 /* ── Légende ─────────────────────────────────────────────────────────────────
    Positionnée en bas, centrée horizontalement, items en ligne (comme la
-   légende "Publications · Citations" de hal-indicator)                        */
-.hal-charts-legend {
+   légende "Publications · Citations" de hbi-indicator)                        */
+.hbi-charts-legend {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -142,7 +143,7 @@
   margin-top: 0.85rem;
 }
 
-.hal-charts-legend-item {
+.hbi-charts-legend-item {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -151,7 +152,7 @@
 }
 
 /* Pastille ronde pour les thématiques/domaines (camembert / barres empilées) */
-.hal-charts-legend-dot {
+.hbi-charts-legend-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -159,14 +160,15 @@
 }
 
 /* Icône ligne pour la légende "Citations" (trait + point central) */
-.hal-charts-legend-line {
+.hbi-charts-legend-line {
   width: 22px;
   height: 3px;
   border-radius: 2px;
   flex-shrink: 0;
   position: relative;
 }
-.hal-charts-legend-line::after {
+
+.hbi-charts-legend-line::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -180,12 +182,12 @@
 }
 
 /* ── Carte pleine largeur (graphique citations) ──────────────────────────────*/
-.hal-charts-card--full {
+.hbi-charts-card--full {
   grid-column: 1 / -1;
 }
 
 /* ── Ligne de résumé citations (sous le graphique) ──────────────────────────*/
-.hal-charts-cites-year {
+.hbi-charts-cites-year {
   font-size: 0.8rem;
   color: #666;
   text-align: center;
@@ -193,19 +195,19 @@
   margin-bottom: 1.5rem;
 }
 
-.hal-charts-cites-year strong {
+.hbi-charts-cites-year strong {
   color: #1a1a2e;
 }
 
 /* ── États chargement / erreur ───────────────────────────────────────────────*/
-.hal-charts-loading {
+.hbi-charts-loading {
   text-align: center;
   padding: 2rem;
   color: #888;
   font-size: 0.875rem;
 }
 
-.hal-charts-error {
+.hbi-charts-error {
   text-align: center;
   padding: 2rem;
   color: #b91c1c;
@@ -214,20 +216,24 @@
 
 /* ── Responsive ──────────────────────────────────────────────────────────────*/
 @media (max-width: 640px) {
-  .hal-charts-grid {
+  .hbi-charts-grid {
     grid-template-columns: 1fr;
   }
-  .hal-charts-metrics {
+
+  .hbi-charts-metrics {
     gap: 0.5rem;
   }
-  .hal-charts-metric-card {
+
+  .hbi-charts-metric-card {
     flex: 1 1 80px;
     padding: 0.65rem 0.75rem;
   }
-  .hal-charts-metric-value {
+
+  .hbi-charts-metric-value {
     font-size: 1.5rem;
   }
-  .hal-charts-canvas-wrapper {
+
+  .hbi-charts-canvas-wrapper {
     height: 200px;
   }
 }
