@@ -1,6 +1,6 @@
-export const hal_module_name = "hal-bibliography-integrator";
+export const hbi_module_name = "hal-bibliography-integrator";
 
-export const hal_helpers = {
+export const hbi_helpers = {
     "THESE": {
         "icon": "fa-graduation-cap",
         "title_en": "Thesis",
@@ -20,18 +20,22 @@ export const hal_helpers = {
         "icon": "fa-microphone",
         "title_en": "Communications",
     },
-	"POSTER":{
-		"icon":"fa-image",
+
+    "POSTER": {
+        "icon": "fa-image",
         "title_en": "Poster",
-	},
-	"OUV":{
-		"icon":"fa-book",
+    },
+
+    "OUV": {
+        "icon": "fa-book",
         "title_en": "Book",
-	},
-	"COUV":{
-		"icon":"fa-book",
+    },
+
+    "COUV": {
+        "icon": "fa-book",
         "title_en": "Book Chapters",
-	},
+    },
+
     "LECTURE": {
         "icon": "fa-book-open",
         "title_en": "Lectures",
@@ -46,13 +50,54 @@ export const hal_helpers = {
         "icon": "fa-microchip",
         "title_en": "Softwares",
     },
-	"PROCEEDINGS":{
+
+    "PROCEEDINGS": {
         "icon": "fa-file",
         "title_en": "Proceedings",
-	}
+    }
 };
 
 export var globalHalData = {};
 
-export const eventNameHalDone = "halMainDone"; 
-export const eventNameArtDone = "halArticleDone"; 
+export const eventNameHBIDone = "hbiMainDone";
+export const eventNameArtDone = "hbiArticleDone";
+
+export function validate_hbi_config(hbi_config) {
+    // This function validate that the configuration variable contains the required value. 
+    // Return True if everything is correct
+
+    if (typeof hbi_config == 'undefined') {
+        // variable undefined
+        console.log("Error: hbi_config is not defined");
+        return false;
+    } else if (hbi_config["id"] == 'undefined') {
+        console.log("Error: No 'id' defined in hbi_config");
+        return false;
+    } else if (hbi_config["id"] == '') {
+        console.log("Error: 'id' defined in hbi_config cannot be empty");
+        return false;
+    }
+
+    if (hbi_config["doit"] == 'undefined') {
+        hbi_config["doit"] = true;
+    }
+
+    if (!hbi_config["doit"]) {
+        console.log("Warning: 'doit' defined in hbi_config is set to 'false'. Nothing will be done");
+        return false;
+    }
+
+    if (hbi_config["debug"] == 'undefined') {
+        console.log("Info: Debug mode is deactivated for HBI");
+        hbi_config["debug"] = false;
+    }
+
+    if (("debug" in hbi_config) && (hbi_config["debug"])) {
+        console.log("Info: Debug mode is activated for HBI");
+    }
+
+    // TODO: Add configuration check for plugins
+
+    return true;
+}
+
