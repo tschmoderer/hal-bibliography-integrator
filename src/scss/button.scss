@@ -1,6 +1,5 @@
-
 /* HAL BUTTON */
-.hal-btn {
+.hbi-btn {
     border: none;
     text-align: left;
     width: 100%;
@@ -8,7 +7,7 @@
     font-weight: 700;
 }
 
-.hal-icon {
+.hbi-icon {
     padding-right: 1rem;
 }
 
@@ -17,14 +16,16 @@
     --fa-rotate-angle: -90deg;
 }
 
-.hal-btn a {
+.hbi-btn a {
     transition: padding-left 0.8s ease-in-out;
 }
 
-.hal-btn:hover {
+.hbi-btn:hover {
     cursor: pointer;
+
     a {
         padding-left: 1rem;
     }
 }
+
 /* END HAL BUTTON */

@@ -1,60 +1,60 @@
-.hal-list {
+.hbi-list {
     margin-top: 2rem;
 }
 
-.hal-content {
+.hbi-content {
     margin-top: 1rem;
 }
 
-.hal-results-table {
+.hbi-results-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.hal-results-table tbody {
+.hbi-results-table tbody {
     display: table-row-group;
 }
 
-.hal-results-table tr {
+.hbi-results-table tr {
     display: table-row;
     border-bottom: 1px solid #bdc1c4;
     border-top: 1px solid #bdc1c4;
 }
 
-.hal-results-table td {
+.hbi-results-table td {
     display: table-cell;
     padding: 0.5rem;
 }
 
-.hal-results-table tbody tr:focus,
-.hal-results-table tbody tr:hover,
-.hal-results-table tr:focus,
-.hal-results-table tr:hover {
+.hbi-results-table tbody tr:focus,
+.hbi-results-table tbody tr:hover,
+.hbi-results-table tr:focus,
+.hbi-results-table tr:hover {
     box-shadow: 5px 5px 5px;
 }
 
-.hal-results-table tr td:first-child {
+.hbi-results-table tr td:first-child {
     width: 60px;
     text-align: center;
 }
 
-.hal-results-table h3 {
+.hbi-results-table h3 {
     font-size: 1rem;
     margin-bottom: 0;
     margin-top: 0;
 }
 
-.hal-results-table td a:hover {
+.hbi-results-table td a:hover {
     text-decoration: none;
 }
 
-.hal-results-table .citation-results,
-.hal-results-table .citation-results a {
+.hbi-results-table .citation-results,
+.hbi-results-table .citation-results a {
     font-size: .85rem;
 }
 
 @media (max-width: $medium-screen-width) {
-    .hal-results-table tr td:first-child {
+    .hbi-results-table tr td:first-child {
         display: none !important;
     }
 }
