@@ -1,7 +1,7 @@
 import '../scss/main.scss'
 
-import { create_hal_publication_list } from "./hal_publications";
-import { hbi_module_name, validate_hbi_config } from "./hal_utils";
+import { create_hal_publication_list } from "./hbi_publications";
+import { hbi_module_name, validate_hbi_config } from "./hbi_utils";
 
 function hbi_make(id, pubType, debug) {
     // Locate <div> where to put the HBI results
@@ -24,8 +24,9 @@ function hbi_make(id, pubType, debug) {
 
 export function hbi_start(hbi_config) {
     if (validate_hbi_config(hbi_config)) {
+        const debug = hbi_config["debug"];
         // Display config
-        if (hbi_config["debug"]) {
+        if (debug) {
             console.log("HBI INFO: config");
             console.log(hbi_config);
         }
@@ -36,7 +37,7 @@ export function hbi_start(hbi_config) {
             hbi_make(
                 hal_integrator_config["id"],        // id HAL
                 hal_integrator_config["typeList"],  // List of document types
-                hal_integrator_config["debug"])     // debug mode
+                debug)                              // debug mode
         );
     }
 }

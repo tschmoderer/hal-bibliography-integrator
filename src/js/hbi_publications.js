@@ -1,7 +1,7 @@
-import { callHALAPI } from "./hal_api";
-import { hbi_module_name, hbi_helpers, eventNameHBIDone, eventNameArtDone, globalHalData } from "./hal_utils";
-import { collapse } from "./hal_collapse";
-import { copyCitation } from "./hal_citations";
+import { callHALAPI } from "./hbi_api";
+import { hbi_module_name, hbi_helpers, eventNameHBIDone, eventNameArtDone, globalHbiData, create_spinner } from "./hbi_utils";
+import { collapse } from "./hbi_collapse";
+import { copyCitation } from "./hbi_citations";
 
 function trigger_hal(eventName) {
     const event = new Event(eventName);
@@ -16,63 +16,46 @@ function trigger_hal_end() {
     trigger_hal(eventNameHBIDone);
 }
 
-function create_spinner(id = null) {
-    const spinner = document.createElement("div");
-    spinner.classList = "hal-spinner";
-    if (id) {
-        spinner.id = id;
-    }
-
-    const ellipsis = document.createElement("div");
-    ellipsis.classList.add("lds-ellipsis");
-    for (let i = 1; i <= 4; i++) {
-        ellipsis.appendChild(document.createElement("div"));
-    }
-
-    spinner.appendChild(ellipsis);
-    return spinner;
-}
-
 function initialHTML(type) {
     const container = document.createElement("div");
-    container.classList.add('hal-list');
-    container.id = `hal-${type}`;
+    container.classList.add('hbi-list');
+    container.id = `hbi-${type}`;
 
     const button = document.createElement("button");
-    button.id = `hal-btn-${type}`;
-    button.classList.add("hal-btn");
+    button.id = `hbi-btn-${type}`;
+    button.classList.add("hbi-btn");
     button.setAttribute("data-target", `#${type}`);
 
     const icon = document.createElement("i");
-    icon.classList.add('hal-icon', 'fa-solid', hbi_helpers[type]["icon"]);
+    icon.classList.add('hbi-icon', 'fa-solid', hbi_helpers[type]["icon"]);
     button.appendChild(icon);
 
     const title = document.createElement("a");
-    title.id = `hal-${type}-card-title`;
+    title.id = `hbi-${type}-card-title`;
     title.textContent = hbi_helpers[type]["title_en"];
     button.appendChild(title);
 
     const caretIcon = document.createElement("i");
-    caretIcon.classList.add('hal-icon', 'icon-drop_down', 'fa-solid', 'fa-caret-down');
+    caretIcon.classList.add('hbi-icon', 'icon-drop_down', 'fa-solid', 'fa-caret-down');
     button.appendChild(caretIcon);
 
     button.addEventListener("click", collapse);
 
     container.appendChild(button);
 
-    const spinner = create_spinner(`hal-${type}-spinner`);
+    const spinner = create_spinner(`hbi-${type}-spinner`);
 
     container.appendChild(spinner);
 
     const content = document.createElement("div");
-    content.classList.add("hal-content");
+    content.classList.add("hbi-content");
     content.id = type;
 
     const table = document.createElement("table");
-    table.classList.add("hal-results-table");
+    table.classList.add("hbi-results-table");
 
     const tbody = document.createElement("tbody");
-    tbody.id = `hal-${type}-table`;
+    tbody.id = `hbi-${type}-table`;
 
     table.appendChild(tbody);
     content.appendChild(table);
@@ -112,12 +95,12 @@ async function genListPubli(id, type, debug = false) {
 
     return callHALAPI(param, debug).then(data => {
         // Sauvegarde des data dans une variable global pour les plugins 
-        globalHalData[type] = data;
+        globalHbiData[type] = data;
         // Set title 
-        document.getElementById(`hal-${type}-card-title`).innerText = `${hbi_helpers[type]["title_en"]} (${data.length})`;
+        document.getElementById(`hbi-${type}-card-title`).innerText = `${hbi_helpers[type]["title_en"]} (${data.length})`;
 
         // Complete list 
-        var tab = document.getElementById(`hal-${type}-table`);
+        var tab = document.getElementById(`hbi-${type}-table`);
         for (const p of data) {
             if (debug) {
                 console.log(p);
@@ -135,7 +118,7 @@ async function genListPubli(id, type, debug = false) {
                 link.target = "_blank";
 
                 const mediaDiv = document.createElement("div");
-                mediaDiv.classList.add("hal-media", "d-sm-block");
+                mediaDiv.classList.add("hbi-media", "d-sm-block");
 
                 const image = document.createElement("img");
                 image.src = `https://thumb.ccsd.cnrs.fr/${p.thumbId_i}/thumb`;
@@ -147,7 +130,7 @@ async function genListPubli(id, type, debug = false) {
             }
 
             const titleCell = document.createElement("td");
-            titleCell.classList.add("hal-title");
+            titleCell.classList.add("hbi-title");
 
             const titleLink = document.createElement("a");
             titleLink.href = `https://hal.science/${p.halId_s}`;
@@ -189,7 +172,7 @@ async function genListPubli(id, type, debug = false) {
                 const pdfLink = document.createElement("a");
                 pdfLink.href = p.fileMain_s;
                 pdfLink.target = "_blank";
-                pdfLink.classList.add("hal-export-pdf");
+                pdfLink.classList.add("hbi-export-pdf");
 
                 const pdfIcon = document.createElement("i");
                 pdfIcon.classList.add("fa-regular", "fa-file-pdf");
@@ -199,7 +182,7 @@ async function genListPubli(id, type, debug = false) {
             }
 
             const citeLink = document.createElement("a");
-            citeLink.classList.add("hal-export-cite");
+            citeLink.classList.add("hbi-export-cite");
             citeLink.addEventListener("click", () => { copyCitation(p.halId_s, debug); });
             citeLink.title = "Copy BibLatex Citation";
 
@@ -207,13 +190,13 @@ async function genListPubli(id, type, debug = false) {
             quoteIcon.classList.add("fa-solid", "fa-quote-right");
 
             const copySuccess = document.createElement("a");
-            copySuccess.id = "hal-copy-success";
-            copySuccess.classList.add("hal-citation-copy-success", "hidden");
+            copySuccess.id = "hbi-copy-success";
+            copySuccess.classList.add("hbi-citation-copy-success", "hidden");
             copySuccess.textContent = "BibLatex citation copied";
 
             const bibtexCitation = document.createElement("p");
-            bibtexCitation.classList.add("hal-biblatex-citation");
-            bibtexCitation.id = `hal-citation-biblatex-${p.halId_s}`;
+            bibtexCitation.classList.add("hbi-biblatex-citation");
+            bibtexCitation.id = `hbi-citation-biblatex-${p.halId_s}`;
             bibtexCitation.textContent = p.label_bibtex;
 
             citeLink.appendChild(quoteIcon);
@@ -232,11 +215,11 @@ async function genListPubli(id, type, debug = false) {
         };
 
         // Remove loader
-        document.getElementById("hal-" + type + "-spinner").style.display = "none";
-        document.getElementById("hal-" + type).style.display = "block";
+        document.getElementById("hbi-" + type + "-spinner").style.display = "none";
+        document.getElementById("hbi-" + type).style.display = "block";
         if ("onLoad" in hal_integrator_config && hal_integrator_config["onLoad"].toLowerCase() === "collapsed") {
             document.getElementById(type).style.display = "none";
-            document.getElementById("hal-btn-" + type).querySelector(".icon-drop_down").classList.add("fa-rotate-by");
+            document.getElementById("hbi-btn-" + type).querySelector(".icon-drop_down").classList.add("fa-rotate-by");
         }
 
         // Update mathjax

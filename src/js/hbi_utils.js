@@ -1,4 +1,4 @@
-export const hbi_module_name = "hal-bibliography-integrator";
+export const hbi_module_name = "hbi-bibliography-integrator";
 
 export const hbi_helpers = {
     "THESE": {
@@ -57,7 +57,7 @@ export const hbi_helpers = {
     }
 };
 
-export var globalHalData = {};
+export var globalHbiData = {};
 
 export const eventNameHBIDone = "hbiMainDone";
 export const eventNameArtDone = "hbiArticleDone";
@@ -101,3 +101,19 @@ export function validate_hbi_config(hbi_config) {
     return true;
 }
 
+export function create_spinner(id = null) {
+    const spinner = document.createElement("div");
+    spinner.classList = "hbi-spinner";
+    if (id) {
+        spinner.id = id;
+    }
+
+    const ellipsis = document.createElement("div");
+    ellipsis.classList.add("lds-ellipsis");
+    for (let i = 1; i <= 4; i++) {
+        ellipsis.appendChild(document.createElement("div"));
+    }
+
+    spinner.appendChild(ellipsis);
+    return spinner;
+}
