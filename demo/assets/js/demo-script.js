@@ -71,9 +71,9 @@ form.addEventListener('submit', function (event) {
     }
 
     // reset hal containers 
-    document.getElementById("hal-wordcloud-integrator").innerHTML = "";
-    document.getElementById("hal-bibliography-integrator").innerHTML = "";
-    document.getElementById("hal-charts-integrator").innerHTML = "";
+    document.getElementById("hbi-wordcloud-integrator").innerHTML = "";
+    document.getElementById("hbi-bibliography-integrator").innerHTML = "";
+    document.getElementById("hbi-charts-integrator").innerHTML = "";
 
     // Get the value of the name field
     const nameInput = document.querySelector('#idhal');

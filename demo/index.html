@@ -35,12 +35,7 @@
             }
         };
     </script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"
-        integrity="sha512-EtUjpk/hY3NXp8vfrPUJWhepp1ZbgSI10DKPzfd+3J/p2Wo89JRBvQIdk3Q83qAEhKOiFOsYfhqFnOEv23L+dA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-    <!-- <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.0.0/tex-svg.min.js"
-        integrity="sha512-JBvT4lHnIhbktDR7xvJbyObGFZU3uNkwiN7ubopyb4RkUDOHQuZpS/8izmKsJG3k+Mvj11FMyeRWrjgxEJ6K4Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
 
     <!-- DEMO SPECIFIC STYLES -->
@@ -55,9 +50,9 @@
     <main>
         <h2>Publications of Timothée Schmoderer</h2>
         <!-- MAIN SECTION TO DISPLAY HBI RESULTS -->
-        <div id="hal-wordcloud-integrator"></div>
-        <div id="hal-bibliography-integrator"></div>
-        <div id="hal-charts-integrator"></div>
+        <div id="hbi-wordcloud-integrator"></div>
+        <div id="hbi-bibliography-integrator"></div>
+        <div id="hbi-charts-integrator"></div>
     </main>
 
     <footer>
@@ -85,21 +80,25 @@
                     "scopus": {
                         "apiKey": "abc",
                     }
+                },
+                "wordcloud": {
+                    "doit": true,
+                    "debug": true,
                 }
             },
             "doit": true,
-            "debug": true
+            "debug": false,
         }
     </script>
 
     <!-- HBI DEMO MAIN MODULE -->
     <script type="module">
         import { hbi_start } from '../src/js/main.js'
-        hbi_start(hal_integrator_config);
-    </script>
+        import { hbi_plugin_wordcloud_start } from '../src/plugins/wordcloud/js/main.js'
 
-    <!-- HBI DEMO WORDCLOUD PLUGIN -->
-    <script src="../src/plugins/wordcloud/js/main.js"></script>
+        hbi_start(hal_integrator_config);
+        hbi_plugin_wordcloud_start(hal_integrator_config);
+    </script>
 </body>
 
 </html>
