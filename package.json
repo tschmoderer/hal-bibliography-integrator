@@ -44,8 +44,11 @@
   },
   "scripts": {
     "dev": "vite --config config/vite.config.js",
-    "build": "vite build --mode production --config config/vite.config.js",
+    "build:lib": "vite build --mode production --config config/vite.config.js",
+    "build:demo": "vite build --mode production --config config/vite.config.demo.js",
+    "build": "npm run build:lib && npm run build:demo",
     "preview": "vite preview --config config/vite.config.js",
+    "preview:demo": "vite preview --config config/vite.config.demo.js",
     "version:patch": "npm version patch && git push --follow-tags",
     "version:minor": "npm version minor && git push --follow-tags",
     "version:major": "npm version major && git push --follow-tags"
