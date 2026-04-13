@@ -1,6 +1,6 @@
 {
   "name": "hal-publication-integrator",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "JavaScript module to integrate a researcher's HAL publication list into a website.",
   "repository": {
     "type": "git",
