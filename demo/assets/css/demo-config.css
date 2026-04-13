@@ -1,0 +1,14 @@
+form button {
+    float: right;
+    margin-top: 10px;
+    background-color: #0275ff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5em;
+    font-size: medium;
+    color: white;
+}
+
+fieldset {
+    margin-top: 15px;
+}
