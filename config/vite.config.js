@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => {
 
     return {
         root: resolve(__dirname, '../demo'),
+        base: "/hal-bibliography-integrator/",
 
         build: {
             outDir: resolve(__dirname, '../dist'),
