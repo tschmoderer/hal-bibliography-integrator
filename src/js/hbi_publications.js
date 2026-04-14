@@ -1,19 +1,20 @@
 import { callHALAPI } from "./hbi_api";
-import { hbi_module_name, hbi_helpers, eventNameHBIDone, eventNameArtDone, globalHbiData, create_spinner } from "./hbi_utils";
+import { hbi_module_name, hbi_helpers, eventNameHBIDone, eventNameArtDone, globalHBIData } from "./hbi_utils";
+import { create_spinner } from "./hbi_common";
 import { collapse } from "./hbi_collapse";
 import { copyCitation } from "./hbi_citations";
 
-function trigger_hal(eventName) {
+function trigger_hbi_event(eventName) {
     const event = new Event(eventName);
     document.dispatchEvent(event);
 }
 
-function trigger_hal_article_end() {
-    trigger_hal(eventNameArtDone);
+function trigger_hbi_event_article_end() {
+    trigger_hbi_event(eventNameArtDone);
 }
 
-function trigger_hal_end() {
-    trigger_hal(eventNameHBIDone);
+function trigger_hbi_event_end() {
+    trigger_hbi_event(eventNameHBIDone);
 }
 
 function initialHTML(type) {
@@ -95,7 +96,7 @@ async function genListPubli(id, type, debug = false) {
 
     return callHALAPI(param, debug).then(data => {
         // Sauvegarde des data dans une variable global pour les plugins 
-        globalHbiData[type] = data;
+        globalHBIData[type] = data;
         // Set title 
         document.getElementById(`hbi-${type}-card-title`).innerText = `${hbi_helpers[type]["title_en"]} (${data.length})`;
 
@@ -142,7 +143,6 @@ async function genListPubli(id, type, debug = false) {
 
             titleLink.appendChild(titleHeading);
             titleCell.appendChild(titleLink);
-
 
             let nbit = p.authFullName_s.length;
             for (const author of p.authFullName_s) {
@@ -210,14 +210,12 @@ async function genListPubli(id, type, debug = false) {
             row.appendChild(titleCell);
 
             tab.appendChild(row);
-
-
         };
 
         // Remove loader
         document.getElementById("hbi-" + type + "-spinner").style.display = "none";
         document.getElementById("hbi-" + type).style.display = "block";
-        if ("onLoad" in hal_integrator_config && hal_integrator_config["onLoad"].toLowerCase() === "collapsed") {
+        if ("onLoad" in hal_bibliography_integrator_conf && hal_bibliography_integrator_conf["onLoad"].toLowerCase() === "collapsed") {
             document.getElementById(type).style.display = "none";
             document.getElementById("hbi-btn-" + type).querySelector(".icon-drop_down").classList.add("fa-rotate-by");
         }
@@ -227,7 +225,7 @@ async function genListPubli(id, type, debug = false) {
 
         // If article trigger event 
         if (type === "ART") {
-            trigger_hal_article_end();
+            trigger_hbi_event_article_end();
         }
     }).catch(error => console.error(error));
 }
@@ -241,7 +239,7 @@ export function create_hal_publication_list(idhal, pubTypeList, hal_publi_div, d
     }
 
     Promise.all(apiCalls).then(() => {
-        trigger_hal_end();
+        trigger_hbi_event_end();
     });
 
     return true;

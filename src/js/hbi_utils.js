@@ -57,63 +57,44 @@ export const hbi_helpers = {
     }
 };
 
-export var globalHbiData = {};
+export var globalHBIData = {};
 
 export const eventNameHBIDone = "hbiMainDone";
 export const eventNameArtDone = "hbiArticleDone";
 
 export function validate_hbi_config(hbi_config) {
-    // This function validate that the configuration variable contains the required value. 
+    // This function validate that the HBI module configuration variable contains the required values
+    // Throw an error if some configuration is incorrect 
     // Return True if everything is correct
 
     if (typeof hbi_config == 'undefined') {
-        // variable undefined
-        console.log("Error: hbi_config is not defined");
-        return false;
-    } else if (hbi_config["id"] == 'undefined') {
-        console.log("Error: No 'id' defined in hbi_config");
-        return false;
+        // configuration variable undefined
+        throw new Error("hbi_config is not defined");
+    } else if (typeof hbi_config["id"] == 'undefined') {
+        // configuration variable does not contain an id key 
+        throw new Error("No 'id' defined in hbi_config");
     } else if (hbi_config["id"] == '') {
-        console.log("Error: 'id' defined in hbi_config cannot be empty");
-        return false;
+        // id key in configuration variable is empty
+        throw new Error("'id' defined in hbi_config cannot be empty");
+    } else if (typeof hbi_config["typeList"] == 'undefined') {
+        // configuration variable does not contain a typeList key
+        throw new Error("'typeList' key is not defined in hbi_config");
     }
 
-    if (hbi_config["doit"] == 'undefined') {
+    // Set default value for the 'doit' key
+    if (typeof hbi_config["doit"] == 'undefined') {
         hbi_config["doit"] = true;
     }
 
-    if (!hbi_config["doit"]) {
-        console.log("Warning: 'doit' defined in hbi_config is set to 'false'. Nothing will be done");
-        return false;
-    }
-
-    if (hbi_config["debug"] == 'undefined') {
-        console.log("Info: Debug mode is deactivated for HBI");
+    // Set default value for the 'debug' key
+    if (typeof hbi_config["debug"] == 'undefined') {
         hbi_config["debug"] = false;
     }
 
+    // Display a message if we are in debug mode
     if (("debug" in hbi_config) && (hbi_config["debug"])) {
         console.log("Info: Debug mode is activated for HBI");
     }
 
-    // TODO: Add configuration check for plugins
-
     return true;
-}
-
-export function create_spinner(id = null) {
-    const spinner = document.createElement("div");
-    spinner.classList = "hbi-spinner";
-    if (id) {
-        spinner.id = id;
-    }
-
-    const ellipsis = document.createElement("div");
-    ellipsis.classList.add("lds-ellipsis");
-    for (let i = 1; i <= 4; i++) {
-        ellipsis.appendChild(document.createElement("div"));
-    }
-
-    spinner.appendChild(ellipsis);
-    return spinner;
 }
