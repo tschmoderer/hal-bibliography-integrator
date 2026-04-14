@@ -53,14 +53,14 @@ export function validate_hbi_config(hbi_config) {
 
     // Set default value for the 'onLoad' key 
     if (typeof hbi_config["onLoad"] == 'undefined') {
-        hbi_config["onLoad"] = 'expended'; // or collapsed
+        hbi_config["onLoad"] = 'expanded'; // or collapsed
         if (hbi_config["debug"]) {
-            console.log("HBI CONFIG INFO: 'onLoad' key undefined, default behavior is set to expended")
+            console.log("HBI CONFIG INFO: 'onLoad' key undefined, default behavior is set to expanded")
         }
-    } else if ((hbi_config["onLoad"] !== 'expended') && (hbi_config["onLoad"] !== 'collapsed')) {
-        hbi_config["onLoad"] = 'expended';
+    } else if ((hbi_config["onLoad"] !== 'expanded') && (hbi_config["onLoad"] !== 'collapsed')) {
+        hbi_config["onLoad"] = 'expanded';
         if (hbi_config["debug"]) {
-            console.log("HBI CONFIG INFO: 'onLoad' key undefined, default behavior is set to expended")
+            console.log("HBI CONFIG INFO: 'onLoad' key undefined, default behavior is set to expanded")
         }
     }
 

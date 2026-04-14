@@ -8,7 +8,7 @@ import { hbi_module_name, validate_hbi_config } from "./hbi_utils";
  * 
  * @param {string} id - HAL identifier
  * @param {string|Array} pubType - Publication types
- * @param {string} onLoad - Section behavior when created (collapsed or expended)
+ * @param {string} onLoad - Section behavior when created (collapsed or expanded)
  * @param {boolean} debug - Enable debug mode
  */
 function hbi_make(id, pubType, onLoad, debug) {

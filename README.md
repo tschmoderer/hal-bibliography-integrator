@@ -12,7 +12,7 @@ This repository contains a JavaScript module that simplifies the integration of 
 
 To integrate a HAL bibliography into a website, you will need the researcher's HAL unique identifier: [idHal](https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/).
 
-0. Download the latest [release](https://github.com/tschmoderer/hal-bibliography-integrator/releases) and extract the *hal-bibliography-integrator.min.cjs* and *hal-bibliography-integrator.css* files from the "dist.zip" archive.
+0. Download the latest [release](https://github.com/tschmoderer/hal-bibliography-integrator/releases) and extract the *hal-bibliography-integrator.min.es.js* and *hal-bibliography-integrator.css* files from the "dist.zip" archive.
 
 1. Insert the following HTML node where you want to display the bibliography:
 
@@ -49,7 +49,7 @@ To integrate a HAL bibliography into a website, you will need the researcher's H
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
    ```
 
-4. At the end of the `<head>` section of your HTML page, add the following code and configure the target **idHal** and the list of desired publication types (see the supported types list below). The debug key enables additional logs in the browser console.
+4. At the end of the `<head>` section of your HTML page, add the following code and configure the target **idHal** and the list of desired publication types (see the supported types list in the [documentation](https://github.com/tschmoderer/hal-bibliography-integrator/wiki)). 
    ```html
    <script type="text/javascript">
         const hal_bibliography_integrator_conf = {
@@ -63,7 +63,7 @@ To integrate a HAL bibliography into a website, you will need the researcher's H
             ],
             "doit": true,         // trigger
             "debug": false,       // disable logs
-            "onLoad": "expended", // section default behavior (expended || collapsed)
+            "onLoad": "expanded", // section default behavior (expanded || collapsed)
         }
     </script>
 
@@ -85,6 +85,8 @@ To integrate a HAL bibliography into a website, you will need the researcher's H
 
 ## Plugins examples
 
+The module includes several plugins that display additional informations. See the [documentation](https://github.com/tschmoderer/hal-bibliography-integrator/wiki/Plugins) for their individual configuration. 
+
 ### Keyword cloud
 
 ![result](./.github/img//result_wordcloud.png)
@@ -96,8 +98,6 @@ To integrate a HAL bibliography into a website, you will need the researcher's H
 ### Bibliographic metrics charts
 
 ![result](./.github/img//result_charts.png)
-
-
 
 ## Copyright (C) 2026 T. Schmoderer
 
