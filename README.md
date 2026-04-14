@@ -74,7 +74,7 @@ To integrate a HAL bibliography into a website, you will need the researcher's H
 
    ```html
    <script type="module">
-    import { hbi_start } from './path/to/hal-bibliography-integrator.min.cjs'
+    import { hbi_start } from './path/to/hal-bibliography-integrator.min.es.js'
     hbi_start(hal_bibliography_integrator_conf);
     </script>
    ```
