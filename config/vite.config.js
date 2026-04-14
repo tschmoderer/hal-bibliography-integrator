@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => {
                     'hal-bibliography-integrator-artscore': resolve(import.meta.dirname, '../src/plugins/artscore/js/main.js'),
                     'hal-bibliography-integrator-charts': resolve(import.meta.dirname, '../src/plugins/charts/js/main.js'),
                 },
-                formats: ["cjs"],
-                fileName: (format, entryName) => `${entryName}${isDev ? '' : '.min'}.${format}`,
+                formats: ["es"],
+                fileName: (format, entryName) => `${entryName}${isDev ? '' : '.min'}.${format}.js`,
             },
         },
 
