@@ -15,14 +15,8 @@ function hbi_make(id, pubType, debug) {
     var hbi_div = document.getElementById(hbi_module_name);
 
     // If not exists do nothing
-    if (!container) {
-        const message = "HBI: No HAL publication div found on this page";
-        if (debug) {
-            throw new Error(message);
-        } else {
-            console.warn(message);
-            return;
-        }
+    if (!hbi_div) {
+        throw new Error("HBI: No HAL publication div found on this page");
     }
 
     if (debug) {
