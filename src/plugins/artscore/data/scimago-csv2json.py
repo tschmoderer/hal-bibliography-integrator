@@ -3,9 +3,14 @@ import sys
 import json
 
 if __name__ == "__main__":
-    csv_filename = sys.argv[1]
-    json_filename = csv_filename.split(".")[0] + ".json"
+    csv_filename  = sys.argv[1]
+    filename      =  csv_filename.split(".")[0]
+    json_filename = filename.split(" ")[0] + ".json"
+    year          = int(filename.split(" ")[-1])
+
     print(json_filename)
+    print(year)
+
     data = {}
     with open(csv_filename,  encoding = 'utf-8') as csv_file_handler:
         csv_reader = csv.DictReader(csv_file_handler,delimiter=';')
@@ -32,7 +37,18 @@ if __name__ == "__main__":
         'Publisher',
         'Areas', 
         "Type",
+        "Rank",
+        "Open Access",
+        "Open Access Diamond",
+        "SJR Best Quartile",
+        "Total Docs. (2024)",
+        "Total Citations (3years)",
+        "Citations / Doc. (2years)",
+        "%Female",
+        "Overton",
+        "SDG",
     ]
+    
     for d in data: 
         for key in keys:
             data[d].pop(key, None)
@@ -51,7 +67,8 @@ if __name__ == "__main__":
                 qua = new_s[1].replace('(','').replace(')','')
             data[d]["Categories"].append([cat, qua])
 
-        
+    # add scimago year as the "0" key 
+    data["0"] = year    
     with open(json_filename, 'w', encoding = 'utf-8') as json_file_handler:
         json_file_handler.write(json.dumps(data, indent = 4)); 
 

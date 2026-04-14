@@ -1,7 +1,8 @@
 import { fetchJournalData } from "./scopus";
 import { fetchArticleData } from "./semantic";
 import { fetchJournalQuartile } from "./scimago";
-import { scimago_year } from "../data/scimagojr 2022";
+import artscore_data from '../data/scimagojr.json' assert { type: 'json' };
+
 /*
 - Call the different API to get data about article 
     - Call Elsevier scopus for CiteScore
@@ -10,6 +11,8 @@ import { scimago_year } from "../data/scimagojr 2022";
     - Call XX api for Impact Factor (or h-index?)
 */
 export async function get_artdata(articleData, config, debug = false) {
+    const scimago_year = artscore_data["0"];
+
     var res = {
         "scopus": {
             "success": false,

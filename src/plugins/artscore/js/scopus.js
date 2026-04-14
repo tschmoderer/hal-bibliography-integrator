@@ -1,6 +1,6 @@
 export function fetchJournalData(journalISSN, config, debug) {
   return new Promise((resolve, reject) => {
-    const apiKey = config["artscore"]["scopus"]["apiKey"]; // Replace with your Scopus API key
+    const apiKey = config["scopus"]["apiKey"]; // Replace with your Scopus API key
     fetch(`https://api.elsevier.com/content/serial/title/issn/${encodeURIComponent(journalISSN)}?apiKey=${apiKey}`)
       .then(response => {
         if (!response.ok) {
@@ -18,10 +18,10 @@ export function fetchJournalData(journalISSN, config, debug) {
         const citeScore = journal['citeScoreYearInfoList']['citeScoreCurrentMetric'];
 
         const res = {
-          "score": citeScore, 
+          "score": citeScore,
           "url": journal["link"][0]["@href"]
         };
-        
+
         resolve(res);
       })
       .catch(error => {

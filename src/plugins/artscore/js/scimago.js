@@ -1,22 +1,24 @@
-import { artscore_data } from '../data/scimagojr 2022';
+import artscore_data from '../data/scimagojr.json' assert { type: 'json' };
 
+/*
+Lookup data in the scimago database for a scientific journal 
+*/
 export async function fetchJournalQuartile(journalTitle, config, debug) {
-  console.log(config["artscore"]);
-  if (config["artscore"]["scimago"] !== undefined) {
-    if (journalTitle in config["artscore"]["scimago"]) {
-      journalTitle = config["artscore"]["scimago"][journalTitle];
+  if (config["scimago"] !== undefined) {
+    // Update journal title if it mismatched the name in the scimago database 
+    if (journalTitle in config["scimago"]) {
+      journalTitle = config["scimago"][journalTitle];
     }
   }
 
   for (const s in artscore_data) {
     if (artscore_data[s]["Title"] === journalTitle) {
       if (debug) {
-        console.log(artscore_data[s]);
+        console.log("HBI ARTSCORE PLUGIN: scimago match:", artscore_data[s]);
       }
-
       return artscore_data[s];
     }
   }
 
-  throw new Error("Journal not found in scimago");
+  throw new Error(`Journal: ${journalTitle} not found in scimago`);
 }

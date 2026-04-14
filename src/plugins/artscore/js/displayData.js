@@ -1,5 +1,5 @@
 
-/*
+/* Display scheme
 Q1  | Citations
 hindex | CiteScore | SJR 
 */
@@ -140,13 +140,13 @@ export function display_artscore(row, artData, debug = false) {
 
         // H-index
         col.querySelector("#artscoreHIndexLegend").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>h-index</a>";
-        col.querySelector("#artscoreHIndexItem").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>" + artData["scimago"]["hindex"]+ "</a>";
+        col.querySelector("#artscoreHIndexItem").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>" + artData["scimago"]["hindex"] + "</a>";
 
 
         // SJR 
         col.querySelector("#artscoreSJRLegend").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>SJR " + artData["scimago"]["year"] + "</a>";
         col.querySelector("#artscoreSJRItem").innerHTML = "<a href='" + url + "&tip=sid&clean=0' target='_blank'>" + artData["scimago"]["sjr"] + "</a>";
-    } 
+    }
 
     // Citation
     if (artData["semantic"]["success"]) {
@@ -156,15 +156,15 @@ export function display_artscore(row, artData, debug = false) {
         } else {
             col.querySelector("#artscoreCitations").title = artData["semantic"]["citations"] + " citations";
         }
-        col.querySelector("#artscoreCitations").innerHTML = "<a href='"+ artData["semantic"]["url"] +"' target='_blank'>" + artData["semantic"]["citations"] + '<i class="fa-solid fa-quote-right"></i>' + "</a>";    
+        col.querySelector("#artscoreCitations").innerHTML = "<a href='" + artData["semantic"]["url"] + "' target='_blank'>" + artData["semantic"]["citations"] + '<i class="fa-solid fa-quote-right"></i>' + "</a>";
     }
 
     // Cite score
     if (artData["scopus"]["success"]) {
         col.querySelector("#artscoreCiteScoreLegend").innerHTML = "<a href='" + artData["scopus"]["url"] + "' target='_blank'>CiteScore</a>";
-        col.querySelector("#artscoreCiteScoreItem").innerHTML = "<a href='" + artData["scopus"]["url"] + "' target='_blank'>" + artData["scopus"]["score"] + "</a>";    
+        col.querySelector("#artscoreCiteScoreItem").innerHTML = "<a href='" + artData["scopus"]["url"] + "' target='_blank'>" + artData["scopus"]["score"] + "</a>";
     }
-  
+
     row.appendChild(col);
 
     return 0;
