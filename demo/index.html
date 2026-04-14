@@ -38,6 +38,11 @@
 
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
 
+    <!--  Chart JS Module for the HBI Charts Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"
+        integrity="sha512-Y51n9mtKTVBh3Jbx5pZSJNDDMyY+yGe77DGtBPzRlgsf/YLCh13kSZ3JmfHGzYFCmOndraf0sQgfM654b7dJ3w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!-- DEMO SPECIFIC STYLES -->
     <link rel="stylesheet" href="./assets/css/demo-style.css">
 </head>
@@ -48,10 +53,12 @@
     </header>
 
     <main>
-        <h2>Publications of Timothée Schmoderer</h2>
         <!-- MAIN SECTION TO DISPLAY HBI RESULTS -->
+        <h2>Keyword cloud of Timothée Schmoderer</h2>
         <div id="hbi-wordcloud-integrator"></div>
+        <h2>Publications of Timothée Schmoderer</h2>
         <div id="hbi-bibliography-integrator"></div>
+        <h2>Statistics of Timothée Schmoderer</h2>
         <div id="hbi-charts-integrator"></div>
     </main>
 
@@ -61,7 +68,7 @@
 
     <!-- HBI DEMO CONFIGURATION -->
     <script type="text/javascript">
-        const hal_integrator_config = {
+        const hal_bibliography_integrator_conf = {
             "id": "timothee-schmoderer", // enter HAL identifier
             // Configure documents to fetch
             "typeList": [
@@ -71,33 +78,65 @@
                 "UNDEFINED",
                 "COMM"
             ],
+            "doit": true, // trigger
+            "debug": false, // enable logs
+            "onLoad": "expended", // section default behavior (expended || collapsed)
             // Configure plugins
             "plugins": {
-                // article score plugin 
+                // article score plugin configuration 
                 "artscore": {
-                    "scimago": {},
+                    "scimago": {
+                        "Systems & Control Letters": "Systems and Control Letters",
+                        "ESAIM: Control, Optimisation and Calculus of Variations": "ESAIM - Control, Optimisation and Calculus of Variations",
+                    },
                     "semantic": {},
                     "scopus": {
-                        "apiKey": "abc",
-                    }
+                        "apiKey": "ba28b7b16741bdbc327b34c7b8a8ee24",
+                    },
+                    "doit": true,
+                    "debug": false,
                 },
+                // keyword cloud plugin configuration 
                 "wordcloud": {
                     "doit": true,
+                    "debug": false,
+                },
+                // charts plugin configuration 
+                "charts": {
+                    "doit": true,
                     "debug": true,
+                    "maxCategories": 8, // not used
+                    "renameThematiques": {}, // not used
+                    "renameDomaines": {}, // not used
+                    "show": [
+                        "metrics",
+                        "thematiques",// not used
+                        "domaines",// not used
+                        "citations"
+                    ], // list of charts to display, by default everything is displayed. If we want none, either set the 'doit' key to false or set 'show' to the empty array []
                 }
             },
-            "doit": true,
-            "debug": false,
         }
     </script>
 
-    <!-- HBI DEMO MAIN MODULE -->
     <script type="module">
+        // HBI DEMO
         import { hbi_start } from '../src/js/main.js'
         import { hbi_plugin_wordcloud_start } from '../src/plugins/wordcloud/js/main.js'
+        import { hbi_plugin_artscore_start } from '../src/plugins/artscore/js/main.js'
+        import { hbi_plugin_charts_start } from '../src/plugins/charts/js/main.js'
 
-        hbi_start(hal_integrator_config);
-        hbi_plugin_wordcloud_start(hal_integrator_config);
+        // HBI MAIN MODULE
+        hbi_start(hal_bibliography_integrator_conf);
+
+        // HBI WORDCLOUD PLUGIN
+        hbi_plugin_wordcloud_start(hal_bibliography_integrator_conf);
+
+        // HBI ARTSCORE PLUGIN
+        hbi_plugin_artscore_start(hal_bibliography_integrator_conf);
+
+        // HBI CHARTS PLUGIN
+        hbi_plugin_charts_start(hal_bibliography_integrator_conf);
     </script>
 </body>
 
