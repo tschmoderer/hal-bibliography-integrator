@@ -96,9 +96,9 @@
 
     <main>
         <!-- MAIN SECTION TO DISPLAY HBI RESULTS -->
-        <div id="hbi-wordcloud-integrator"></div>
-        <div id="hbi-bibliography-integrator"></div>
-        <div id="hbi-charts-integrator"></div>
+        <div id="hbi-plugin-wordcloud"></div>
+        <div id="hal-bibliography-integrator"></div>
+        <div id="hbi-plugin-charts"></div>
     </main>
 
     <footer>
@@ -107,7 +107,7 @@
 
     <!-- HBI DEMO CONFIGURATION -->
     <script type="text/javascript">
-        const hal_integrator_config = {
+        const hal_bibliography_integrator_conf = {
             "id": "timothee-schmoderer", // enter HAL identifier
             // Configure documents to fetch
             "typeList": [
@@ -136,7 +136,7 @@
     <!-- HBI DEMO MAIN MODULE -->
     <script type="module">
         import { hbi_start } from '../src/js/main.js'
-        hbi_start(hal_integrator_config);
+        hbi_start(hal_bibliography_integrator_conf);
     </script>
 
     <!-- HBI DEMO WORDCLOUD PLUGIN -->
