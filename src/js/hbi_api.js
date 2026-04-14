@@ -65,10 +65,7 @@ export async function callHALAPI(parameters, debug = false) {
          * Debug mode: log the full request URL.
          */
         if (debug) {
-            console.log("[HAL API REQUEST]", {
-                url: url.toString(),
-                parameters
-            });
+            console.log("[HAL API REQUEST]", url.toString());
         }
 
         /**

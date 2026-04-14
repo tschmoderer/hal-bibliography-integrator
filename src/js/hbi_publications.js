@@ -81,7 +81,7 @@ async function genListPubli(id, type, onLoad, debug = false) {
         console.log(param);
     }
 
-    return callHALAPI(param, onLoad, debug).then(data => {
+    return callHALAPI(param, debug).then(data => {
         // Sauvegarde des data dans une variable global pour les plugins 
         globalHBIData[type] = data;
         // Set title 
