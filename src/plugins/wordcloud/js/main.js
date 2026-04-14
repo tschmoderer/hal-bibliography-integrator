@@ -1,8 +1,7 @@
 import '../scss/main.scss'
-import { validate_hbi_wordcloud_config } from './hbi_wordcloud_utils';
-import { create_spinner, globalHbiData } from '../../../js/hbi_utils';
-
-const hbi_plugin_name = "hbi-wordcloud-integrator";
+import { hbi_plugin_name, validate_hbi_wordcloud_config } from './wordcloud_utils';
+import { globalHBIData } from '../../../js/hbi_utils';
+import { create_spinner } from '../../../js/hbi_common';
 
 function init_wordcloud(container, debug) {
     var spinner = create_spinner("hbi-wordcloud-spinner");
@@ -12,14 +11,14 @@ function init_wordcloud(container, debug) {
 function HALwordcloud(hbi_wordcloud_div, idhal, debug) {
     if (debug) {
         console.log("INFO HBI WORDCLOUD: Raw data to be treated: ")
-        console.log(globalHbiData);
+        console.log(globalHBIData);
     }
 
     var data = [];
-    for (const k in globalHbiData) {
-        for (const w in globalHbiData[k]) {
-            if (globalHbiData[k][w]["en_keyword_s"] != undefined) {
-                data.push({ "en_keyword_s": globalHbiData[k][w]["en_keyword_s"] });
+    for (const k in globalHBIData) {
+        for (const w in globalHBIData[k]) {
+            if (globalHBIData[k][w]["en_keyword_s"] != undefined) {
+                data.push({ "en_keyword_s": globalHBIData[k][w]["en_keyword_s"] });
             }
         }
     }
@@ -70,30 +69,46 @@ function keywordElement(keyw, freq, id) {
 }
 
 export function hbi_plugin_wordcloud_start(hbi_config) {
-    if (validate_hbi_wordcloud_config(hbi_config)) {
-        const debug = hbi_config["plugins"]["wordcloud"]["debug"];
+    try {
+        validate_hbi_wordcloud_config(hbi_config)
+    } catch (err) {
+        console.error("HBI WORCLOUD PLUGIN CONFIG ERROR:", err);
+        return -1;
 
-        // Récupère la div ou placer le nuage de mots
-        var hbi_wordcloud_div = document.getElementById(hbi_plugin_name);
-
-        // Si elle n'existe pas on ne fait rien 
-        if (hbi_wordcloud_div === null) {
-            if (debug) {
-                console.log("ERROR HBI WORDCLOUD: No HAL wordcloud div on this page");
-            }
-            return;
-        }
-
-        if (debug) {
-            console.log(`HBI WORDCLOUD DEBUG: hbi wordcloud <div>`);
-            console.log(hbi_wordcloud_div);
-        }
-
-        // Sinon on créé le nuage de mot
-        init_wordcloud(hbi_wordcloud_div, debug);
-        document.addEventListener("hbiMainDone", () => {
-            // generate the wordcloud when main part is finished to deal with the data
-            HALwordcloud(hbi_wordcloud_div, hbi_config["id"], debug);
-        });
     }
+
+    const debug = hbi_config["plugins"]["wordcloud"]["debug"];
+
+    if (!hbi_config["plugins"]["wordcloud"]["doit"]) {
+        if (debug) {
+            console.warn("HBI: Worcloud plugin execution skipped because 'doit' is false.");
+        }
+        return 0;
+    }
+
+    // Display config
+    if (debug) {
+        console.log("HBI WORDCLOUD PLUGIN INFO: config");
+        console.log(hbi_config["plugins"]["wordcloud"]);
+    }
+
+    // Récupère la div ou placer le nuage de mots
+    var hbi_wordcloud_div = document.getElementById(hbi_plugin_name);
+
+    // Si elle n'existe pas on ne fait rien 
+    if (!hbi_wordcloud_div) {
+        throw new Error("HBI WORDCLOUD: No HAL wordcloud div on this page");
+    }
+
+    if (debug) {
+        console.log("HBI WORDCLOUD DEBUG: target container");
+        console.log(hbi_wordcloud_div);
+    }
+
+    // Sinon on créé le nuage de mot
+    init_wordcloud(hbi_wordcloud_div, debug);
+    document.addEventListener("hbiMainDone", () => {
+        // generate the wordcloud when main part is finished to deal with the data
+        HALwordcloud(hbi_wordcloud_div, hbi_config["id"], debug);
+    });
 }
