@@ -1,83 +1,94 @@
-'use strict';
+import '../scss/main.scss'
 
-var hal_charts_plugin_name = "hbi-charts-integrator";
+import { HBI_CHARTS_SHOW_OPTIONS, validate_hbi_charts_config, hbi_charts_plugin_name } from "./charts_utils";
+import { create_spinner } from "../../../js/hbi_common";
 
-document.addEventListener("hbiMainDone", function () {
-  if (typeof hal_integrator_config === "undefined") return false;
-  var debug = hal_integrator_config["debug"] || false;
-  var hal_charts_div = document.getElementById(hal_charts_plugin_name);
+import { hbi_plugin_charts_render_all } from './charts_render';
+import { hbi_plugin_charts_show_message } from './charts_utils';
+import { hbi_plugin_charts_process_publications } from './charts_process';
+
+async function hbi_plugin_charts_init(config, debug = false) {
+  // Récupère la div ou placer les graphiques
+  var hal_charts_div = document.getElementById(hbi_charts_plugin_name);
+
+  // Si elle n'existe pas on ne fait rien 
   if (!hal_charts_div) {
-    if (debug) console.log("[hbi-charts] Div #" + hal_charts_plugin_name + " absente.");
-    return false;
+    throw new Error("HBI CHARTS: No HAL charts div on this page");
   }
-  var hal_plugins = hal_integrator_config["plugins"];
-  var plugin_cfg = (hal_plugins && hal_plugins["charts"]) ? hal_plugins["charts"] : {};
-  var doit = ("doit" in plugin_cfg) ? plugin_cfg["doit"] : true;
-  if (!doit) { if (debug) console.log("[hbi-charts] Désactivé."); return false; }
-  initHALCharts(hal_charts_div, plugin_cfg, debug);
-});
 
-var HAL_CHARTS_SHOW_OPTIONS = [
-  { key: "metrics", label: "Indicateurs bibliométriques" },
-  { key: "thematiques", label: "Thématiques scientifiques" },
-  { key: "domaines", label: "Domaines d'application" },
-  { key: "citations", label: "Citations par année" },
-];
+  if (debug) {
+    console.log("HBI CHARTS DEBUG: target container");
+    console.log(hal_charts_div);
+  }
 
-function initHALCharts(container, cfg, debug) {
-  var maxN = cfg["maxCategories"] || 8;
-  var renameThematiques = cfg["renameThematiques"] || {};
-  var renameDomaines = cfg["renameDomaines"] || {};
-  var showAll = !cfg["show"] || !cfg["show"].length;
-  var showSet = {};
-  HAL_CHARTS_SHOW_OPTIONS.forEach(function (o) {
-    showSet[o.key] = showAll || cfg["show"].indexOf(o.key) !== -1;
-  });
-  // Afficher immédiatement une barre CSS (avant même que progressbar.js soit chargé)
-  halChartsProgressCSS(container, "Chargement des données…");
-  // Charger progressbar.js en arrière-plan, puis upgrader vers la barre animée
-  halChartsLoadProgressBar(function () {
-    halChartsProgress(container, "Chargement des données…", 0, 1);
-  });
-  fetchHalData(hal_integrator_config["id"], hal_integrator_config["typeList"] || [])
-    .then(function (docs) {
-      if (debug) console.log("[hbi-charts] HAL :", docs.length, "publications.");
-      fetchCitationsAndProcess(docs, container, maxN, renameThematiques, renameDomaines, showSet, debug);
-    })
-    .catch(function (err) {
+  const spinner = create_spinner("hbi-charts-spinner");
+  hal_charts_div.appendChild(spinner);
+
+  try {
+    var data = await hbi_plugin_charts_process_publications(config, debug);
+    hbi_plugin_charts_render_all(data, hal_charts_div, config, debug);
+  } catch (err) {
+    if (debug) {
       console.error("[hbi-charts]", err);
-      halChartsProgressDone(container);
-      halChartsProgressDone(container);
-      container.innerHTML = "<div class=\"hbi-charts-error\">Erreur HAL : " + err.message + "</div>";
-    });
+    }
+    spinner.style.display = "none";
+    hbi_plugin_charts_show_message(hal_charts_div, err.message, "hbi-charts-error")
+  }
 }
 
-function fetchHalData(idHal, typeList) {
-  var fields = [
-    "docid", "halId_s", "title_s",
-    "producedDateY_i", "publicationDateY_i", "docType_s",
-    "keyword_s", "fr_keyword_s", "en_keyword_s", "domain_s",
-    "doi_s", "doiId_s",
-  ].join(",");
-  var typeFilter = (typeList && typeList.length)
-    ? "&fq=docType_s:(" + typeList.join(" OR ") + ")" : "";
-  var url = "https://api.archives-ouvertes.fr/search/?q=authIdHal_s:"
-    + encodeURIComponent(idHal) + typeFilter + "&fl=" + fields + "&rows=1000&wt=json";
-  return fetch(url)
-    .then(function (r) { if (!r.ok) throw new Error("HAL API " + r.status); return r.json(); })
-    .then(function (d) { return d.response.docs || []; });
+export function hbi_plugin_charts_start(hbi_config) {
+  try {
+    validate_hbi_charts_config(hbi_config)
+  } catch (err) {
+    console.error("HBI CHARTS PLUGIN CONFIG ERROR:", err);
+    return -1;
+  }
+
+  const debug = hbi_config["plugins"]["charts"]["debug"];
+
+  if (!hbi_config["plugins"]["charts"]["doit"]) {
+    if (debug) {
+      console.warn("HBI: Charts plugin execution skipped because 'doit' is false.");
+    }
+    return 0;
+  }
+
+  // Create the 'showSet' key in the config
+  hbi_config["plugins"]["charts"]["showSet"] = {}
+  HBI_CHARTS_SHOW_OPTIONS.forEach(function (o) {
+    hbi_config["plugins"]["charts"]["showSet"][o.key] = hbi_config["plugins"]["charts"]["show"].indexOf(o.key) !== -1;
+  });
+
+  // Display config
+  if (debug) {
+    console.log("HBI CHARTS PLUGIN INFO: config");
+    console.log(hbi_config["plugins"]["charts"]);
+  }
+
+  // Quand l’événement hbiMainDone est envoyé, on déclenche la création des graphiques
+  document.addEventListener("hbiMainDone", () => {
+    hbi_plugin_charts_init(hbi_config["plugins"]["charts"], debug)
+  });
 }
+
+// This plugin construct 4 graphics: 
+// "metrics",
+//   "thematiques",
+//   "domaines",
+//   "citations"
+
+
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // CITATIONS SEMANTIC SCHOLAR
 // ═══════════════════════════════════════════════════════════════════════════════
 function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, renameDomaines, showSet, debug) {
 
-  var s2Cfg = (hal_integrator_config &&
-    hal_integrator_config.plugins &&
-    hal_integrator_config.plugins.charts &&
-    hal_integrator_config.plugins.charts.semanticScholar)
-    ? hal_integrator_config.plugins.charts.semanticScholar : null;
+  var s2Cfg = (hal_bibliography_integrator_conf &&
+    hal_bibliography_integrator_conf.plugins &&
+    hal_bibliography_integrator_conf.plugins.charts &&
+    hal_bibliography_integrator_conf.plugins.charts.semanticScholar)
+    ? hal_bibliography_integrator_conf.plugins.charts.semanticScholar : null;
 
   var s2ApiKey = (s2Cfg && s2Cfg.apiKey) ? s2Cfg.apiKey : "";
 
@@ -331,7 +342,7 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
     var authorId = s2Cfg && s2Cfg.authorId;
     var promise = authorId
       ? fetchByAuthorId(authorId)
-      : searchAuthorByName(hal_integrator_config["id"])
+      : searchAuthorByName(hal_bibliography_integrator_conf["id"])
         .catch(function (e) {
           if (debug) console.warn("[hbi-charts][S2] Nom échoué :", e.message, "— fallback DOI");
           return fetchByDois(docs);
@@ -383,14 +394,14 @@ function fetchCitationsAndProcess(docs, container, maxN, renameThematiques, rena
 
 // ── Citations via Scopus API (fallback) ────────────────────────────────────────
 function fetchScopusCitations(docs, container, debug, callback) {
-  if (!hal_integrator_config ||
-    !hal_integrator_config.plugins ||
-    !hal_integrator_config.plugins.charts ||
-    !hal_integrator_config.plugins.charts.scopus) {
+  if (!hal_bibliography_integrator_conf ||
+    !hal_bibliography_integrator_conf.plugins ||
+    !hal_bibliography_integrator_conf.plugins.charts ||
+    !hal_bibliography_integrator_conf.plugins.charts.scopus) {
     if (debug) console.log("[hbi-charts][Scopus] Non configuré");
     callback(docs); return;
   }
-  var cfg = hal_integrator_config.plugins.charts.scopus;
+  var cfg = hal_bibliography_integrator_conf.plugins.charts.scopus;
   if (!cfg.apiKey || !cfg.authorId) { callback(docs); return; }
   var apiKey = cfg.apiKey, authorId = cfg.authorId, start = 0, allEntries = [];
   function fetchPage() {
@@ -446,11 +457,11 @@ function processPublications(publications, container, maxN, renameThematiques, r
     domCats = halChartsTopN(domData.total, maxN);
   }
   var kwMapping = showSet.thematiques ? halChartsAutoThematiques(publications, Math.max(maxN * 5, 40), renameThematiques, debug) : null;
-  var aiApiKey = (hal_integrator_config &&
-    hal_integrator_config.plugins &&
-    hal_integrator_config.plugins.charts &&
-    hal_integrator_config.plugins.charts.ai &&
-    hal_integrator_config.plugins.charts.ai.apiKey) || "";
+  var aiApiKey = (hal_bibliography_integrator_conf &&
+    hal_bibliography_integrator_conf.plugins &&
+    hal_bibliography_integrator_conf.plugins.charts &&
+    hal_bibliography_integrator_conf.plugins.charts.ai &&
+    hal_bibliography_integrator_conf.plugins.charts.ai.apiKey) || "";
   if (aiApiKey && kwMapping) {
     halChartsAiThematiques(kwMapping, maxN, aiApiKey, debug, function (aiMapping) {
       var thData = aiMapping ? halChartsMergeKwData(publications, aiMapping, years)
@@ -808,42 +819,42 @@ function halChartsLoadChartJs(callback) {
 }
 
 // ── Rendu métriques ───────────────────────────────────────────────────────────
-function halChartsRenderMetrics(publications, years) {
-  var total = publications.length, totalCit = 0, hIdx = 0, citSource = "—";
-  if (publications._s2Total !== undefined) {
-    totalCit = publications._s2Total; hIdx = publications._s2HIndex || 0; citSource = "Semantic Scholar";
-  } else if (publications._scopusTotal !== undefined) {
-    totalCit = publications._scopusTotal; citSource = "Scopus";
-    var cc = publications.map(function (p) { return p._citCount || 0; }).sort(function (a, b) { return b - a; });
-    cc.forEach(function (c, i) { if (c >= i + 1) hIdx = i + 1; });
-  }
-  var TYPE_LABELS = {
-    ART: "article", COMM: "congrès", COUV: "chapitre", POSTER: "poster",
-    THESE: "thèse", OUV: "ouvrage", PROCEEDINGS: "actes", UNDEFINED: "preprint"
-  };
-  var types = [];
-  publications.forEach(function (p) { if (p.docType_s && types.indexOf(p.docType_s) === -1) types.push(p.docType_s); });
-  var typeSummary = types.map(function (t) {
-    return publications.filter(function (p) { return p.docType_s === t; }).length + "\u00a0" + (TYPE_LABELS[t] || t);
-  }).join(" · ");
-  return "<div class=\"hbi-charts-metrics\">"
-    + "<div class=\"hbi-charts-metric-card\"><div class=\"hbi-charts-metric-value\">" + total + "</div>"
-    + "<div class=\"hbi-charts-metric-label\">Publications</div>"
-    + "<div class=\"hbi-charts-metric-sub\">" + Math.min.apply(null, years) + "–" + Math.max.apply(null, years) + "</div></div>"
-    + "<div class=\"hbi-charts-metric-card\"><div class=\"hbi-charts-metric-value\">" + totalCit + "</div>"
-    + "<div class=\"hbi-charts-metric-label\">Citations</div><div class=\"hbi-charts-metric-sub\">" + citSource + "</div></div>"
-    + "<div class=\"hbi-charts-metric-card\"><div class=\"hbi-charts-metric-value\">" + (hIdx || "–") + "</div>"
-    + "<div class=\"hbi-charts-metric-label\">Indice h</div><div class=\"hbi-charts-metric-sub\">" + citSource + "</div></div>"
-    + (typeSummary ? "<div class=\"hbi-charts-metric-card hbi-charts-metric-card--wide\"><div class=\"hbi-charts-metric-type\">" + typeSummary + "</div><div class=\"hbi-charts-metric-label\">Répartition par type</div></div>" : "")
-    + "</div>";
-}
+// function halChartsRenderMetrics(publications, years) {
+//   var total = publications.length, totalCit = 0, hIdx = 0, citSource = "—";
+//   if (publications._s2Total !== undefined) {
+//     totalCit = publications._s2Total; hIdx = publications._s2HIndex || 0; citSource = "Semantic Scholar";
+//   } else if (publications._scopusTotal !== undefined) {
+//     totalCit = publications._scopusTotal; citSource = "Scopus";
+//     var cc = publications.map(function (p) { return p._citCount || 0; }).sort(function (a, b) { return b - a; });
+//     cc.forEach(function (c, i) { if (c >= i + 1) hIdx = i + 1; });
+//   }
+//   var TYPE_LABELS = {
+//     ART: "article", COMM: "congrès", COUV: "chapitre", POSTER: "poster",
+//     THESE: "thèse", OUV: "ouvrage", PROCEEDINGS: "actes", UNDEFINED: "preprint"
+//   };
+//   var types = [];
+//   publications.forEach(function (p) { if (p.docType_s && types.indexOf(p.docType_s) === -1) types.push(p.docType_s); });
+//   var typeSummary = types.map(function (t) {
+//     return publications.filter(function (p) { return p.docType_s === t; }).length + "\u00a0" + (TYPE_LABELS[t] || t);
+//   }).join(" · ");
+//   return "<div class=\"hbi-charts-metrics\">"
+//     + "<div class=\"hbi-charts-metric-card\"><div class=\"hbi-charts-metric-value\">" + total + "</div>"
+//     + "<div class=\"hbi-charts-metric-label\">Publications</div>"
+//     + "<div class=\"hbi-charts-metric-sub\">" + Math.min.apply(null, years) + "–" + Math.max.apply(null, years) + "</div></div>"
+//     + "<div class=\"hbi-charts-metric-card\"><div class=\"hbi-charts-metric-value\">" + totalCit + "</div>"
+//     + "<div class=\"hbi-charts-metric-label\">Citations</div><div class=\"hbi-charts-metric-sub\">" + citSource + "</div></div>"
+//     + "<div class=\"hbi-charts-metric-card\"><div class=\"hbi-charts-metric-value\">" + (hIdx || "–") + "</div>"
+//     + "<div class=\"hbi-charts-metric-label\">Indice h</div><div class=\"hbi-charts-metric-sub\">" + citSource + "</div></div>"
+//     + (typeSummary ? "<div class=\"hbi-charts-metric-card hbi-charts-metric-card--wide\"><div class=\"hbi-charts-metric-type\">" + typeSummary + "</div><div class=\"hbi-charts-metric-label\">Répartition par type</div></div>" : "")
+//     + "</div>";
+// }
 
-function halChartsCreateCard(id, title, extraClass) {
-  return "<div class=\"hbi-charts-card " + (extraClass || "") + "\">"
-    + "<div class=\"hbi-charts-card-title\">" + title + "</div>"
-    + "<div class=\"hbi-charts-canvas-wrapper\"><canvas id=\"" + id + "\"></canvas></div>"
-    + "<div class=\"hbi-charts-legend\" id=\"" + id + "-legend\"></div></div>";
-}
+// function halChartsCreateCard(id, title, extraClass) {
+//   return "<div class=\"hbi-charts-card " + (extraClass || "") + "\">"
+//     + "<div class=\"hbi-charts-card-title\">" + title + "</div>"
+//     + "<div class=\"hbi-charts-canvas-wrapper\"><canvas id=\"" + id + "\"></canvas></div>"
+//     + "<div class=\"hbi-charts-legend\" id=\"" + id + "-legend\"></div></div>";
+// }
 
 function halChartsBuildLegend(containerId, labels, colors, lineStyle) {
   var el = document.getElementById(containerId);
@@ -923,55 +934,55 @@ function halChartsRenderPie(canvasId, categories, total, colors) {
   });
 }
 
-function halChartsRenderCitations(canvasId, publications, years) {
-  var ctx = document.getElementById(canvasId);
-  if (!ctx) return;
-  var thisYear = new Date().getFullYear(), firstYear = years[0] || thisYear, allYears = [];
-  for (var y = firstYear; y <= thisYear; y++) allYears.push(y);
-  var citByYear = {};
-  allYears.forEach(function (y) { citByYear[y] = 0; });
-  var graph = publications._s2ByYear || publications._scopusByYear || publications._scholarByYear || null;
-  var src = publications._s2ByYear ? "Semantic Scholar"
-    : publications._scopusByYear ? "Scopus"
-      : publications._scholarByYear ? "Google Scholar" : "Aucune source";
-  if (graph) Object.keys(graph).forEach(function (y) { citByYear[y] = graph[y]; });
-  var citData = allYears.map(function (y) { return citByYear[y] || 0; });
-  var tot = citData.reduce(function (s, v) { return s + v; }, 0);
-  var el = document.getElementById("hc-cit-metric");
-  if (el) el.innerHTML = "<strong>" + tot + "</strong>\u00a0citations totales"
-    + "\u2002·\u2002<strong>" + (allYears.length > 0 ? (tot / allYears.length).toFixed(1) : "0") + "</strong>\u00a0cites/an"
-    + "\u2002·\u2002<em>source\u00a0: " + src + "</em>";
-  var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--timeline-background-color").trim() || "#f0f0f0";
-  const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--link-color').trim() || "#1A56A4";
-  function hexToRgb(hex) {
-    const bigint = parseInt(hex.replace('#', ''), 16);
-    return `${(bigint >> 16) & 255}, ${(bigint >> 8) & 255}, ${bigint & 255}`;
-  }
-  const rgb = hexToRgb(linkColor);
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: allYears.map(String), datasets: [{
-        label: "Citations", data: citData,
-        backgroundColor: allYears.map(function (y) { return y === thisYear ? `rgba(${rgb},0.35)` : `rgba(${rgb},0.82)`; }),
-        borderColor: allYears.map(function (y) { return y === thisYear ? `{linkColor}` : "transparent"; }),
-        borderWidth: allYears.map(function (y) { return y === thisYear ? 1.5 : 0; }),
-        borderRadius: 3, borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: halChartsTextColor() } },
-        y: {
-          beginAtZero: true, ticks: { color: halChartsTextColor() }, grid: { color: gridColor },
-          title: { display: true, text: "Citations reçues / an", color: halChartsTextColor() }
-        }
-      }
-    }
-  });
-}
+// function halChartsRenderCitations(canvasId, publications, years) {
+//   var ctx = document.getElementById(canvasId);
+//   if (!ctx) return;
+//   var thisYear = new Date().getFullYear(), firstYear = years[0] || thisYear, allYears = [];
+//   for (var y = firstYear; y <= thisYear; y++) allYears.push(y);
+//   var citByYear = {};
+//   allYears.forEach(function (y) { citByYear[y] = 0; });
+//   var graph = publications._s2ByYear || publications._scopusByYear || publications._scholarByYear || null;
+//   var src = publications._s2ByYear ? "Semantic Scholar"
+//     : publications._scopusByYear ? "Scopus"
+//       : publications._scholarByYear ? "Google Scholar" : "Aucune source";
+//   if (graph) Object.keys(graph).forEach(function (y) { citByYear[y] = graph[y]; });
+//   var citData = allYears.map(function (y) { return citByYear[y] || 0; });
+//   var tot = citData.reduce(function (s, v) { return s + v; }, 0);
+//   var el = document.getElementById("hc-cit-metric");
+//   if (el) el.innerHTML = "<strong>" + tot + "</strong>\u00a0citations totales"
+//     + "\u2002·\u2002<strong>" + (allYears.length > 0 ? (tot / allYears.length).toFixed(1) : "0") + "</strong>\u00a0cites/an"
+//     + "\u2002·\u2002<em>source\u00a0: " + src + "</em>";
+//   var gridColor = getComputedStyle(document.documentElement).getPropertyValue("--timeline-background-color").trim() || "#f0f0f0";
+//   const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--link-color').trim() || "#1A56A4";
+//   function hexToRgb(hex) {
+//     const bigint = parseInt(hex.replace('#', ''), 16);
+//     return `${(bigint >> 16) & 255}, ${(bigint >> 8) & 255}, ${bigint & 255}`;
+//   }
+//   const rgb = hexToRgb(linkColor);
+//   new Chart(ctx, {
+//     type: "bar",
+//     data: {
+//       labels: allYears.map(String), datasets: [{
+//         label: "Citations", data: citData,
+//         backgroundColor: allYears.map(function (y) { return y === thisYear ? `rgba(${rgb},0.35)` : `rgba(${rgb},0.82)`; }),
+//         borderColor: allYears.map(function (y) { return y === thisYear ? `{linkColor}` : "transparent"; }),
+//         borderWidth: allYears.map(function (y) { return y === thisYear ? 1.5 : 0; }),
+//         borderRadius: 3, borderSkipped: false
+//       }]
+//     },
+//     options: {
+//       responsive: true, maintainAspectRatio: false,
+//       plugins: { legend: { display: false } },
+//       scales: {
+//         x: { grid: { display: false }, ticks: { color: halChartsTextColor() } },
+//         y: {
+//           beginAtZero: true, ticks: { color: halChartsTextColor() }, grid: { color: gridColor },
+//           title: { display: true, text: "Citations reçues / an", color: halChartsTextColor() }
+//         }
+//       }
+//     }
+//   });
+// }
 
 function halChartsRenderAll(container, publications, years, thData, thCats, domData, domCats, showSet) {
   if (!showSet) { showSet = { metrics: true, thematiques: true, domaines: true, citations: true }; }
