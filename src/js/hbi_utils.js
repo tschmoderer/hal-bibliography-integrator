@@ -57,8 +57,6 @@ export const hbi_helpers = {
     }
 };
 
-export var globalHBIData = {};
-
 export const eventNameHBIDone = "hbiMainDone";
 export const eventNameArtDone = "hbiArticleDone";
 

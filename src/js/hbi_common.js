@@ -1,3 +1,5 @@
+export var globalHBIData = {};
+
 export function create_spinner(id = null) {
     const spinner = document.createElement("div");
     spinner.classList = "hbi-spinner";

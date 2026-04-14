@@ -1,6 +1,6 @@
 import { callHALAPI } from "./hbi_api";
-import { hbi_helpers, trigger_hbi_event_article_end, trigger_hbi_event_end, globalHBIData } from "./hbi_utils";
-import { create_spinner } from "./hbi_common";
+import { hbi_helpers, trigger_hbi_event_article_end, trigger_hbi_event_end } from "./hbi_utils";
+import { create_spinner, globalHBIData } from "./hbi_common";
 import { collapse } from "./hbi_collapse";
 import { copyCitation } from "./hbi_citations";
 
@@ -69,6 +69,7 @@ async function genListPubli(id, type, onLoad, debug = false) {
             "label_bibtex",
             "en_keyword_s",
             "journalIssn_s",
+            "journalEissn_s",
             "doiId_s",
         ],
         fq: `docType_s: ${type}`,
