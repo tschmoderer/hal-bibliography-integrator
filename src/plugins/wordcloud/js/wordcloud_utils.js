@@ -4,6 +4,7 @@ export function validate_hbi_wordcloud_config(hbi_config) {
     // This function validate that the HBI module configuration variable contains the required values for the wordcloud plugin
     // Throw an error if some configuration is incorrect
     // Return True if everything is correct
+
     if (typeof hbi_config === 'undefined') {
         // si le configuration n'est pas présente on quite immédiatement
         throw new Error("hbi_config is not defined");
@@ -33,8 +34,8 @@ export function validate_hbi_wordcloud_config(hbi_config) {
     }
 
     // Display a message if we are in debug mode
-    if (("debug" in hbi_config["plugins"]["wordcloud"]) && (hbi_config["plugins"]["wordcloud"]["debug"])) {
-        console.log("Info: Debug mode is activated for HBIplugin wordcloud");
+    if (hbi_config["plugins"]["wordcloud"]["debug"]) {
+        console.log("Info: Debug mode is activated for HBI plugin wordcloud");
     }
 
     return true;

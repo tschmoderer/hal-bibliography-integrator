@@ -74,7 +74,6 @@ export function hbi_plugin_wordcloud_start(hbi_config) {
     } catch (err) {
         console.error("HBI WORCLOUD PLUGIN CONFIG ERROR:", err);
         return -1;
-
     }
 
     const debug = hbi_config["plugins"]["wordcloud"]["debug"];
