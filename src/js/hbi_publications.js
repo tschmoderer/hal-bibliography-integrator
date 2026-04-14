@@ -1,23 +1,10 @@
 import { callHALAPI } from "./hbi_api";
-import { hbi_module_name, hbi_helpers, eventNameHBIDone, eventNameArtDone, globalHBIData } from "./hbi_utils";
+import { hbi_helpers, trigger_hbi_event_article_end, trigger_hbi_event_end, globalHBIData } from "./hbi_utils";
 import { create_spinner } from "./hbi_common";
 import { collapse } from "./hbi_collapse";
 import { copyCitation } from "./hbi_citations";
 
-function trigger_hbi_event(eventName) {
-    const event = new Event(eventName);
-    document.dispatchEvent(event);
-}
-
-function trigger_hbi_event_article_end() {
-    trigger_hbi_event(eventNameArtDone);
-}
-
-function trigger_hbi_event_end() {
-    trigger_hbi_event(eventNameHBIDone);
-}
-
-function initialHTML(type) {
+function initialHTML(type, onLoad, debug = false) {
     const container = document.createElement("div");
     container.classList.add('hbi-list');
     container.id = `hbi-${type}`;
@@ -65,7 +52,7 @@ function initialHTML(type) {
     return container;
 }
 
-async function genListPubli(id, type, debug = false) {
+async function genListPubli(id, type, onLoad, debug = false) {
     const param = {
         q: `authIdHal_s: ${id}`,
         rows: "10000",
@@ -94,7 +81,7 @@ async function genListPubli(id, type, debug = false) {
         console.log(param);
     }
 
-    return callHALAPI(param, debug).then(data => {
+    return callHALAPI(param, onLoad, debug).then(data => {
         // Sauvegarde des data dans une variable global pour les plugins 
         globalHBIData[type] = data;
         // Set title 
@@ -215,7 +202,8 @@ async function genListPubli(id, type, debug = false) {
         // Remove loader
         document.getElementById("hbi-" + type + "-spinner").style.display = "none";
         document.getElementById("hbi-" + type).style.display = "block";
-        if ("onLoad" in hal_bibliography_integrator_conf && hal_bibliography_integrator_conf["onLoad"].toLowerCase() === "collapsed") {
+
+        if (onLoad.toLowerCase() === "collapsed") {
             document.getElementById(type).style.display = "none";
             document.getElementById("hbi-btn-" + type).querySelector(".icon-drop_down").classList.add("fa-rotate-by");
         }
@@ -230,17 +218,28 @@ async function genListPubli(id, type, debug = false) {
     }).catch(error => console.error(error));
 }
 
-export function create_hal_publication_list(idhal, pubTypeList, hal_publi_div, debug) {
-    // Pour chaque type de publication on créé la liste
+// TODO: it is also possible to make one API call and then to filter the results 
+//       Discuss which solution is better 
+export function create_hal_publication_list(idhal, pubTypeList, hal_publi_div, onLoad, debug) {
+    // Store all asynchronous API calls (one per publication type)
     var apiCalls = [];
+
+    // For each publication type, create initial DOM structure and trigger data fetch
     for (const p of pubTypeList) {
-        hal_publi_div.appendChild(initialHTML(p));
-        apiCalls.push(genListPubli(idhal, p, debug));
+        // Insert placeholder / initial HTML for this publication type
+        hal_publi_div.appendChild(initialHTML(p, onLoad));
+
+        // Trigger API call to fetch publications of this type
+        // genListPubli is expected to return a Promise
+        apiCalls.push(genListPubli(idhal, p, onLoad, debug));
     }
 
+    // Wait for all API calls to complete
     Promise.all(apiCalls).then(() => {
+        // Trigger a global event signaling that all publication lists are loaded
         trigger_hbi_event_end();
     });
 
+    // Return immediately after initialization (async work continues in background)
     return true;
-}; 
+};

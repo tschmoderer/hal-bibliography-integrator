@@ -8,9 +8,10 @@ import { hbi_module_name, validate_hbi_config } from "./hbi_utils";
  * 
  * @param {string} id - HAL identifier
  * @param {string|Array} pubType - Publication types
+ * @param {string} onLoad - Section behavior when created (collapsed or expended)
  * @param {boolean} debug - Enable debug mode
  */
-function hbi_make(id, pubType, debug) {
+function hbi_make(id, pubType, onLoad, debug) {
     // Locate the <div> container to display the HBI results
     var hbi_div = document.getElementById(hbi_module_name);
 
@@ -24,7 +25,7 @@ function hbi_make(id, pubType, debug) {
         console.log(hbi_div);
     }
 
-    create_hal_publication_list(id, pubType, hbi_div, debug)
+    create_hal_publication_list(id, pubType, hbi_div, onLoad, debug)
 }
 
 /**
@@ -68,6 +69,7 @@ export function hbi_start(hbi_config) {
             hbi_make(
                 hbi_config["id"],        // id HAL
                 hbi_config["typeList"],  // List of document types
+                hbi_config["onLoad"],    // Behavior
                 debug)                   // debug mode
         );
     } else {
@@ -75,6 +77,7 @@ export function hbi_start(hbi_config) {
         hbi_make(
             hbi_config["id"],        // id HAL
             hbi_config["typeList"],  // List of document types
+            hbi_config["onLoad"],    // Behavior
             debug)                   // debug mode
     }
 }
