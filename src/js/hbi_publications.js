@@ -1,6 +1,6 @@
 import { callHALAPI } from "./hbi_api";
-import { hbi_helpers, trigger_hbi_event_article_end, trigger_hbi_event_end } from "./hbi_utils";
-import { create_spinner, globalHBIData } from "./hbi_common";
+import { trigger_hbi_event_article_end, trigger_hbi_event_end } from "./hbi_utils";
+import { create_spinner, globalHBIData, hbi_helpers } from "./hbi_common";
 import { collapse } from "./hbi_collapse";
 import { copyCitation } from "./hbi_citations";
 
@@ -71,6 +71,15 @@ async function genListPubli(id, type, onLoad, debug = false) {
             "journalIssn_s",
             "journalEissn_s",
             "doiId_s",
+            // for charts plugin
+            "docid",
+            "producedDateY_i",
+            "publicationDateY_i",
+            "docType_s",
+            "keyword_s",
+            "fr_keyword_s",
+            "domain_s",
+            "doi_s",
         ],
         fq: `docType_s: ${type}`,
         sort: "publicationDate_tdate desc",
