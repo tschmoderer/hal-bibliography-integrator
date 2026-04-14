@@ -1,5 +1,5 @@
 /** HAL WORDCLOUD **/
-#hbi-wordcloud-integrator .hbi-cloud-word {
+#hbi-plugin-wordcloud .hbi-cloud-word {
     padding-top: 1em;
     padding-bottom: 1em;
     box-shadow: 5px 5px 5px;
@@ -11,55 +11,55 @@
 }
 
 @media (max-width: 500px) {
-    #hbi-wordcloud-integrator .hbi-cloud-word {
+    #hbi-plugin-wordcloud .hbi-cloud-word {
         width: 95%;
     }
 }
 
-#hbi-wordcloud-integrator .keyword {
+#hbi-plugin-wordcloud .keyword {
     color: inherit;
     padding-left: 1%;
     padding-right: 1%;
     text-align: justify;
 }
 
-#hbi-wordcloud-integrator .keyword-1 {
+#hbi-plugin-wordcloud .keyword-1 {
     font-size: 10px;
 }
 
-#hbi-wordcloud-integrator .keyword-2 {
+#hbi-plugin-wordcloud .keyword-2 {
     font-size: 10px;
 }
 
-#hbi-wordcloud-integrator .keyword-3 {
+#hbi-plugin-wordcloud .keyword-3 {
     font-size: 10px;
 }
 
-#hbi-wordcloud-integrator .keyword-4 {
+#hbi-plugin-wordcloud .keyword-4 {
     font-size: 12px;
 }
 
-#hbi-wordcloud-integrator .keyword-5 {
+#hbi-plugin-wordcloud .keyword-5 {
     font-size: 14px;
 }
 
-#hbi-wordcloud-integrator .keyword-6 {
+#hbi-plugin-wordcloud .keyword-6 {
     font-size: 16px;
 }
 
-#hbi-wordcloud-integrator .keyword-7 {
+#hbi-plugin-wordcloud .keyword-7 {
     font-size: 18px;
 }
 
-#hbi-wordcloud-integrator .keyword-8 {
+#hbi-plugin-wordcloud .keyword-8 {
     font-size: 20px;
 }
 
-#hbi-wordcloud-integrator .keyword-9 {
+#hbi-plugin-wordcloud .keyword-9 {
     font-size: 22px;
 }
 
-#hbi-wordcloud-integrator .keyword-10 {
+#hbi-plugin-wordcloud .keyword-10 {
     font-size: 24px;
 }
 

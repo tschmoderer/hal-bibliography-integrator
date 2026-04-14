@@ -1,4 +1,4 @@
-export const hbi_module_name = "hbi-bibliography-integrator";
+export const hbi_module_name = "hal-bibliography-integrator";
 
 export const eventNameHBIDone = "hbiMainDone";
 export const eventNameArtDone = "hbiArticleDone";

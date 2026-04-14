@@ -41,7 +41,7 @@ form.addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent form submission
 
     // Reset variables
-    hal_integrator_config = {
+    hal_bibliography_integrator_conf = {
         "id": "",
         "onLoad": "collapsed",
         "typeList": [],
@@ -71,13 +71,13 @@ form.addEventListener('submit', function (event) {
     }
 
     // reset hal containers 
-    document.getElementById("hbi-wordcloud-integrator").innerHTML = "";
-    document.getElementById("hbi-bibliography-integrator").innerHTML = "";
-    document.getElementById("hbi-charts-integrator").innerHTML = "";
+    document.getElementById("hbi-plugin-wordcloud").innerHTML = "";
+    document.getElementById("hal-bibliography-integrator").innerHTML = "";
+    document.getElementById("hbi-plugin-charts").innerHTML = "";
 
     // Get the value of the name field
     const nameInput = document.querySelector('#idhal');
-    hal_integrator_config["id"] = nameInput.value;
+    hal_bibliography_integrator_conf["id"] = nameInput.value;
 
     // Get the values of the toggle buttons
     docTypeToggles.querySelectorAll("input").forEach((tog) => {
@@ -88,31 +88,31 @@ form.addEventListener('submit', function (event) {
         const togValue = togInput.checked;
 
         if (togValue) {
-            hal_integrator_config["typeList"].push(halElem);
+            hal_bibliography_integrator_conf["typeList"].push(halElem);
         }
 
     });
 
     if (form.querySelector("#toggle-wc").checked) {
-        hal_integrator_config["plugins"]["wordcloud"]["doit"] = true;
+        hal_bibliography_integrator_conf["plugins"]["wordcloud"]["doit"] = true;
     } else {
-        hal_integrator_config["plugins"]["wordcloud"]["doit"] = false;
+        hal_bibliography_integrator_conf["plugins"]["wordcloud"]["doit"] = false;
     }
 
     if (form.querySelector("#toggle-display").checked) {
-        hal_integrator_config["onLoad"] = "collapsed";
+        hal_bibliography_integrator_conf["onLoad"] = "collapsed";
     } else {
-        hal_integrator_config["onLoad"] = "expanded";
+        hal_bibliography_integrator_conf["onLoad"] = "expanded";
     }
     if (form.querySelector("#toggle-artdat").checked) {
-        hal_integrator_config["plugins"]["artscore"]["doit"] = true;
+        hal_bibliography_integrator_conf["plugins"]["artscore"]["doit"] = true;
     } else {
-        hal_integrator_config["plugins"]["artscore"]["doit"] = false;
+        hal_bibliography_integrator_conf["plugins"]["artscore"]["doit"] = false;
     }
     if (form.querySelector("#toggle-charts").checked) {
-        hal_integrator_config["plugins"]["charts"]["doit"] = true;
+        hal_bibliography_integrator_conf["plugins"]["charts"]["doit"] = true;
     } else {
-        hal_integrator_config["plugins"]["charts"]["doit"] = false;
+        hal_bibliography_integrator_conf["plugins"]["charts"]["doit"] = false;
     }
 
     // Graphiques sélectionnés
@@ -125,15 +125,15 @@ form.addEventListener('submit', function (event) {
         });
         // Tout coché → pas de filtre (tout afficher, comportement par défaut)
         if (selectedCharts.length > 0 && selectedCharts.length < HAL_CHARTS_SHOW_OPTIONS.length) {
-            hal_integrator_config["plugins"]["charts"]["show"] = selectedCharts;
+            hal_bibliography_integrator_conf["plugins"]["charts"]["show"] = selectedCharts;
         } else {
-            delete hal_integrator_config["plugins"]["charts"]["show"];
+            delete hal_bibliography_integrator_conf["plugins"]["charts"]["show"];
         }
     }
 
-    if (hal_integrator_config["typeList"].length > 0) {
-        console.log(hal_integrator_config);
-        hbi_make(hal_integrator_config["id"], hal_integrator_config["typeList"], hal_integrator_config["debug"]);
+    if (hal_bibliography_integrator_conf["typeList"].length > 0) {
+        console.log(hal_bibliography_integrator_conf);
+        hbi_make(hal_bibliography_integrator_conf["id"], hal_bibliography_integrator_conf["typeList"], hal_bibliography_integrator_conf["debug"]);
     }
 });
 

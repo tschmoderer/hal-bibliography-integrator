@@ -1,4 +1,4 @@
-export const hbi_wordcloud_plugin_name = "hbi-wordcloud-integrator";
+export const hbi_plugin_wordcloud_name = "hbi-plugin-wordcloud";
 
 export function validate_hbi_wordcloud_config(hbi_config) {
     // This function validate that the HBI module configuration variable contains the required values for the wordcloud plugin

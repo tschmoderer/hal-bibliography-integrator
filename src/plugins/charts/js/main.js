@@ -1,6 +1,6 @@
 import '../scss/main.scss'
 
-import { HBI_CHARTS_SHOW_OPTIONS, validate_hbi_charts_config, hbi_charts_plugin_name } from "./charts_utils";
+import { HBI_CHARTS_SHOW_OPTIONS, validate_hbi_charts_config, hbi_plugin_charts_name } from "./charts_utils";
 import { create_spinner } from "../../../js/hbi_common";
 
 import { hbi_plugin_charts_render_all } from './charts_render';
@@ -9,7 +9,7 @@ import { hbi_plugin_charts_process_publications } from './charts_process';
 
 async function hbi_plugin_charts_init(config, debug = false) {
   // Récupère la div ou placer les graphiques
-  var hal_charts_div = document.getElementById(hbi_charts_plugin_name);
+  var hal_charts_div = document.getElementById(hbi_plugin_charts_name);
 
   // Si elle n'existe pas on ne fait rien 
   if (!hal_charts_div) {

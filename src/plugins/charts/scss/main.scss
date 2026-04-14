@@ -1,10 +1,10 @@
 /* ============================================================
-   hbi-charts.css — Plugin de visualisation pour hbi-bibliography-integrator
+   hbi-charts.css — Plugin de visualisation pour hal-bibliography-integrator
    Style aligné sur hbi-indicator (fond blanc, typographie sobre, pas de card)
    Intégration : charger après hal.css
    ============================================================ */
 
-#hbi-charts-integrator {
+#hbi-plugin-charts {
   font-family: inherit;
   margin: 1.5rem 0;
   color: inherit;
@@ -78,7 +78,7 @@
 }
 
 /* ── Barre de progression — progressbar.js ───────────────────────────────────*/
-/* Overlay inséré avant #hbi-charts-integrator, indépendant du container.     */
+/* Overlay inséré avant #hbi-plugin-charts, indépendant du container.     */
 /* La barre SVG est gérée par ProgressBar.Line, seul le label est en CSS.     */
 #hbi-charts-progress-overlay {
   padding: 0.75rem 0 0.5rem;

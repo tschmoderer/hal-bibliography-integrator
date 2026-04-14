@@ -1,5 +1,5 @@
 import '../scss/main.scss'
-import { hbi_wordcloud_plugin_name, validate_hbi_wordcloud_config } from './wordcloud_utils';
+import { hbi_plugin_wordcloud_name, validate_hbi_wordcloud_config } from './wordcloud_utils';
 import { create_spinner, globalHBIData } from '../../../js/hbi_common';
 
 function init_wordcloud(container, debug) {
@@ -91,7 +91,7 @@ export function hbi_plugin_wordcloud_start(hbi_config) {
     }
 
     // Récupère la div ou placer le nuage de mots
-    var hbi_wordcloud_div = document.getElementById(hbi_wordcloud_plugin_name);
+    var hbi_wordcloud_div = document.getElementById(hbi_plugin_wordcloud_name);
 
     // Si elle n'existe pas on ne fait rien 
     if (!hbi_wordcloud_div) {

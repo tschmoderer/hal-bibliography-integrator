@@ -1,4 +1,4 @@
-export var hbi_charts_plugin_name = "hbi-charts-integrator";
+export var hbi_plugin_charts_name = "hbi-plugin-charts";
 
 export var HBI_CHARTS_SHOW_OPTIONS = [
     { key: "metrics", label: "Indicateurs bibliométriques" },
