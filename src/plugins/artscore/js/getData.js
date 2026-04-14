@@ -37,7 +37,11 @@ export async function get_artdata(articleData, config, debug = false) {
     };
 
     try {
-        const tmp1 = await fetchJournalData(articleData["journalIssn_s"], config, debug);
+        var journal_issn = articleData["journalIssn_s"];
+        if (typeof journal_issn === 'undefined') {
+            journal_issn = articleData["journalEissn_s"];
+        }
+        const tmp1 = await fetchJournalData(journal_issn, config, debug);
         res["scopus"]["success"] = true;
         res["scopus"]["score"] = tmp1["score"];
         res["scopus"]["url"] = tmp1["url"];

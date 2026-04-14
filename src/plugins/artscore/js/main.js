@@ -3,7 +3,7 @@ import '../scss/main.scss';
 import { get_artdata } from './getData';
 import { display_artscore } from './displayData';
 import { validate_hbi_artscore_config } from './artscore_utils';
-import { globalHBIData } from '../../../js/hbi_utils';
+import { globalHBIData } from '../../../js/hbi_common';
 
 function add_artscore(data, config, debug = false) {
   // On récupère la ligne du tableau qui contient les données à annoter
@@ -22,7 +22,7 @@ function add_artscore(data, config, debug = false) {
   })
 }
 
-function HALartscore(config, debug = false) {
+function hbi_plugin_artscore_make(config, debug = false) {
   // On récupère les infos des articles 
   var data = globalHBIData["ART"];
 
@@ -62,6 +62,6 @@ export function hbi_plugin_artscore_start(hbi_config) {
 
   // Quand l’événement hbiArticleDone est envoyé, on déclenche la création des infos du plugin 
   document.addEventListener("hbiArticleDone", () => {
-    HALartscore(hbi_config["plugins"]["artscore"], debug);
+    hbi_plugin_artscore_make(hbi_config["plugins"]["artscore"], debug);
   });
 }
